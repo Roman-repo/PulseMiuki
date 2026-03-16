@@ -8,195 +8,309 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
+:root{--bg:#0a0a1a;--bg2:rgba(15,12,41,.95);--bg3:rgba(255,255,255,.08);--tx:#fff;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.3);--acc:#667eea;--acc2:#764ba2;--brd:rgba(255,255,255,.06);--grn:#00b894;--red:#E85D75}
+[data-theme="light"]{--bg:#f0f2f5;--bg2:rgba(255,255,255,.95);--bg3:rgba(0,0,0,.06);--tx:#1a1a2e;--tx2:rgba(0,0,0,.5);--tx3:rgba(0,0,0,.3);--brd:rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:'DM Sans',sans-serif;background:#000;height:100dvh;display:flex;justify-content:center}
-#app{width:100%;max-width:480px;height:100dvh;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5)}
-button{-webkit-appearance:none;touch-action:manipulation;font-family:'DM Sans',sans-serif}
-input{-webkit-appearance:none;touch-action:manipulation;font-family:'DM Sans',sans-serif}
+#app{width:100%;max-width:480px;height:100dvh;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5);background:var(--bg)}
+button,input{-webkit-appearance:none;touch-action:manipulation;font-family:'DM Sans',sans-serif}
 
 /* Login */
-.login-screen{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0f0c29 0%,#302b63 50%,#24243e 100%);padding:24px}
-.login-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;margin-bottom:32px;box-shadow:0 8px 32px rgba(102,126,234,.4);animation:lp 2s ease-in-out infinite}
+.ls{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0f0c29,#302b63,#24243e);padding:24px}
+.ll{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;margin-bottom:32px;box-shadow:0 8px 32px rgba(102,126,234,.4);animation:lp 2s ease-in-out infinite}
 @keyframes lp{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.login-title{color:#fff;font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
-.login-sub{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:40px}
-.login-input{width:100%;max-width:320px;padding:16px 20px;font-size:16px;border-radius:16px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:#fff;outline:none;transition:border-color .2s}
-.login-input:focus{border-color:rgba(102,126,234,.6)}
-.login-input::placeholder{color:rgba(255,255,255,.3)}
-.login-btn{margin-top:16px;width:100%;max-width:320px;padding:16px;font-size:16px;font-weight:700;border-radius:16px;border:none;cursor:pointer;transition:all .3s;background:rgba(255,255,255,.1);color:rgba(255,255,255,.3);position:relative;z-index:5}
-.login-btn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;box-shadow:0 4px 20px rgba(102,126,234,.4)}
+.lt{color:#fff;font-size:28px;font-weight:800;margin-bottom:8px}
+.lsb{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:40px}
+.li{width:100%;max-width:320px;padding:16px 20px;font-size:16px;border-radius:16px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:#fff;outline:none;transition:border-color .2s}
+.li:focus{border-color:rgba(102,126,234,.6)}
+.li::placeholder{color:rgba(255,255,255,.3)}
+.lb{margin-top:16px;width:100%;max-width:320px;padding:16px;font-size:16px;font-weight:700;border-radius:16px;border:none;cursor:pointer;transition:all .3s;background:rgba(255,255,255,.1);color:rgba(255,255,255,.3)}
+.lb.a{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 20px rgba(102,126,234,.4)}
+.pin-row{display:flex;gap:8px;margin-top:16px;width:100%;max-width:320px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.3);transition:all .2s}
+.pin-dot.f{background:var(--acc);border-color:var(--acc)}
+.pin-kb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:24px;width:100%;max-width:280px}
+.pin-k{padding:16px;font-size:22px;font-weight:700;border-radius:16px;border:none;background:rgba(255,255,255,.07);color:#fff;cursor:pointer;text-align:center}
+.pin-k:active{background:rgba(255,255,255,.15)}
+.pin-k.del{font-size:14px}
 
 /* Chat list */
-.cl-screen{height:100%;display:flex;flex-direction:column;background:#0a0a1a;position:relative}
-.cl-header{padding:14px 16px;display:flex;align-items:center;gap:12px;background:rgba(15,12,41,.95);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);flex-shrink:0}
-.cl-title{color:#fff;font-weight:800;font-size:20px;flex:1}
-.cl-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.ci{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
-.ci:active{background:rgba(255,255,255,.05)}
-.ci-info{flex:1;min-width:0}
-.ci-name{color:#fff;font-weight:600;font-size:15px}
-.ci-preview{color:rgba(255,255,255,.4);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.ci-time{color:rgba(255,255,255,.3);font-size:11px;flex-shrink:0}
-.new-btn{position:absolute;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);border:none;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,.5);display:flex;align-items:center;justify-content:center;z-index:5}
+.cls{height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative}
+.clh{padding:14px 16px;display:flex;align-items:center;gap:12px;background:var(--bg2);border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);flex-shrink:0}
+.clt{color:var(--tx);font-weight:800;font-size:20px;flex:1}
+.cla{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ci{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--brd);cursor:pointer}
+.ci:active{background:var(--bg3)}
+.cii{flex:1;min-width:0}
+.cin{color:var(--tx);font-weight:600;font-size:15px}
+.cip{color:var(--tx3);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.cit{color:var(--tx3);font-size:11px;flex-shrink:0}
+.nb{position:absolute;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,.5);display:flex;align-items:center;justify-content:center;z-index:5}
 
 /* Chat */
-.ch-screen{height:100%;display:flex;flex-direction:column;background:#0a0a1a}
-.ch-header{padding:10px 8px 10px 4px;display:flex;align-items:center;gap:8px;background:rgba(15,12,41,.95);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);z-index:10;flex-shrink:0}
-.bk-btn{background:none;border:none;cursor:pointer;padding:8px}
-.h-info{flex:1}
-.h-title{color:#fff;font-weight:700;font-size:16px}
-.h-sub{color:rgba(255,255,255,.4);font-size:11px;margin-top:1px}
-.h-sub.typing{color:#667eea}
-.mn-btn{background:none;border:none;cursor:pointer;padding:4px}
+.chs{height:100%;display:flex;flex-direction:column;background:var(--bg)}
+.chh{padding:10px 8px 10px 4px;display:flex;align-items:center;gap:6px;background:var(--bg2);border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);z-index:10;flex-shrink:0}
+.bb{background:none;border:none;cursor:pointer;padding:8px}
+.hi{flex:1}
+.ht{color:var(--tx);font-weight:700;font-size:16px}
+.hs{color:var(--tx2);font-size:11px;margin-top:1px}
+.hs.tp{color:var(--acc)}
+.ib{width:36px;height:36px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:none}
+.ib:active{background:var(--bg3)}
 
-.m-area{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
-.empty-s{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
-.dd{text-align:center;margin:12px 0 8px;color:rgba(255,255,255,.3);font-size:12px;font-weight:600}
-.dd span{background:rgba(255,255,255,.06);padding:4px 14px;border-radius:20px}
+/* Pinned bar */
+.pnb{padding:8px 12px;background:rgba(102,126,234,.08);border-bottom:1px solid rgba(102,126,234,.15);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pnb-t{flex:1;color:var(--acc);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnb-x{background:none;border:none;cursor:pointer;padding:2px}
+
+/* Search bar */
+.srb{padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;gap:8px;align-items:center}
+.sri{flex:1;background:var(--bg3);border:none;border-radius:16px;padding:8px 14px;color:var(--tx);font-size:14px;outline:none}
+.sri::placeholder{color:var(--tx3)}
+
+.ma{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
+.es{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.dd{text-align:center;margin:12px 0 8px;color:var(--tx3);font-size:12px;font-weight:600}
+.dd span{background:var(--bg3);padding:4px 14px;border-radius:20px}
 .mr{display:flex;align-items:flex-end;gap:8px}
 .mr.me{flex-direction:row-reverse}
 .mr.gt{margin-top:8px}
-.m-avc{width:32px;flex-shrink:0}
-.m-cnt{max-width:75%;display:flex;flex-direction:column}
-.mr.me .m-cnt{align-items:flex-end}
-.m-snd{font-size:12px;font-weight:700;margin-bottom:2px;margin-left:12px}
-.mb{padding:10px 14px;color:#fff;font-size:15px;line-height:1.45;word-break:break-word;animation:ma .25s ease-out;position:relative}
-@keyframes ma{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.mb.ot{background:rgba(255,255,255,.08);border-radius:18px 18px 18px 4px}
-.mb.mn{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:18px 18px 4px 18px;box-shadow:0 2px 12px rgba(102,126,234,.25)}
+.mac{width:32px;flex-shrink:0}
+.mc{max-width:75%;display:flex;flex-direction:column}
+.mr.me .mc{align-items:flex-end}
+.ms{font-size:12px;font-weight:700;margin-bottom:2px;margin-left:12px}
+.mb{padding:10px 14px;color:var(--tx);font-size:15px;line-height:1.45;word-break:break-word;animation:maa .25s ease-out;position:relative}
+@keyframes maa{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.mb.ot{background:var(--bg3);border-radius:18px 18px 18px 4px}
+.mb.mn{background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:18px 18px 4px 18px;box-shadow:0 2px 12px rgba(102,126,234,.25);color:#fff}
 .mt{font-size:10px;margin-top:4px;text-align:right}
-.mt.ot{color:rgba(255,255,255,.3)}
+.mt.ot{color:var(--tx3)}
 .mt.mn{color:rgba(255,255,255,.6)}
-.m-img{max-width:100%;border-radius:12px;margin-bottom:4px;cursor:pointer}
-.m-qt{background:rgba(255,255,255,.1);border-left:3px solid #667eea;border-radius:4px;padding:6px 10px;margin-bottom:6px;font-size:13px}
-.m-qt-n{font-weight:700;font-size:11px;margin-bottom:2px}
-.m-qt-t{opacity:.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi{max-width:100%;border-radius:12px;margin-bottom:4px;cursor:pointer}
+.mq{background:rgba(102,126,234,.15);border-left:3px solid var(--acc);border-radius:4px;padding:6px 10px;margin-bottom:6px;font-size:13px}
+.mqn{font-weight:700;font-size:11px;margin-bottom:2px}
+.mqt{opacity:.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.med{color:var(--tx2);font-size:10px;font-style:italic}
+.mrc{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.mrc-i{background:var(--bg3);border-radius:12px;padding:2px 8px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:3px;border:1px solid transparent;transition:all .15s}
+.mrc-i:active{border-color:var(--acc)}
+.mrc-i .cnt{font-size:11px;color:var(--tx2)}
+.m-link{color:#74B9FF;text-decoration:underline}
+.m-audio{display:flex;align-items:center;gap:8px;min-width:180px}
+.m-audio button{background:none;border:none;cursor:pointer;padding:0}
+.m-audio-bar{flex:1;height:4px;background:rgba(255,255,255,.2);border-radius:2px;position:relative;overflow:hidden}
+.m-audio-prog{height:100%;background:var(--acc);border-radius:2px;width:0%;transition:width .1s}
+.m-audio-dur{font-size:11px;color:var(--tx2);min-width:32px}
 
-/* Reply bar */
-.rp-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(102,126,234,.1);border-top:1px solid rgba(102,126,234,.2)}
-.rp-cnt{flex:1;min-width:0}
-.rp-nm{color:#667eea;font-size:12px;font-weight:700}
-.rp-tx{color:rgba(255,255,255,.5);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rp-cl{background:none;border:none;cursor:pointer;padding:4px}
+/* Reply/Edit bar */
+.rb{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(102,126,234,.1);border-top:1px solid rgba(102,126,234,.2)}
+.rbc{flex:1;min-width:0}
+.rbn{color:var(--acc);font-size:12px;font-weight:700}
+.rbt{color:var(--tx2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rbx{background:none;border:none;cursor:pointer;padding:4px}
 
 /* Input */
-.in-bar{padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:rgba(15,12,41,.95);border-top:1px solid rgba(255,255,255,.06);display:flex;gap:6px;align-items:flex-end;backdrop-filter:blur(20px);flex-shrink:0}
-.in-wrap{flex:1;background:rgba(255,255,255,.07);border-radius:22px;display:flex;align-items:center}
-.m-in{flex:1;background:none;border:none;outline:none;color:#fff;font-size:16px;padding:10px 14px}
-.m-in::placeholder{color:rgba(255,255,255,.3)}
-.ib{width:40px;height:40px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:none;transition:all .15s}
-.ib:active{background:rgba(255,255,255,.1)}
-.sb{width:40px;height:40px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;cursor:pointer;background:rgba(255,255,255,.08)}
-.sb.active{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 12px rgba(102,126,234,.4)}
+.inb{padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:6px;align-items:flex-end;backdrop-filter:blur(20px);flex-shrink:0}
+.inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center}
+.min{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;padding:10px 14px}
+.min::placeholder{color:var(--tx3)}
+.sb{width:40px;height:40px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;cursor:pointer;background:var(--bg3)}
+.sb.a{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 12px rgba(102,126,234,.4)}
+.rec-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%}
+.rec-btn.recording{background:rgba(232,93,117,.2);animation:recPulse 1s infinite}
+@keyframes recPulse{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* Emoji */
-.ep{display:none;position:absolute;bottom:60px;left:8px;right:8px;background:rgba(20,18,50,.98);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:8px;z-index:15;max-height:220px;overflow-y:auto;-webkit-overflow-scrolling:touch;backdrop-filter:blur(20px)}
+.ep{display:none;position:absolute;bottom:60px;left:8px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:16px;padding:8px;z-index:15;max-height:220px;overflow-y:auto;-webkit-overflow-scrolling:touch;backdrop-filter:blur(20px)}
 .ep.open{display:block}
-.ec{display:flex;gap:4px;padding:4px 4px 8px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:8px;overflow-x:auto;flex-shrink:0}
+.ec{display:flex;gap:4px;padding:4px 4px 8px;border-bottom:1px solid var(--brd);margin-bottom:8px;overflow-x:auto}
 .ecb{background:none;border:none;cursor:pointer;font-size:18px;padding:4px 8px;border-radius:8px;opacity:.5;flex-shrink:0}
-.ecb.act{opacity:1;background:rgba(255,255,255,.1)}
+.ecb.act{opacity:1;background:var(--bg3)}
 .eg{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
-.ei{font-size:22px;padding:6px;text-align:center;cursor:pointer;border-radius:8px;transition:background .1s}
-.ei:active{background:rgba(255,255,255,.15)}
+.ei{font-size:22px;padding:6px;text-align:center;cursor:pointer;border-radius:8px}
+.ei:active{background:var(--bg3)}
+
+/* Quick react */
+.qr{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--brd);border-radius:24px;padding:4px 8px;position:absolute;z-index:16;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:maa .15s ease-out}
+.qr-i{font-size:20px;cursor:pointer;padding:4px;border-radius:8px}
+.qr-i:active{background:var(--bg3)}
 
 /* Context menu */
-.ctx{position:fixed;background:rgba(20,18,50,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:4px;z-index:30;min-width:160px;backdrop-filter:blur(20px);animation:ca .15s ease-out}
+.ctx{position:fixed;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:4px;z-index:30;min-width:180px;backdrop-filter:blur(20px);animation:ca .15s ease-out}
 @keyframes ca{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-.cti{display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff;font-size:14px;cursor:pointer;border-radius:8px;transition:background .1s}
-.cti:active{background:rgba(255,255,255,.1)}
+.cti{display:flex;align-items:center;gap:10px;padding:10px 14px;color:var(--tx);font-size:14px;cursor:pointer;border-radius:8px}
+.cti:active{background:var(--bg3)}
 .cto{position:fixed;top:0;left:0;right:0;bottom:0;z-index:29}
 
 /* Sidebar */
 .so{position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;display:flex}
-.sd{width:280px;background:rgba(15,12,41,.98);border-right:1px solid rgba(255,255,255,.08);padding:24px 20px;backdrop-filter:blur(20px);overflow-y:auto}
-.sd-un{color:#fff;font-weight:700;font-size:18px;margin-top:12px}
-.sd-lb{color:rgba(255,255,255,.4);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px}
-.sd-it{display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer}
-.sd-it:active{opacity:.7}
-.sd-in{color:#fff;font-size:14px;font-weight:600}
-.sd-iy{color:rgba(255,255,255,.3);font-weight:400}
-.od{width:6px;height:6px;border-radius:50%;background:#00b894;display:inline-block}
-.ol{color:#00b894;font-size:11px}
-.lo-btn{margin-top:32px;width:100%;padding:12px;border-radius:12px;border:1px solid rgba(232,93,117,.3);background:rgba(232,93,117,.1);color:#E85D75;font-size:14px;font-weight:600;cursor:pointer}
-.sd-bk{flex:1}
+.sd{width:280px;background:var(--bg2);border-right:1px solid var(--brd);padding:24px 20px;backdrop-filter:blur(20px);overflow-y:auto}
+.sdn{color:var(--tx);font-weight:700;font-size:18px;margin-top:12px}
+.sdst{color:var(--tx2);font-size:13px;margin-top:4px}
+.sdl{color:var(--tx2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px}
+.sdi{display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer}
+.sdi:active{opacity:.7}
+.sdin{color:var(--tx);font-size:14px;font-weight:600}
+.sdiy{color:var(--tx3);font-weight:400}
+.od{width:6px;height:6px;border-radius:50%;background:var(--grn);display:inline-block}
+.olb{color:var(--grn);font-size:11px}
+.lbtn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:1px solid rgba(232,93,117,.3);background:rgba(232,93,117,.1);color:var(--red);font-size:14px;font-weight:600;cursor:pointer}
+.sdbk{flex:1}
+.sd-sect{padding:12px 0;border-top:1px solid var(--brd);margin-top:12px}
+.sd-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;color:var(--tx);font-size:14px;cursor:pointer}
+.sd-row:active{opacity:.7}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--bg3);position:relative;cursor:pointer;transition:background .2s;border:none}
+.toggle.on{background:var(--acc)}
+.toggle::after{content:'';width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s}
+.toggle.on::after{left:22px}
+
+/* User picker */
+.up{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column}
+.uph{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--brd)}
+.upt{color:var(--tx);font-weight:700;font-size:17px;flex:1}
+.upl{flex:1;overflow-y:auto;padding:8px 0}
+.upi{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer}
+.upi:active{background:var(--bg3)}
+.upn{color:var(--tx);font-size:15px;font-weight:600}
+.upi-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--tx3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.upi-cb.sel{background:var(--acc);border-color:var(--acc)}
+.up-done{margin:12px 16px;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+
+/* Profile edit */
+.pe{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column}
+.peh{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--brd)}
+.pet{color:var(--tx);font-weight:700;font-size:17px;flex:1}
+.pec{display:flex;flex-direction:column;align-items:center;padding:24px;gap:12px}
+.pe-av{width:96px;height:96px;border-radius:50%;cursor:pointer;overflow:hidden;position:relative}
+.pe-av img{width:100%;height:100%;object-fit:cover}
+.pe-av-overlay{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);color:#fff;font-size:11px;text-align:center;padding:4px}
+.pe-input{width:100%;max-width:300px;padding:12px 16px;border-radius:12px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);font-size:15px;outline:none}
+.pe-input::placeholder{color:var(--tx3)}
+.pe-label{color:var(--tx2);font-size:12px;font-weight:600;text-transform:uppercase;margin-top:16px;width:100%;max-width:300px}
+.pe-save{margin-top:24px;padding:14px 48px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+
+/* Call */
+.cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0f0c29,#302b63,#24243e);gap:16px}
+.ca{animation:cp 2s ease-in-out infinite}
+@keyframes cp{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(102,126,234,.4)}50%{transform:scale(1.05);box-shadow:0 0 0 20px rgba(102,126,234,0)}}
+.cnm{color:#fff;font-size:24px;font-weight:800}
+.cst{color:rgba(255,255,255,.5);font-size:14px}
+.ctm{color:rgba(255,255,255,.7);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.cbs{display:flex;gap:24px;margin-top:32px}
+.cb{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cb:active{transform:scale(.9)}
+.cb.acc{background:var(--grn);box-shadow:0 4px 20px rgba(0,184,148,.4)}
+.cb.dec{background:var(--red);box-shadow:0 4px 20px rgba(232,93,117,.4)}
+.cb.mut{background:rgba(255,255,255,.15)}
+.cb.mut.a{background:rgba(255,255,255,.3)}
 
 /* Image viewer */
 .iv{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:50;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .iv img{max-width:95%;max-height:90%;object-fit:contain}
 
-/* User picker */
-.up{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(10,10,26,.98);z-index:25;display:flex;flex-direction:column}
-.up-h{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.06)}
-.up-t{color:#fff;font-weight:700;font-size:17px;flex:1}
-.up-l{flex:1;overflow-y:auto;padding:8px 0}
-.up-i{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer}
-.up-i:active{background:rgba(255,255,255,.05)}
-.up-n{color:#fff;font-size:15px;font-weight:600}
-
 .hidden{display:none!important}
-.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;font-family:'DM Sans',sans-serif;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- PIN screen -->
+<div class="ls hidden" id="SP">
+  <div class="ll"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+  <div class="lt">Введите PIN</div>
+  <div class="lsb" id="pinMsg">4-значный код</div>
+  <div style="display:flex;gap:12px;margin-bottom:24px" id="pinDots"></div>
+  <div class="pin-kb" id="pinKb"></div>
+</div>
+
 <!-- Login -->
-<div class="login-screen" id="S0">
-  <div class="login-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-  <div class="login-title">Pulse Chat</div>
-  <div class="login-sub">Мгновенные сообщения для всех</div>
-  <input class="login-input" id="ni" placeholder="Ваше имя" maxlength="20" autocomplete="off">
-  <button type="button" class="login-btn" id="lb">Войти в чат &rarr;</button>
+<div class="ls" id="S0">
+  <div class="ll"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+  <div class="lt">Pulse Chat</div>
+  <div class="lsb">Мгновенные сообщения для всех</div>
+  <input class="li" id="ni" placeholder="Ваше имя" maxlength="20" autocomplete="off">
+  <button type="button" class="lb" id="lbn">Войти в чат →</button>
 </div>
 
 <!-- Chat List -->
-<div class="cl-screen hidden" id="S1">
-  <div class="cl-header">
-    <div class="cl-title">Pulse Chat</div>
-    <button type="button" class="mn-btn" id="clmb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+<div class="cls hidden" id="S1">
+  <div class="clh">
+    <div class="clt">Pulse Chat</div>
+    <button type="button" class="ib" id="srBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button type="button" class="ib" id="clmb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
   </div>
-  <div class="cl-area" id="cla"></div>
-  <button type="button" class="new-btn" id="nb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  <div class="cla" id="cla"></div>
+  <button type="button" class="nb" id="nb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
   <!-- Sidebar -->
   <div class="so hidden" id="sov">
     <div class="sd">
-      <div id="sav"></div>
-      <div class="sd-un" id="snm"></div>
-      <div class="sd-lb" id="slb">Онлайн (0)</div>
+      <div id="sav" style="cursor:pointer"></div>
+      <div class="sdn" id="snm"></div>
+      <div class="sdst" id="sStatus"></div>
+      <div class="sd-sect">
+        <div class="sd-row" id="profBtn">✏️ Редактировать профиль</div>
+        <div class="sd-row" id="pinSetBtn">🔒 Установить PIN</div>
+        <div class="sd-row">🎨 Тема <button type="button" class="toggle" id="themeT"></button></div>
+      </div>
+      <div class="sdl" id="slb">Онлайн (0)</div>
       <div id="sml"></div>
-      <button type="button" class="lo-btn" id="lob">Выйти</button>
+      <button type="button" class="lbtn" id="lob">Выйти</button>
     </div>
-    <div class="sd-bk" id="sbk"></div>
+    <div class="sdbk" id="sbk"></div>
   </div>
   <!-- User picker -->
   <div class="up hidden" id="upk">
-    <div class="up-h">
-      <button type="button" class="bk-btn" id="upc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="up-t">Новое сообщение</div>
+    <div class="uph">
+      <button type="button" class="bb" id="upc"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="upt" id="upTitle">Новый чат</div>
     </div>
-    <div class="up-l" id="upl"></div>
+    <div class="upl" id="upl"></div>
+    <button type="button" class="up-done hidden" id="upDone">Создать группу</button>
+  </div>
+  <!-- Profile edit -->
+  <div class="pe hidden" id="peScr">
+    <div class="peh">
+      <button type="button" class="bb" id="peClose"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="pet">Профиль</div>
+    </div>
+    <div class="pec">
+      <div class="pe-av" id="peAv"></div>
+      <div class="pe-label">Статус</div>
+      <input class="pe-input" id="peStatus" placeholder="Что у вас нового?" maxlength="50">
+      <div class="pe-label">PIN-код</div>
+      <input class="pe-input" id="pePin" placeholder="4 цифры (пусто = без PIN)" maxlength="4" inputmode="numeric">
+      <button type="button" class="pe-save" id="peSave">Сохранить</button>
+    </div>
   </div>
 </div>
 
 <!-- Chat -->
-<div class="ch-screen hidden" id="S2">
-  <div class="ch-header">
-    <button type="button" class="bk-btn" id="cbb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="h-info"><div class="h-title" id="cht">Общий чат</div><div class="h-sub" id="chs"></div></div>
-    <div id="hav" style="display:flex"></div>
+<div class="chs hidden" id="S2">
+  <div class="chh">
+    <button type="button" class="bb" id="cbb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="hi"><div class="ht" id="cht">Общий чат</div><div class="hs" id="chs2"></div></div>
+    <button type="button" class="ib hidden" id="schBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button type="button" class="ib hidden" id="phb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
   </div>
-  <div class="m-area" id="ma"><div style="color:rgba(255,255,255,.3);font-size:14px;text-align:center;padding:20px">Загрузка...</div></div>
-  <!-- Reply bar -->
-  <div class="rp-bar hidden" id="rpb">
-    <div class="rp-cnt"><div class="rp-nm" id="rpn"></div><div class="rp-tx" id="rpt"></div></div>
-    <button type="button" class="rp-cl" id="rpc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <!-- Pinned msg -->
+  <div class="pnb hidden" id="pnBar"><div class="pnb-t" id="pnTxt"></div></div>
+  <!-- Search -->
+  <div class="srb hidden" id="srBar"><input class="sri" id="srIn" placeholder="Поиск..."><button type="button" class="ib" id="srClose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="ma" id="ma"></div>
+  <!-- Reply/Edit bar -->
+  <div class="rb hidden" id="rpb">
+    <div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div>
+    <button type="button" class="rbx" id="rpc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <div class="in-bar">
-    <button type="button" class="ib" id="pb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
-    <div class="in-wrap"><input class="m-in" id="mi" placeholder="Сообщение..." autocomplete="off"></div>
-    <button type="button" class="ib" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
-    <button type="button" class="sb" id="sbb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="si"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  <div class="inb">
+    <button type="button" class="ib" id="pb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+    <div class="inw"><input class="min" id="mi" placeholder="Сообщение..." autocomplete="off"></div>
+    <button type="button" class="ib" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+    <button type="button" class="rec-btn" id="recBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
+    <button type="button" class="sb" id="sbb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="si"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
   </div>
   <div class="ep" id="epp"></div>
 </div>
@@ -204,109 +318,189 @@ input{-webkit-appearance:none;touch-action:manipulation;font-family:'DM Sans',sa
 <!-- Image viewer -->
 <div class="iv hidden" id="ivw"><img id="ivi"></div>
 <input type="file" accept="image/*" id="fi" style="display:none">
+<input type="file" accept="image/*" id="avFi" style="display:none">
+
+<!-- Call screen -->
+<div class="cs hidden" id="callScr">
+  <div class="ca" id="callAv"></div>
+  <div class="cnm" id="callNm"></div>
+  <div class="cst" id="callSt">Вызов...</div>
+  <div class="ctm hidden" id="callTm">00:00</div>
+  <div class="cbs">
+    <button type="button" class="cb dec" id="callD"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+    <button type="button" class="cb acc hidden" id="callA"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+    <button type="button" class="cb mut hidden" id="callM"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button>
+  </div>
+</div>
 
 </div>
 <script>
-// Firebase
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
-var db=firebase.database();
-
-var COLORS=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱","🤯","😴","🤮","🤑","😈","👻","💀","🤡"],"👍":["👍","👎","👏","🙌","🤝","✌️","🤞","🤙","👊","✊","🫶","❤️","🔥","💯","⭐","🎉","🎊","💪","🙏","👀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🍀","🌺","🐱","🐶","🦊","🐻","🐼","🦋","🐝","🌍"],"🍕":["🍕","🍔","🍟","🌮","🍣","🍜","🍰","🍩","🍪","☕","🍺","🍷","🥤","🍎","🍉","🥑"],"💬":["💬","📱","💻","🎮","🎵","🎬","📸","🏠","🚗","✈️","🎁","🔑","💡","📌","✅","❌"]};
-
-var U=null,pRef=null,cRoom="general",sbOpen=false,onU={},cRooms={},rMsgs={},rList={},rTo=null,emO=false,tTmr=null,lTyp=0,msgCnt={};
+var db=firebase.database(),COLORS=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
+var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱","🤯","😴"],"👍":["👍","👎","👏","🙌","🤝","✌️","🤙","👊","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋","🌍"],"🍕":["🍕","🍔","🍟","🍣","🍰","☕","🍺","🍎","🍉"],"💬":["💬","📱","💻","🎮","🎵","🎬","📸","🏠","🚗","✈️","🎁","✅","❌"]};
+var QREACTS=["❤️","👍","😂","😮","😢","🔥"];
+var U=null,pRef=null,cRoom="general",sbO=false,onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,profiles={},searchMode=false,searchQ='',mediaRec=null,isRec=false,audioChunks=[];
 
 function hc(n){var h=0;for(var i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return COLORS[Math.abs(h)%COLORS.length]}
-function av(n,s){var c=hc(n);return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*.42)+'px;background:linear-gradient(135deg,'+c+','+c+'dd);box-shadow:0 2px 8px '+c+'44;">'+n.charAt(0).toUpperCase()+'</div>'}
+function av(n,s,uid){
+  var pr=profiles[n];
+  if(pr&&pr.avatar)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px"><img src="'+pr.avatar+'"></div>';
+  var c=hc(n);return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*.42)+'px;background:linear-gradient(135deg,'+c+','+c+'dd);box-shadow:0 2px 8px '+c+'44;">'+n.charAt(0).toUpperCase()+'</div>'
+}
 function ft(t){return new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 function fd(t){var d=new Date(t),td=new Date,yd=new Date;yd.setDate(yd.getDate()-1);if(d.toDateString()===td.toDateString())return'Сегодня';if(d.toDateString()===yd.toDateString())return'Вчера';return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}
 function es(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function gci(a,b){return[a,b].sort().join('__')}
 function $(i){return document.getElementById(i)}
+function linkify(t){return es(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" class="m-link" onclick="event.stopPropagation()">$1</a>')}
 
 // Sound
 var aC=null;
 function snd(){try{if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();var o=aC.createOscillator(),g=aC.createGain();o.connect(g);g.connect(aC.destination);o.type='sine';o.frequency.setValueAtTime(880,aC.currentTime);o.frequency.setValueAtTime(1100,aC.currentTime+.08);g.gain.setValueAtTime(.15,aC.currentTime);g.gain.exponentialRampToValueAtTime(.001,aC.currentTime+.3);o.start(aC.currentTime);o.stop(aC.currentTime+.3)}catch(e){}}
+function ring(){try{if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();var o=aC.createOscillator(),g=aC.createGain();o.connect(g);g.connect(aC.destination);o.type='sine';o.frequency.value=440;g.gain.setValueAtTime(.2,aC.currentTime);g.gain.exponentialRampToValueAtTime(.001,aC.currentTime+.5);o.start(aC.currentTime);o.stop(aC.currentTime+.5)}catch(e){}}
+function startRing(){ringInt=setInterval(ring,1500);ring()}
+function stopRing(){if(ringInt){clearInterval(ringInt);ringInt=null}}
+
+// Theme
+var theme=localStorage.getItem('pc_theme')||'dark';
+function applyTheme(){document.getElementById('app').setAttribute('data-theme',theme==='light'?'light':'');$('themeT').classList.toggle('on',theme==='light')}
+applyTheme();
+$('themeT').addEventListener('click',function(){theme=theme==='light'?'dark':'light';localStorage.setItem('pc_theme',theme);applyTheme()});
+
+// PIN
+var storedPin=localStorage.getItem('pc_pin')||'';
+var pinInput='';
+function showPin(){
+  if(!storedPin){$('SP').classList.add('hidden');$('S0').classList.remove('hidden');return}
+  $('S0').classList.add('hidden');$('SP').classList.remove('hidden');
+  pinInput='';renderPinDots();buildPinKb()
+}
+function renderPinDots(){
+  var h='';for(var i=0;i<4;i++)h+='<div class="pin-dot'+(i<pinInput.length?' f':'')+'"></div>';
+  $('pinDots').innerHTML=h
+}
+function buildPinKb(){
+  var h='';for(var i=1;i<=9;i++)h+='<button type="button" class="pin-k" data-n="'+i+'">'+i+'</button>';
+  h+='<button type="button" class="pin-k"></button><button type="button" class="pin-k" data-n="0">0</button><button type="button" class="pin-k del" data-n="del">⌫</button>';
+  $('pinKb').innerHTML=h;
+  $('pinKb').querySelectorAll('.pin-k').forEach(function(b){b.addEventListener('click',function(){
+    var n=b.getAttribute('data-n');if(!n)return;
+    if(n==='del'){pinInput=pinInput.slice(0,-1)}else if(pinInput.length<4){pinInput+=n}
+    renderPinDots();
+    if(pinInput.length===4){
+      if(pinInput===storedPin){$('SP').classList.add('hidden');$('S0').classList.remove('hidden')}
+      else{$('pinMsg').textContent='Неверный PIN';pinInput='';renderPinDots();setTimeout(function(){$('pinMsg').textContent='4-значный код'},1500)}
+    }
+  })})
+}
+showPin();
+
+// Profiles
+function listenProfiles(){db.ref('profiles').on('value',function(s){profiles=s.val()||{};rSb();rCL()})}
 
 // Login
-var ni=$('ni'),lb=$('lb');
-ni.addEventListener('input',function(){lb.className='login-btn'+(ni.value.trim().length>=2?' active':'')});
+var ni=$('ni'),lbn=$('lbn');
+ni.addEventListener('input',function(){lbn.className='lb'+(ni.value.trim().length>=2?' a':'')});
 ni.addEventListener('keydown',function(e){if(e.key==='Enter')doL()});
-lb.addEventListener('click',doL);
+lbn.addEventListener('click',doL);
 
-function doL(){var n=ni.value.trim();if(n.length<2)return;U=n;$('S0').classList.add('hidden');$('S1').classList.remove('hidden');$('snm').textContent=n;$('sav').innerHTML=av(n,56);sPres();lOn();lCL()}
+function doL(){var n=ni.value.trim();if(n.length<2)return;U=n;$('S0').classList.add('hidden');$('S1').classList.remove('hidden');$('snm').textContent=n;$('sav').innerHTML=av(n,56);
+  var pr=profiles[n]||{};$('sStatus').textContent=pr.status||'';
+  sPres();lOn();lCL();listenProfiles();listenCalls();
+  // Save profile if not exists
+  db.ref('profiles/'+n).once('value',function(s){if(!s.val())db.ref('profiles/'+n).set({name:n,status:'',avatar:''})})
+}
 
-function doLo(){if(pRef){pRef.remove();pRef=null}Object.keys(rList).forEach(function(r){db.ref('messages/'+r).off()});db.ref('online').off();db.ref('chats').off();rList={};rMsgs={};cRooms={};onU={};U=null;cRoom="general";$('S2').classList.add('hidden');$('S1').classList.add('hidden');$('sov').classList.add('hidden');$('S0').classList.remove('hidden');ni.value='';lb.className='login-btn'}
+function doLo(){endCallClean();db.ref('calls').off();callListenerSet=false;if(pRef){pRef.remove();pRef=null}Object.keys(rList).forEach(function(r){db.ref('messages/'+r).off()});db.ref('online').off();db.ref('chats').off();db.ref('profiles').off();rList={};rMsgs={};cRooms={};onU={};tpList={};U=null;cRoom="general";$('S2').classList.add('hidden');$('S1').classList.add('hidden');$('sov').classList.add('hidden');$('S0').classList.remove('hidden');ni.value='';lbn.className='lb'}
 
 // Presence
 function sPres(){var uid=U+'_'+Date.now();pRef=db.ref('online/'+uid);pRef.set({name:U,ts:firebase.database.ServerValue.TIMESTAMP});pRef.onDisconnect().remove();setInterval(function(){if(pRef)pRef.update({ts:firebase.database.ServerValue.TIMESTAMP})},20000)}
-
 function lOn(){db.ref('online').on('value',function(s){var d=s.val()||{},now=Date.now(),u={};Object.values(d).forEach(function(v){if(now-v.ts<60000)u[v.name]=true});onU=u;rSb();rCL()})}
 
 // Chat list
 function lCL(){db.ref('chats').on('value',function(s){cRooms=s.val()||{};rCL()})}
-
 function rCL(){
   var a=$('cla'),its=[];
   var g=cRooms['general']||{};
-  its.push({id:'general',name:'💬 Общий чат',pv:g.lastText||'Нажми, чтобы начать',t:g.lastTs||0,ig:true});
-  Object.keys(cRooms).forEach(function(k){if(k==='general')return;var r=cRooms[k];if(!r.members||r.members.indexOf(U)===-1)return;var o=r.members.filter(function(m){return m!==U})[0]||'?';its.push({id:k,name:o,pv:r.lastText||'',t:r.lastTs||0})});
+  its.push({id:'general',name:'💬 Общий чат',pv:g.lastText||'',t:g.lastTs||0,ig:true});
+  Object.keys(cRooms).forEach(function(k){if(k==='general')return;var r=cRooms[k];if(!r.members||r.members.indexOf(U)===-1)return;
+    var others=r.members.filter(function(m){return m!==U});
+    var nm=r.groupName||others.join(', ');
+    its.push({id:k,name:nm,pv:r.lastText||'',t:r.lastTs||0,isGroup:r.members.length>2})});
   its.sort(function(a,b){if(a.ig)return-1;if(b.ig)return 1;return(b.t||0)-(a.t||0)});
   var h='';
   its.forEach(function(it){
     h+='<div class="ci" data-r="'+it.id+'">';
-    if(it.ig)h+='<div class="avatar" style="width:44px;height:44px;font-size:20px;background:linear-gradient(135deg,#667eea,#764ba2);">💬</div>';
+    if(it.ig)h+='<div class="avatar" style="width:44px;height:44px;font-size:20px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>';
+    else if(it.isGroup)h+='<div class="avatar" style="width:44px;height:44px;font-size:18px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
     else h+=av(it.name,44);
-    h+='<div class="ci-info"><div class="ci-name">'+es(it.ig?'Общий чат':it.name)+'</div><div class="ci-preview">'+es(it.pv)+'</div></div>';
-    if(it.t)h+='<div class="ci-time">'+ft(it.t)+'</div>';
-    h+='</div>'});
+    h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+'</div><div class="cip">'+es(it.pv)+'</div></div>';
+    if(it.t)h+='<div class="cit">'+ft(it.t)+'</div>';h+='</div>'});
   a.innerHTML=h;
-  a.querySelectorAll('.ci').forEach(function(el){el.addEventListener('click',function(){oC(el.getAttribute('data-r'))})});
+  a.querySelectorAll('.ci').forEach(function(el){el.addEventListener('click',function(){oC(el.getAttribute('data-r'))})})
 }
 
 // Open chat
 function oC(rid){
-  cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');
-  if(rid==='general'){$('cht').textContent='Общий чат'}
-  else{var r=cRooms[rid];var o=r&&r.members?r.members.filter(function(m){return m!==U})[0]:'?';$('cht').textContent=o}
-  $('chs').textContent='';$('ma').innerHTML='<div style="color:rgba(255,255,255,.3);font-size:14px;text-align:center;padding:20px">Загрузка...</div>';
-  cRp();cEm();lR(rid);lTp(rid);$('mi').focus()
+  cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');searchMode=false;$('srBar').classList.add('hidden');searchQ='';
+  var isPriv=rid!=='general'&&cRooms[rid]&&cRooms[rid].members&&cRooms[rid].members.length===2;
+  if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden')}
+  else{var r=cRooms[rid];var others=r&&r.members?r.members.filter(function(m){return m!==U}):[];$('cht').textContent=r&&r.groupName?r.groupName:others.join(', ');$('phb').classList.toggle('hidden',!isPriv)}
+  $('schBtn').classList.remove('hidden');
+  $('chs2').textContent='';cRp();cEm();lR(rid);lTp(rid);
+  // Pinned message
+  updatePin(rid);
+  if(rMsgs[rid]){rMs(rMsgs[rid]);$('ma').scrollTop=$('ma').scrollHeight}
+  else{$('ma').innerHTML='<div style="color:var(--tx3);font-size:14px;text-align:center;padding:20px">Загрузка...</div>'}
+  $('mi').focus()
 }
-
 function goB(){cRoom="general";$('S2').classList.add('hidden');$('S1').classList.remove('hidden');cEm();cRp()}
+
+// Pinned
+function updatePin(rid){
+  var r=cRooms[rid];
+  if(r&&r.pinned){$('pnTxt').textContent='📌 '+r.pinned;$('pnBar').classList.remove('hidden')}
+  else $('pnBar').classList.add('hidden')
+}
 
 // Room messages
 function lR(rid){
   if(rList[rid])return;rList[rid]=true;
   db.ref('messages/'+rid).orderByChild('ts').limitToLast(200).on('value',function(s){
-    var d=s.val(),ms=d?Object.values(d).sort(function(a,b){return a.ts-b.ts}):[];
-    var prev=rMsgs[rid]?rMsgs[rid].length:0;
-    rMsgs[rid]=ms;
-    if(cRoom===rid)rMs(ms);
+    var d=s.val(),ms=d?Object.keys(d).map(function(k){var m=d[k];m._key=k;return m}).sort(function(a,b){return a.ts-b.ts}):[];
+    var prev=rMsgs[rid]?rMsgs[rid].length:0;rMsgs[rid]=ms;
+    if(cRoom===rid)rMs(searchMode?filterMsgs(ms):ms);
     if(ms.length>prev&&ms.length>0){var l=ms[ms.length-1];if(l.sender!==U&&l.ts>(Date.now()-3000))snd()}
   })
 }
 
+function filterMsgs(ms){if(!searchQ)return ms;var q=searchQ.toLowerCase();return ms.filter(function(m){return(m.text||'').toLowerCase().indexOf(q)!==-1})}
+
 function rMs(ms){
   var a=$('ma'),wb=a.scrollHeight-a.scrollTop-a.clientHeight<80;
-  if(ms.length===0){a.innerHTML='<div class="empty-s"><div style="font-size:48px;opacity:.3">💬</div><div style="color:rgba(255,255,255,.3);font-size:14px">Начните разговор!</div></div>';return}
+  if(ms.length===0){a.innerHTML='<div class="es"><div style="font-size:48px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:14px">'+(searchMode?'Ничего не найдено':'Начните разговор!')+'</div></div>';return}
   var h='',ld='',ls='';
   ms.forEach(function(m){
     var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
     var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
-    h+='<div class="mr'+(me?' me':'')+g+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
-    h+='<div class="m-avc">';if(!me&&sa)h+=av(m.sender,32);
-    h+='</div><div class="m-cnt">';
-    if(!me&&sa)h+='<div class="m-snd" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+    h+='<div class="mr'+(me?' me':'')+g+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
+    h+='<div class="mac">';if(!me&&sa)h+=av(m.sender,32);
+    h+='</div><div class="mc">';
+    if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
     h+='<div class="mb '+(me?'mn':'ot')+'">';
-    if(m.replyTo)h+='<div class="m-qt"><div class="m-qt-n" style="color:'+hc(m.replyTo.sender)+'">'+es(m.replyTo.sender)+'</div><div class="m-qt-t">'+es(m.replyTo.text||'📷 Фото')+'</div></div>';
-    if(m.image)h+='<img class="m-img" src="'+m.image+'" onclick="vI(this.src)">';
-    if(m.text)h+='<span>'+es(m.text)+'</span>';
-    h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div>';
-    h+='</div></div>';ls=m.sender
+    if(m.replyTo)h+='<div class="mq"><div class="mqn" style="color:'+hc(m.replyTo.sender)+'">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
+    if(m.image)h+='<img class="mi" src="'+m.image+'" onclick="vI(this.src)">';
+    if(m.audio)h+='<div class="m-audio"><button onclick="playAudio(this,\''+m.audio+'\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--acc)"><polygon points="5 3 19 12 5 21 5 3"/></svg></button><div class="m-audio-bar"><div class="m-audio-prog"></div></div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'</div></div>';
+    if(m.text)h+='<span>'+linkify(m.text)+'</span>';
+    if(m.edited)h+='<div class="med">изменено</div>';
+    h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div>';
+    // Reactions
+    if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forEach(function(r){if(!rc[r.emoji])rc[r.emoji]={count:0,users:[]};rc[r.emoji].count++;rc[r.emoji].users.push(r.user)});
+      Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" onclick="toggleReact(\''+m._key+'\',\''+e+'\')">'+e+'<span class="cnt">'+rc[e].count+'</span></div>'});h+='</div>'}
+    h+='</div></div></div>';ls=m.sender
   });
-  a.innerHTML=h;if(wb)a.scrollTop=a.scrollHeight;
-
+  a.innerHTML=h;if(wb||!searchMode)a.scrollTop=a.scrollHeight;
+  // Long press
   a.querySelectorAll('.mr').forEach(function(el){
     var tm;
     el.addEventListener('touchstart',function(e){tm=setTimeout(function(){sRC(e,el)},500)},{passive:true});
@@ -316,136 +510,255 @@ function rMs(ms){
   })
 }
 
+// Play audio
+window.playAudio=function(btn,src){
+  var audio=new Audio(src);
+  var bar=btn.parentElement.querySelector('.m-audio-prog');
+  audio.play();
+  audio.addEventListener('timeupdate',function(){if(audio.duration)bar.style.width=(audio.currentTime/audio.duration*100)+'%'});
+  audio.addEventListener('ended',function(){bar.style.width='0%'})
+};
+
+// Reactions
+window.toggleReact=function(key,emoji){
+  var ref=db.ref('messages/'+cRoom+'/'+key+'/reactions');
+  ref.once('value',function(s){
+    var d=s.val()||{};var found=null;
+    Object.keys(d).forEach(function(k){if(d[k].user===U&&d[k].emoji===emoji)found=k});
+    if(found)ref.child(found).remove();
+    else ref.push({user:U,emoji:emoji})
+  })
+};
+
 // Context menu
 function sRC(e,el){
-  rmC();var s=el.getAttribute('data-s'),t=el.getAttribute('data-t');
+  rmC();var s=el.getAttribute('data-s'),t=el.getAttribute('data-t'),k=el.getAttribute('data-k'),me=s===U;
   var ov=document.createElement('div');ov.className='cto';
   var mn=document.createElement('div');mn.className='ctx';
+
+  // Quick reactions
+  var qr=document.createElement('div');qr.style.cssText='display:flex;gap:4px;padding:6px 10px;border-bottom:1px solid var(--brd);margin-bottom:4px';
+  QREACTS.forEach(function(em){
+    var b=document.createElement('span');b.textContent=em;b.style.cssText='font-size:20px;cursor:pointer;padding:4px';
+    b.addEventListener('click',function(){toggleReact(k,em);rmC()});qr.appendChild(b)
+  });mn.appendChild(qr);
+
+  // Reply
   var r=document.createElement('div');r.className='cti';r.innerHTML='↩️ Ответить';
   r.addEventListener('click',function(){sRp(s,t);rmC()});mn.appendChild(r);
+  // Edit (own messages only)
+  if(me&&t){var ed=document.createElement('div');ed.className='cti';ed.innerHTML='✏️ Редактировать';
+    ed.addEventListener('click',function(){startEdit(k,t);rmC()});mn.appendChild(ed)}
+  // Delete (own messages)
+  if(me){var dl=document.createElement('div');dl.className='cti';dl.innerHTML='🗑 Удалить';
+    dl.addEventListener('click',function(){db.ref('messages/'+cRoom+'/'+k).remove();rmC()});mn.appendChild(dl)}
+  // Pin
+  var pn=document.createElement('div');pn.className='cti';pn.innerHTML='📌 Закрепить';
+  pn.addEventListener('click',function(){db.ref('chats/'+cRoom).update({pinned:t||'📷 Фото'});updatePin(cRoom);rmC()});mn.appendChild(pn);
+  // Private msg
   if(cRoom==='general'&&s!==U){var p=document.createElement('div');p.className='cti';p.innerHTML='✉️ Написать лично';p.addEventListener('click',function(){rmC();sPC(s)});mn.appendChild(p)}
+  // Call
+  if(s!==U){var cl=document.createElement('div');cl.className='cti';cl.innerHTML='📞 Позвонить';cl.addEventListener('click',function(){rmC();startCall(s)});mn.appendChild(cl)}
+
   var tx=e.touches?e.touches[0].clientX:e.clientX,ty=e.touches?e.touches[0].clientY:e.clientY;
-  mn.style.left=Math.min(tx,window.innerWidth-180)+'px';mn.style.top=Math.min(ty,window.innerHeight-120)+'px';
+  mn.style.left=Math.min(tx,window.innerWidth-200)+'px';mn.style.top=Math.min(ty,window.innerHeight-200)+'px';
   ov.addEventListener('click',rmC);document.body.appendChild(ov);document.body.appendChild(mn)
 }
 function rmC(){document.querySelectorAll('.cto,.ctx').forEach(function(e){e.remove()})}
 
 // Reply
-function sRp(s,t){rTo={sender:s,text:t};$('rpn').textContent=s;$('rpt').textContent=t||'📷 Фото';$('rpb').classList.remove('hidden');$('mi').focus()}
-function cRp(){rTo=null;$('rpb').classList.add('hidden')}
+function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent='↩️ '+s;$('rpt').textContent=t||'📷';$('rpb').classList.remove('hidden');$('mi').focus()}
+function cRp(){rTo=null;editMsg=null;$('rpb').classList.add('hidden');$('mi').value='';uSB()}
+
+// Edit
+function startEdit(key,text){editMsg=key;rTo=null;$('rpn').textContent='✏️ Редактирование';$('rpt').textContent=text;$('rpb').classList.remove('hidden');$('mi').value=text;uSB();$('mi').focus()}
 
 // Send
-function sM(img){
-  var inp=$('mi'),t=inp.value.trim();if(!t&&!img)return;inp.value='';uSB();
+function sM(img,audio,audioDur){
+  var inp=$('mi'),t=inp.value.trim();
+  // Edit mode
+  if(editMsg){if(t){db.ref('messages/'+cRoom+'/'+editMsg).update({text:t,edited:true})}cRp();return}
+  if(!t&&!img&&!audio)return;inp.value='';uSB();
   var m={sender:U,ts:firebase.database.ServerValue.TIMESTAMP};
-  if(t)m.text=t;if(img)m.image=img;
+  if(t)m.text=t;if(img)m.image=img;if(audio){m.audio=audio;m.audioDur=audioDur||'0:00'}
   if(rTo)m.replyTo={sender:rTo.sender,text:rTo.text||''};cRp();
   db.ref('messages/'+cRoom).push(m);
-  var mt={lastText:t||(img?'📷 Фото':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
-  if(cRoom!=='general'){var r=cRooms[cRoom];if(r)mt.members=r.members}
+  var mt={lastText:t||(img?'📷 Фото':audio?'🎤 Голосовое':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
+  if(cRoom!=='general'){var r=cRooms[cRoom];if(r&&r.members)mt.members=r.members;if(r&&r.groupName)mt.groupName=r.groupName}
   db.ref('chats/'+cRoom).update(mt);
-  db.ref('typing/'+cRoom+'/'+U).remove();cEm();
-  setTimeout(function(){inp.focus()},50)
+  db.ref('typing/'+cRoom+'/'+U).remove();cEm();setTimeout(function(){inp.focus()},50)
 }
 
+// Voice messages
+$('recBtn').addEventListener('click',function(){
+  if(isRec){mediaRec.stop();return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
+    $('recBtn').classList.add('recording');
+    mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
+    mediaRec.onstop=function(){
+      isRec=false;$('recBtn').classList.remove('recording');
+      stream.getTracks().forEach(function(t){t.stop()});
+      var blob=new Blob(audioChunks,{type:'audio/webm'});
+      var reader=new FileReader();
+      reader.onload=function(){
+        var dur=Math.round(audioChunks.length*0.5);
+        var m=Math.floor(dur/60),s=dur%60;
+        sM(null,reader.result,(m)+':'+(s<10?'0':'')+s)
+      };reader.readAsDataURL(blob)
+    };mediaRec.start(500)
+  }).catch(function(){alert('Нет доступа к микрофону')})
+});
+
 // Typing
-function lTp(rid){
-  db.ref('typing/'+rid).on('value',function(s){
-    var d=s.val()||{},tp=[];
-    Object.keys(d).forEach(function(k){if(k!==U&&Date.now()-d[k]<5000)tp.push(k)});
-    var sub=$('chs');
-    if(tp.length>0){sub.textContent=tp.join(', ')+' печатает...';sub.classList.add('typing')}
-    else{sub.textContent=cRoom==='general'?Object.keys(onU).length+' онлайн':'';sub.classList.remove('typing')}
-  })
-}
+function lTp(rid){if(tpList[rid])return;tpList[rid]=true;
+  db.ref('typing/'+rid).on('value',function(s){if(cRoom!==rid)return;var d=s.val()||{},tp=[];Object.keys(d).forEach(function(k){if(k!==U&&Date.now()-d[k]<5000)tp.push(k)});
+    var sub=$('chs2');if(tp.length>0){sub.textContent=tp.join(', ')+' печатает...';sub.classList.add('tp')}else{sub.textContent=cRoom==='general'?Object.keys(onU).length+' онлайн':'';sub.classList.remove('tp')}})}
 function sTp(){var now=Date.now();if(now-lTyp<2000)return;lTyp=now;db.ref('typing/'+cRoom+'/'+U).set(firebase.database.ServerValue.TIMESTAMP);clearTimeout(tTmr);tTmr=setTimeout(function(){db.ref('typing/'+cRoom+'/'+U).remove()},4000)}
 
 // Private chat
-function sPC(other){
-  var cid=gci(U,other);
-  db.ref('chats/'+cid).once('value',function(s){
-    if(!s.val())db.ref('chats/'+cid).set({members:[U,other],lastText:'',lastTs:firebase.database.ServerValue.TIMESTAMP});
-    oC(cid)
-  })
-}
+function sPC(other){var cid=gci(U,other);db.ref('chats/'+cid).once('value',function(s){if(!s.val())db.ref('chats/'+cid).set({members:[U,other],lastText:'',lastTs:firebase.database.ServerValue.TIMESTAMP});oC(cid)})}
 
-// User picker
+// User picker (private + group)
+var pickerMode='private',pickerSel=[];
 $('nb').addEventListener('click',function(){
-  var pk=$('upk'),l=$('upl');
-  var ns=Object.keys(onU).filter(function(n){return n!==U});
-  var h='';
-  if(ns.length===0)h='<div style="padding:24px;text-align:center;color:rgba(255,255,255,.3)">Нет других пользователей онлайн</div>';
-  else ns.forEach(function(n){h+='<div class="up-i" data-u="'+es(n)+'">'+av(n,40)+'<div class="up-n">'+es(n)+'</div></div>'});
-  l.innerHTML=h;
-  l.querySelectorAll('.up-i').forEach(function(el){el.addEventListener('click',function(){pk.classList.add('hidden');sPC(el.getAttribute('data-u'))})});
-  pk.classList.remove('hidden')
+  pickerMode='private';pickerSel=[];$('upDone').classList.add('hidden');$('upTitle').textContent='Новый чат';showPicker()
 });
+function showPicker(){
+  var pk=$('upk'),l=$('upl');var ns=Object.keys(onU).filter(function(n){return n!==U});
+  var h='<div class="upi" data-u="_group" style="border-bottom:2px solid var(--brd);margin-bottom:8px"><div class="avatar" style="width:40px;height:40px;font-size:16px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div><div class="upn" style="color:var(--acc)">Создать группу</div></div>';
+  if(ns.length===0)h+='<div style="padding:24px;text-align:center;color:var(--tx3)">Нет других пользователей</div>';
+  else ns.forEach(function(n){
+    h+='<div class="upi" data-u="'+es(n)+'">'+av(n,40)+'<div class="upn" style="flex:1">'+es(n)+'</div>';
+    if(pickerMode==='group')h+='<div class="upi-cb'+(pickerSel.indexOf(n)!==-1?' sel':'')+'">✓</div>';
+    h+='</div>'});
+  l.innerHTML=h;
+  l.querySelectorAll('.upi').forEach(function(el){el.addEventListener('click',function(){
+    var u=el.getAttribute('data-u');
+    if(u==='_group'){pickerMode='group';pickerSel=[];$('upDone').classList.remove('hidden');$('upTitle').textContent='Выберите участников';showPicker();return}
+    if(pickerMode==='group'){var i=pickerSel.indexOf(u);if(i===-1)pickerSel.push(u);else pickerSel.splice(i,1);showPicker();return}
+    pk.classList.add('hidden');sPC(u)
+  })});pk.classList.remove('hidden')
+}
 $('upc').addEventListener('click',function(){$('upk').classList.add('hidden')});
+$('upDone').addEventListener('click',function(){
+  if(pickerSel.length<1)return;
+  var members=[U].concat(pickerSel);var cid='group_'+Date.now();
+  var name=prompt('Название группы:')||members.join(', ');
+  db.ref('chats/'+cid).set({members:members,groupName:name,lastText:'',lastTs:firebase.database.ServerValue.TIMESTAMP});
+  $('upk').classList.add('hidden');oC(cid)
+});
+
+// Profile edit
+$('profBtn').addEventListener('click',function(){
+  tSb();$('peScr').classList.remove('hidden');
+  var pr=profiles[U]||{};
+  $('peStatus').value=pr.status||'';$('pePin').value=storedPin||'';
+  if(pr.avatar)$('peAv').innerHTML='<img src="'+pr.avatar+'"><div class="pe-av-overlay">Изменить</div>';
+  else $('peAv').innerHTML=av(U,96)+'<div class="pe-av-overlay">Фото</div>'
+});
+$('peClose').addEventListener('click',function(){$('peScr').classList.add('hidden')});
+$('peAv').addEventListener('click',function(){$('avFi').click()});
+$('avFi').addEventListener('change',function(){
+  var f=$('avFi').files[0];if(!f)return;
+  var rd=new FileReader();rd.onload=function(e){
+    var img=new Image();img.onload=function(){
+      var cv=document.createElement('canvas'),s=Math.min(img.width,img.height,200);cv.width=s;cv.height=s;
+      cv.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,s,s);
+      var data=cv.toDataURL('image/jpeg',.7);
+      db.ref('profiles/'+U+'/avatar').set(data);
+      $('peAv').innerHTML='<img src="'+data+'"><div class="pe-av-overlay">Изменить</div>'
+    };img.src=e.target.result};rd.readAsDataURL(f);$('avFi').value=''
+});
+$('peSave').addEventListener('click',function(){
+  var st=$('peStatus').value.trim();var pin=$('pePin').value.trim();
+  db.ref('profiles/'+U+'/status').set(st);
+  if(pin.length===4&&/^\d{4}$/.test(pin)){storedPin=pin;localStorage.setItem('pc_pin',pin)}
+  else if(pin===''){storedPin='';localStorage.removeItem('pc_pin')}
+  $('sStatus').textContent=st;$('peScr').classList.add('hidden')
+});
+$('pinSetBtn').addEventListener('click',function(){tSb();$('peScr').classList.remove('hidden')});
 
 // Photo
-var fi=$('fi');
-$('pb').addEventListener('click',function(){fi.click()});
-fi.addEventListener('change',function(){
-  var f=fi.files[0];if(!f)return;
-  var rd=new FileReader();
-  rd.onload=function(e){
-    var img=new Image();
-    img.onload=function(){
-      var cv=document.createElement('canvas'),mx=600,w=img.width,h=img.height;
-      if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}
-      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
-      sM(cv.toDataURL('image/jpeg',.6))
-    };img.src=e.target.result
-  };rd.readAsDataURL(f);fi.value=''
-});
+var fi=$('fi');$('pb').addEventListener('click',function(){fi.click()});
+fi.addEventListener('change',function(){var f=fi.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),mx=600,w=img.width,h=img.height;if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);sM(cv.toDataURL('image/jpeg',.6))};img.src=e.target.result};rd.readAsDataURL(f);fi.value=''});
 
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
 $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
 
+// Search
+$('schBtn').addEventListener('click',function(){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode){$('srIn').focus()}else{searchQ='';rMs(rMsgs[cRoom]||[])}});
+$('srIn').addEventListener('input',function(){searchQ=$('srIn').value;rMs(filterMsgs(rMsgs[cRoom]||[]))});
+$('srClose').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
+$('srBtn').addEventListener('click',function(){/* global search placeholder */});
+
 // Emoji
-function bEP(){
-  var p=$('epp'),cats=Object.keys(EMOJIS);
-  var h='<div class="ec">';
-  cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});
-  h+='</div><div class="eg" id="egr">';
-  EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});
-  h+='</div>';p.innerHTML=h;
-  p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){
-    p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');
-    var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';
-    EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()
-  })});bEC()
-}
-function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){var inp=$('mi');inp.value+=el.textContent;uSB();inp.focus()})})}
+function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});
+  h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div>';p.innerHTML=h;
+  p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});bEC()}
+function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;uSB();$('mi').focus()})})}
 function tEm(){emO=!emO;$('epp').classList.toggle('open',emO)}
 function cEm(){emO=false;$('epp').classList.remove('open')}
-bEP();
-$('eb').addEventListener('click',tEm);
+bEP();$('eb').addEventListener('click',tEm);
 
 // Sidebar
-function tSb(){sbOpen=!sbOpen;$('sov').classList.toggle('hidden',!sbOpen)}
+function tSb(){sbO=!sbO;$('sov').classList.toggle('hidden',!sbO)}
 function rSb(){
   var ns=Object.keys(onU);$('slb').textContent='Онлайн ('+ns.length+')';
+  var pr=profiles[U]||{};$('sStatus').textContent=pr.status||'';$('sav').innerHTML=av(U,56);
   var h='';ns.forEach(function(u){
-    h+='<div class="sd-it" data-u="'+es(u)+'">'+av(u,36)+'<div><div class="sd-in">'+es(u)+(u===U?' <span class="sd-iy">(вы)</span>':'')+'</div><div><span class="od"></span> <span class="ol">онлайн</span></div></div></div>'
+    var p=profiles[u]||{};
+    h+='<div class="sdi" data-u="'+es(u)+'">'+av(u,36)+'<div style="flex:1"><div class="sdin">'+es(u)+(u===U?' <span class="sdiy">(вы)</span>':'')+'</div>'+(p.status?'<div style="color:var(--tx3);font-size:11px">'+es(p.status)+'</div>':'')+'<div><span class="od"></span> <span class="olb">онлайн</span></div></div>'+(u!==U?'<button type="button" class="ib" onclick="event.stopPropagation();startCall(\''+es(u)+'\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>':'')+'</div>'
   });$('sml').innerHTML=h;
-  document.querySelectorAll('#sml .sd-it').forEach(function(el){el.addEventListener('click',function(){var u=el.getAttribute('data-u');if(u===U)return;tSb();sPC(u)})})
+  document.querySelectorAll('#sml .sdi').forEach(function(el){el.addEventListener('click',function(){var u=el.getAttribute('data-u');if(u===U)return;tSb();sPC(u)})})
 }
 
 // Send btn
 var mi=$('mi'),sbb=$('sbb'),si=$('si');
-function uSB(){var a=mi.value.trim().length>0;sbb.className='sb'+(a?' active':'');si.setAttribute('stroke',a?'#fff':'rgba(255,255,255,.3)')}
+function uSB(){var a=mi.value.trim().length>0;sbb.className='sb'+(a?' a':'');si.setAttribute('stroke',a?'#fff':'var(--tx3)')}
 mi.addEventListener('input',function(){uSB();sTp()});
 mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
 sbb.addEventListener('click',function(){sM()});
 
+// Voice calls (WebRTC)
+var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+function showCallUI(n,inc){$('callAv').innerHTML=av(n,96);$('callNm').textContent=n;$('callSt').textContent=inc?'Входящий вызов...':'Вызов...';$('callTm').classList.add('hidden');$('callA').classList.toggle('hidden',!inc);$('callM').classList.add('hidden');$('callScr').classList.remove('hidden');callMuted=false}
+function showActive(){$('callSt').textContent='На связи';$('callTm').classList.remove('hidden');$('callA').classList.add('hidden');$('callM').classList.remove('hidden');callSec=0;$('callTm').textContent='00:00';callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
+function hideCallUI(){$('callScr').classList.add('hidden');if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
+window.startCall=function(target){
+  if(callActive)return;callPeer=target;callRole='caller';callActive=true;
+  var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);startRing();
+  navigator.mediaDevices.getUserMedia({audio:true,video:false}).then(function(stream){
+    callStream=stream;callPC=new RTCPeerConnection(iceS);stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
+    callPC.ontrack=function(e){var a=document.createElement('audio');a.srcObject=e.streams[0];a.autoplay=true;a.id='rAudio';document.body.appendChild(a)};
+    callPC.onicecandidate=function(e){if(e.candidate)callRef.child('callerIce').push(e.candidate.toJSON())};
+    callPC.createOffer().then(function(o){return callPC.setLocalDescription(o)}).then(function(){
+      callRef.set({from:U,to:target,offer:{type:callPC.localDescription.type,sdp:callPC.localDescription.sdp},status:'ringing',ts:firebase.database.ServerValue.TIMESTAMP});
+      callRef.child('answer').on('value',function(s){var a=s.val();if(a&&callPC&&callPC.signalingState!=='closed')callPC.setRemoteDescription(new RTCSessionDescription(a)).then(function(){stopRing();showActive()}).catch(function(){})});
+      callRef.child('calleeIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
+      callRef.child('status').on('value',function(s){if(s.val()==='ended'||s.val()==='declined'){stopRing();endCallClean()}})
+    })
+  }).catch(function(){alert('Нет доступа к микрофону');endCallClean()})
+};
+function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();callRef.child('status').on('value',function(s){if(s.val()==='ended'||s.val()==='cancelled'){stopRing();endCallClean()}})}
+function accCall(){if(!callRef)return;stopRing();navigator.mediaDevices.getUserMedia({audio:true,video:false}).then(function(stream){
+  callStream=stream;callRef.once('value',function(s){var data=s.val();if(!data||!data.offer)return;callPC=new RTCPeerConnection(iceS);stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
+    callPC.ontrack=function(e){var a=document.createElement('audio');a.srcObject=e.streams[0];a.autoplay=true;a.id='rAudio';document.body.appendChild(a)};
+    callPC.onicecandidate=function(e){if(e.candidate)callRef.child('calleeIce').push(e.candidate.toJSON())};
+    callPC.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return callPC.createAnswer()}).then(function(a){return callPC.setLocalDescription(a)}).then(function(){
+      callRef.child('answer').set({type:callPC.localDescription.type,sdp:callPC.localDescription.sdp});callRef.update({status:'active'});showActive();
+      callRef.child('callerIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})})})})
+}).catch(function(){alert('Нет доступа к микрофону');endCallClean()})}
+function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;hideCallUI();stopRing()}
+function listenCalls(){if(callListenerSet)return;callListenerSet=true;db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(s){var d=s.val();if(d&&d.to===U&&d.status==='ringing'&&!callActive)handleInc(s.key,d)})}
+$('callD').addEventListener('click',function(){if(callActive&&callPC){stopRing();if(callRef)callRef.update({status:'ended'});endCallClean()}else{stopRing();if(callRef){if(callRole==='callee')callRef.update({status:'declined'});else callRef.update({status:'cancelled'})}endCallClean()}});
+$('callA').addEventListener('click',accCall);
+$('callM').addEventListener('click',function(){callMuted=!callMuted;if(callStream)callStream.getAudioTracks().forEach(function(t){t.enabled=!callMuted});$('callM').classList.toggle('a',callMuted)});
+$('phb').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o)});
+
 // Buttons
-$('cbb').addEventListener('click',goB);
-$('clmb').addEventListener('click',tSb);
-$('sbk').addEventListener('click',tSb);
-$('lob').addEventListener('click',doLo);
-$('rpc').addEventListener('click',cRp);
+$('cbb').addEventListener('click',goB);$('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('lob').addEventListener('click',doLo);$('rpc').addEventListener('click',cRp);
 </script>
 </body>
 </html>
