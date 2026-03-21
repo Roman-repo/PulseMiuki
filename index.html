@@ -450,7 +450,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.3.5';
+var APP_VERSION='1.3.6';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1088,6 +1088,7 @@ vibrate(30);
 
 // Touch events — touchstart on button, touchmove/touchend on document
 var recTouchActive=false;
+function isRecording(){return isRec||(vrecRec&&vrecRec.state==='recording')}
 $('recMainBtn').addEventListener('touchstart',function(e){
 e.preventDefault();
 if(recLocked){
@@ -1105,20 +1106,31 @@ recTouchActive=false;
 recEnd();
 },{passive:true});
 document.addEventListener('touchmove',function(e){
-if(!recTouchActive||!recIsHolding)return;
+if(!recTouchActive)return;
+// Работает и во время ожидания hold (500мс), и во время записи
 var touch=e.touches[0];
 var dx=recStartX-touch.clientX; // positive = swipe left
 var dy=recStartY-touch.clientY; // positive = swipe up
 
-// Visual feedback: подсветка ОТМЕНА по мере свайпа влево
+// Visual feedback: подсветка ОТМЕНА при свайпе влево
 var ct=$('recCancelText');
-if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+if(isRecording()){
+  if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+}
 
-// Swipe left >80px = cancel
-if(dx>80){recTouchActive=false;recCancel();return}
+// Свайп влево >80px = отмена (работает и до записи — отменяет hold timer)
+if(dx>80){
+  recTouchActive=false;
+  if(isRecording()){recCancel()}else{clearTimeout(recHoldTimer);recPressStart=0;recIsHolding=false}
+  return;
+}
 
-// Swipe up >60px = lock mode
-if(dy>60){recTouchActive=false;enterLockMode();return}
+// Свайп вверх >60px = lock mode (только если запись уже идёт)
+if(dy>60&&isRecording()&&!recLocked){
+  recTouchActive=false;
+  enterLockMode();
+  return;
+}
 },{passive:true});
 
 // Mouse events (desktop fallback)
@@ -1131,13 +1143,15 @@ if(recLocked){
 recMouseActive=true;recBegin(e.clientX,e.clientY)});
 document.addEventListener('mouseup',function(){if(!recMouseActive)return;recMouseActive=false;recEnd()});
 document.addEventListener('mousemove',function(e){
-if(!recMouseActive||!recIsHolding)return;
+if(!recMouseActive)return;
 var dx=recStartX-e.clientX;
 var dy=recStartY-e.clientY;
 var ct=$('recCancelText');
-if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
-if(dx>80){recMouseActive=false;recCancel();return}
-if(dy>60){recMouseActive=false;enterLockMode();return}
+if(isRecording()){
+  if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+}
+if(dx>80){recMouseActive=false;if(isRecording()){recCancel()}else{clearTimeout(recHoldTimer);recPressStart=0;recIsHolding=false}return}
+if(dy>60&&isRecording()&&!recLocked){recMouseActive=false;enterLockMode();return}
 });
 uSB();
 
