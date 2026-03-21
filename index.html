@@ -133,19 +133,18 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Input bar - Telegram style */
 .inb{padding:6px 8px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:8px;align-items:center;backdrop-filter:blur(20px);flex-shrink:0;position:relative}
-.inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center;padding:0 4px;position:relative;overflow:hidden}
+.inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center;padding:0 4px}
+.inw-rec{padding:0 16px;gap:10px}
 .min{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;padding:10px 8px;min-width:0;font-weight:400}
 .min::placeholder{color:var(--tx3)}
 .ini{width:34px;height:34px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;padding:0;flex-shrink:0}
 .ini:active{background:var(--bg3)}
-/* Recording indicator inside input wrapper */
-.rec-indicator{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg2);border-radius:22px;display:flex;align-items:center;padding:0 16px;gap:10px;z-index:2;animation:ca .15s ease-out}
 .rec-dot{width:10px;height:10px;border-radius:50%;background:#E85D75;flex-shrink:0;animation:rp 1s infinite}
-.rec-timer{color:var(--tx);font-size:16px;font-weight:500;min-width:50px}
-.rec-cancel{color:var(--acc);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;cursor:pointer}
+.rec-timer{color:var(--tx);font-size:16px;font-weight:500;min-width:50px;padding:10px 0}
+.rec-cancel-text{color:var(--acc);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;cursor:pointer;transition:color .15s,transform .15s}
+.rec-cancel-text.danger{color:#E85D75;transform:scale(1.1)}
 .rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s}
 .rb-main:active{transform:scale(.9)}
-.rb-main.recording{background:#5b7cfa}
 .sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);transition:all .15s}
 .sb:active{transform:scale(.9)}
 .rec-tooltip{position:absolute;bottom:60px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;z-index:16;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:ca .15s ease-out}
@@ -343,13 +342,20 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="rb hidden" id="threadBar"><div class="rbc"><div class="rbn">Тред</div><div class="rbt" id="threadTxt"></div></div><button type="button" class="rbx" id="threadCl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <div class="ma" id="mArea"></div>
 <div class="rb hidden" id="rpb"><div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div><button type="button" class="rbx" id="rpc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-<div class="inb">
-<div class="inw" id="inw">
+<div class="inb" id="inputBar">
+<!-- Состояние 1: Обычный ввод -->
+<div class="inw" id="inwNormal">
 <button type="button" class="ini" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
 <input class="min" id="mi" placeholder="Сообщение" autocomplete="off">
 <button type="button" class="ini" id="attBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
 </div>
-<!-- Record / Send button -->
+<!-- Состояние 2: Запись -->
+<div class="inw inw-rec hidden" id="inwRec">
+<div class="rec-dot"></div>
+<div class="rec-timer" id="recTimerDisp">0:00,0</div>
+<div class="rec-cancel-text" id="recCancelText">ОТМЕНА</div>
+</div>
+<!-- Кнопки справа -->
 <button type="button" class="rb-main" id="recMainBtn">
 <svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
 <svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>
@@ -444,7 +450,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.3.3';
+var APP_VERSION='1.3.5';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -836,19 +842,15 @@ function sendDisappearing(){var t=$('mi').value.trim();if(!t)return;var secs=pro
 sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
-// Audio record — hold-to-record with indicator
-var audioRecStream=null,recTimerInt=null,recStartTime=0;
+// Audio record — hold-to-record with indicator, vibration, lock mode, min duration
+var audioRecStream=null,recTimerInt=null,recStartTime=0,recLocked=false;
+function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 function showRecIndicator(){
-var inw=$('inw');
-// Hide input field contents (emoji btn, input, attach btn)
-$('eb').style.display='none';$('mi').style.display='none';$('attBtn').style.display='none';
-var ind=document.createElement('div');ind.className='rec-indicator';ind.id='recInd';
-ind.innerHTML='<div class="rec-dot"></div><div class="rec-timer" id="recTimerDisp">0:00</div><div class="rec-cancel" id="recCancelBtn">ОТМЕНА</div>';
-inw.appendChild(ind);
-// Change main button to send arrow
+$('inwNormal').classList.add('hidden');
+$('inwRec').classList.remove('hidden');
+$('recCancelText').classList.remove('danger');
 $('recMainBtn').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
-$('recMainBtn').classList.add('recording');
-recStartTime=Date.now();
+recStartTime=Date.now();recLocked=false;
 recTimerInt=setInterval(function(){
 var elapsed=Date.now()-recStartTime;
 var s=Math.floor(elapsed/1000),ms=Math.floor((elapsed%1000)/100);
@@ -857,29 +859,36 @@ var disp=$('recTimerDisp');if(disp)disp.textContent=m+':'+(s<10?'0':'')+s+','+ms
 },100);
 }
 function hideRecIndicator(){
-var ind=$('recInd');if(ind)ind.remove();
 clearInterval(recTimerInt);recTimerInt=null;
-// Restore input field contents
-$('eb').style.display='';$('mi').style.display='';$('attBtn').style.display='';
-$('recMainBtn').classList.remove('recording');
-// Restore mic/video SVG icons
+$('inwRec').classList.add('hidden');
+$('inwNormal').classList.remove('hidden');
+$('recTimerDisp').textContent='0:00,0';
+$('recCancelText').classList.remove('danger');
+recLocked=false;
 $('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
 updateRecIcon();
 }
 function startAudioRec(){
-showRecIndicator();
+vibrate(50);showRecIndicator();
 navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){audioRecStream=stream;mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
 mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
-mediaRec.onstop=function(){isRec=false;hideRecIndicator();
+mediaRec.onstop=function(){isRec=false;
+var elapsed=Date.now()-recStartTime;
+hideRecIndicator();
 stream.getTracks().forEach(function(t){t.stop()});audioRecStream=null;
+// Мин. длительность 0.5 сек
+if(elapsed<500){return}
+vibrate(50);
 var blob=new Blob(audioChunks,{type:'audio/webm'});if(blob.size<100)return;
 var reader=new FileReader();reader.onload=function(){
-var dur=Math.round((Date.now()-recStartTime)/1000);
+var dur=Math.round(elapsed/1000);
 var m=Math.floor(dur/60),s=dur%60;
 sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
 mediaRec.start(500)}).catch(function(){hideRecIndicator();alert('Нет доступа к микрофону. Используйте HTTPS.')})}
 function stopAudioRec(){if(isRec&&mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
 function cancelAudioRec(){if(isRec&&mediaRec){mediaRec.ondataavailable=null;mediaRec.onstop=function(){isRec=false;hideRecIndicator();if(audioRecStream){audioRecStream.getTracks().forEach(function(t){t.stop()});audioRecStream=null}};mediaRec.stop()}else{hideRecIndicator()}}
+// Lock mode: ОТМЕНА кликабельна
+$('recCancelText').addEventListener('click',function(){if(recLocked)cancelAudioRec()});
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
 $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
@@ -888,20 +897,26 @@ $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
 window.playVidMsg=function(el){var v=el.querySelector('video');var pb=el.querySelector('.m-vidmsg-play');
 if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='flex'}};
 
-// Video message recording — hold-to-record (no overlay)
+// Video message recording — hold-to-record with vibration, min duration, preview
 var vrecStream=null,vrecRec=null,vrecChunks=[],vrecInt=null,vrecSec=0;
 function startVideoRec(){
-$('recMainBtn').classList.add('recording');vrecSec=0;
+vibrate(50);showRecIndicator();vrecSec=0;
 navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
 vrecStream=stream;vrecChunks=[];vrecRec=new MediaRecorder(stream);
 vrecRec.ondataavailable=function(e){vrecChunks.push(e.data)};
 vrecRec.onstop=function(){
-$('recMainBtn').classList.remove('recording');
+var elapsed=Date.now()-recStartTime;
+hideRecIndicator();
 if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}
 clearInterval(vrecInt);
+// Мин. длительность 0.5 сек
+if(elapsed<500)return;
+vibrate(50);
 var blob=new Blob(vrecChunks,{type:'video/webm'});
 if(blob.size<100)return;
 if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
+// Превью 1 сек, затем автоотправка
+setTimeout(function(){
 var reader=new FileReader();reader.onload=function(){
 var m=Math.floor(vrecSec/60),s=vrecSec%60;
 var dur=m+':'+(s<10?'0':'')+s;
@@ -910,10 +925,10 @@ var msg={sender:U,ts:firebase.database.ServerValue.TIMESTAMP,vidMsg:reader.resul
 if(t)msg.text=t;
 db.ref('messages/'+cRoom).push(msg);
 db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.database.ServerValue.TIMESTAMP})
-};reader.readAsDataURL(blob)};
+};reader.readAsDataURL(blob)},1000)};
 vrecRec.start(500);
 vrecInt=setInterval(function(){vrecSec++;if(vrecSec>=30)stopVideoRec()},1000)
-}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере. Используйте HTTPS.')})}
+}).catch(function(){hideRecIndicator();alert('Нет доступа к камере. Используйте HTTPS.')})}
 function stopVideoRec(){if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();clearInterval(vrecInt)}
 
 // Emoji
@@ -1028,6 +1043,7 @@ sbb.addEventListener('click',function(){sM()});
 // Record button logic:
 // Short tap (<500ms) = toggle mode audio↔video + tooltip
 // Hold (>=500ms) = start recording, release = stop & send
+// Swipe left = cancel (with visual feedback), Swipe up = lock mode
 var recPressStart=0,recHoldTimer=null,recIsHolding=false,recStartX=0,recStartY=0;
 function recBegin(x,y){
 recPressStart=Date.now();recIsHolding=false;recStartX=x;recStartY=y;
@@ -1048,27 +1064,38 @@ if(!recIsHolding&&dur<500&&dur>0){
     recMode='audio';updateRecIcon();
     showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.');
   }
-}else if(recIsHolding){
+}else if(recIsHolding&&!recLocked){
   // Release after hold — stop recording & send
   if(recMode==='audio')stopAudioRec();
   else stopVideoRec();
 }
+// If locked — do nothing on release, user controls via buttons
 recPressStart=0;recIsHolding=false;
 }
 function recCancel(){
 clearTimeout(recHoldTimer);
-if(recIsHolding){
-  // Cancel recording without sending
+if(recIsHolding||recLocked){
   if(recMode==='audio'){cancelAudioRec()}
-  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){$('recMainBtn').classList.remove('recording');if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
+  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){hideRecIndicator();if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
 }
 recPressStart=0;recIsHolding=false;
 }
+function enterLockMode(){
+recLocked=true;recIsHolding=false;
+vibrate(30);
+// In lock mode: кнопка ➤ отправляет при клике, ОТМЕНА кликабельна
+}
 
-// Touch events — touchstart on button, touchmove/touchend on document (finger leaves button)
+// Touch events — touchstart on button, touchmove/touchend on document
 var recTouchActive=false;
 $('recMainBtn').addEventListener('touchstart',function(e){
 e.preventDefault();
+if(recLocked){
+  // In lock mode: tap send button → stop & send
+  if(recMode==='audio')stopAudioRec();else stopVideoRec();
+  recLocked=false;
+  return;
+}
 recTouchActive=true;
 var touch=e.touches[0];recBegin(touch.clientX,touch.clientY);
 },{passive:false});
@@ -1081,18 +1108,36 @@ document.addEventListener('touchmove',function(e){
 if(!recTouchActive||!recIsHolding)return;
 var touch=e.touches[0];
 var dx=recStartX-touch.clientX; // positive = swipe left
+var dy=recStartY-touch.clientY; // positive = swipe up
+
+// Visual feedback: подсветка ОТМЕНА по мере свайпа влево
+var ct=$('recCancelText');
+if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+
 // Swipe left >80px = cancel
 if(dx>80){recTouchActive=false;recCancel();return}
+
+// Swipe up >60px = lock mode
+if(dy>60){recTouchActive=false;enterLockMode();return}
 },{passive:true});
 
 // Mouse events (desktop fallback)
 var recMouseActive=false;
-$('recMainBtn').addEventListener('mousedown',function(e){recMouseActive=true;recBegin(e.clientX,e.clientY)});
+$('recMainBtn').addEventListener('mousedown',function(e){
+if(recLocked){
+  if(recMode==='audio')stopAudioRec();else stopVideoRec();
+  recLocked=false;return;
+}
+recMouseActive=true;recBegin(e.clientX,e.clientY)});
 document.addEventListener('mouseup',function(){if(!recMouseActive)return;recMouseActive=false;recEnd()});
 document.addEventListener('mousemove',function(e){
 if(!recMouseActive||!recIsHolding)return;
 var dx=recStartX-e.clientX;
-if(dx>80){recMouseActive=false;recCancel()}
+var dy=recStartY-e.clientY;
+var ct=$('recCancelText');
+if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+if(dx>80){recMouseActive=false;recCancel();return}
+if(dy>60){recMouseActive=false;enterLockMode();return}
 });
 uSB();
 
