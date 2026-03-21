@@ -461,7 +461,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.5.3';
+var APP_VERSION='1.5.4';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1313,6 +1313,7 @@ callPC.ontrack=function(e){
     if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;document.body.appendChild(ra)}
     ra.srcObject=new MediaStream([e.track]);
     ra.volume=callSpeaker?1:.15;
+    ra.play().catch(function(){});
   }
   if(e.track.kind==='video'){
     // Video → own MediaStream for <video>
@@ -1389,7 +1390,7 @@ function declineOrEnd(){stopRing();if(callRef){if(callRole==='callee')callRef.up
 $('callD').addEventListener('click',declineOrEnd);$('callDA').addEventListener('click',declineOrEnd);$('callD2').addEventListener('click',declineOrEnd);
 $('callBack').addEventListener('click',declineOrEnd);
 // Incoming: accept — audio or video depending on call type
-$('callAV').addEventListener('click',function(){accCall(true)});
+$('callAV').addEventListener('click',function(){accCall(incomingIsVideo)});
 // Mute toggle (both outgoing and active)
 function toggleMute(){callMuted=!callMuted;if(callStream)callStream.getAudioTracks().forEach(function(t){t.enabled=!callMuted});$('callM').classList.toggle('a',callMuted);$('callMO').classList.toggle('a',callMuted)}
 $('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('click',toggleMute);
