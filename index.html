@@ -98,11 +98,25 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mrc-i:active{border-color:var(--acc)}
 .mrc-i .cnt{font-size:12px;color:var(--tx2);font-weight:400}
 .m-link{color:#74B9FF;text-decoration:underline}
-.m-audio{display:flex;align-items:center;gap:6px;min-width:160px}
-.m-audio button{background:none;border:none;cursor:pointer;padding:0}
-.m-audio-bar{flex:1;height:3px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
-.m-audio-prog{height:100%;background:var(--acc);border-radius:2px;width:0%;transition:width .1s}
-.m-audio-dur{font-size:12px;color:var(--tx2);font-weight:400}
+.m-audio{display:flex;align-items:center;gap:10px;min-width:200px;padding:6px 4px;position:relative}
+.m-audio-play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.m-audio-play svg{margin-left:2px}
+.m-audio-play.paused svg{margin-left:0}
+.m-audio-body{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.m-audio-wave{display:flex;align-items:center;gap:1.5px;height:24px}
+.m-audio-wave-bar{width:2.5px;border-radius:2px;background:rgba(255,255,255,.5);transition:background .1s}
+.m-audio-wave-bar.played{background:rgba(255,255,255,.9)}
+.m-audio-dur{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;display:flex;align-items:center;gap:4px}
+.m-audio-unread{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.8);flex-shrink:0}
+.m-audio-trans{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.2);border:none;border-radius:10px;padding:2px 8px;font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;font-weight:500;font-family:'Roboto',sans-serif}
+.m-audio-trans:active{background:rgba(255,255,255,.35)}
+.m-audio-prog{display:none}
+.mb.mn .m-audio-play svg{fill:#E85D75}
+.mb.ot .m-audio-play svg{fill:var(--acc)}
+/* Gradient background for voice message bubble */
+.mb.voice-msg{padding:8px 10px}
+.mb.voice-msg.mn{background:linear-gradient(135deg,#E85D75,#764ba2,#667eea);box-shadow:0 2px 12px rgba(118,75,162,.3)}
+.mb.voice-msg.ot{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 12px rgba(102,126,234,.2)}
 .m-file{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer}
 .m-file-icon{font-size:24px}
 .m-file-name{color:var(--acc);font-size:14px;font-weight:500;word-break:break-all}
@@ -124,13 +138,17 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Input bar - Telegram style */
 .inb{padding:6px 8px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:8px;align-items:center;backdrop-filter:blur(20px);flex-shrink:0;position:relative}
 .inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center;padding:0 4px}
+.inw-rec{padding:0 16px;gap:10px}
 .min{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;padding:10px 8px;min-width:0;font-weight:400}
 .min::placeholder{color:var(--tx3)}
 .ini{width:34px;height:34px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;padding:0;flex-shrink:0}
 .ini:active{background:var(--bg3)}
-.rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#E85D75;flex-shrink:0;animation:rp 1s infinite}
+.rec-timer{color:var(--tx);font-size:16px;font-weight:500;min-width:50px;padding:10px 0}
+.rec-cancel-text{color:var(--acc);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;cursor:pointer;transition:color .15s,transform .15s}
+.rec-cancel-text.danger{color:#E85D75;transform:scale(1.1)}
+.rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s;touch-action:none;-webkit-user-select:none;user-select:none}
 .rb-main:active{transform:scale(.9)}
-.rb-main.recording{background:#E85D75;animation:rp 1s infinite}
 .sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);transition:all .15s}
 .sb:active{transform:scale(.9)}
 .rec-tooltip{position:absolute;bottom:60px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;z-index:16;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:ca .15s ease-out}
@@ -184,6 +202,13 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cti{display:flex;align-items:center;gap:8px;padding:10px 14px;color:var(--tx);font-size:15px;cursor:pointer;border-radius:8px;font-weight:400}
 .cti:active{background:var(--bg3)}
 .cto{position:fixed;top:0;left:0;right:0;bottom:0;z-index:29}
+/* Select mode */
+.sel-cb{width:24px;height:24px;border-radius:50%;border:2px solid var(--tx3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s;margin-right:4px}
+.sel-cb.checked{background:var(--acc);border-color:var(--acc)}
+.sel-cb.checked::after{content:'✓';color:#fff;font-size:14px;font-weight:700}
+.sel-hdr{padding:12px 16px;display:flex;align-items:center;gap:12px;background:var(--bg2);border-bottom:1px solid var(--brd);backdrop-filter:blur(20px)}
+.sel-hdr-count{color:var(--tx);font-weight:500;font-size:18px;flex:1}
+.mr.selectable{cursor:pointer}
 
 /* Sidebar */
 .so{position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;display:flex}
@@ -221,28 +246,28 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Call screens */
 .cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden}
-.cs.cs-out{background:linear-gradient(180deg,#5b7cfa 0%,#3db8e8 100%);padding-top:60px}
-.cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%);padding-top:40px}
-.cs.cs-act{background:linear-gradient(180deg,#5b7cfa 0%,#3db8e8 100%);padding-top:60px}
-.call-av-wrap{margin:20px 0 16px;position:relative}
-.call-av-ring{width:140px;height:140px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;animation:cpulse 2.5s ease-in-out infinite}
-.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.cs.cs-out{background:linear-gradient(160deg,#667eea 0%,#5b6abf 30%,#764ba2 100%);padding-top:0}
+.cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%);padding-top:0}
+.cs.cs-act{background:linear-gradient(160deg,#667eea 0%,#5b6abf 30%,#764ba2 100%);padding-top:0}
+.call-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.call-av-ring{width:140px;height:140px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,255,255,.08);animation:cpulse 2.5s ease-in-out infinite}
+.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.06)}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
 .call-name{color:#fff;font-size:24px;font-weight:500;text-align:center}
 .call-name-inc{color:#fff;font-size:28px;font-weight:500;text-align:center;margin-bottom:4px}
 .call-app{color:rgba(255,255,255,.45);font-size:14px;font-weight:400;text-align:center;margin-bottom:12px}
-.call-status{color:rgba(255,255,255,.55);font-size:15px;font-weight:400;text-align:center;margin-top:4px}
-.call-timer{color:rgba(255,255,255,.85);font-size:20px;font-weight:500;text-align:center;margin-top:4px}
+.call-status{color:rgba(255,255,255,.55);font-size:15px;font-weight:400;text-align:center}
+.call-timer{color:rgba(255,255,255,.85);font-size:20px;font-weight:500;text-align:center}
 .call-btns{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:center;gap:24px;z-index:41;padding:0 20px}
-.call-btns-inc{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 50px}
+.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 60px}
 .call-btn-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
-.cb{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.cb{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .cb:active{transform:scale(.88)}
 .cb-sm{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .cb-sm:active{transform:scale(.88)}
 .cb-sm.a{background:rgba(255,255,255,.35)}
-.cb.dec{background:#E85D75}.cb.end{background:#E85D75}
-.cb.acc-audio{background:#4892f7}
+.cb.dec{background:#E85D75;width:64px;height:64px}.cb.end{background:#E85D75}
+.cb.acc-audio{background:#4892f7;width:64px;height:64px}
 .cb.acc-video{background:#00b894}
 .cb-label{color:rgba(255,255,255,.65);font-size:12px;font-weight:400;white-space:nowrap}
 /* Video elements */
@@ -328,13 +353,20 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="rb hidden" id="threadBar"><div class="rbc"><div class="rbn">Тред</div><div class="rbt" id="threadTxt"></div></div><button type="button" class="rbx" id="threadCl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <div class="ma" id="mArea"></div>
 <div class="rb hidden" id="rpb"><div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div><button type="button" class="rbx" id="rpc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-<div class="inb">
-<div class="inw">
+<div class="inb" id="inputBar">
+<!-- Состояние 1: Обычный ввод -->
+<div class="inw" id="inwNormal">
 <button type="button" class="ini" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
 <input class="min" id="mi" placeholder="Сообщение" autocomplete="off">
 <button type="button" class="ini" id="attBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
 </div>
-<!-- Record / Send button -->
+<!-- Состояние 2: Запись -->
+<div class="inw inw-rec hidden" id="inwRec">
+<div class="rec-dot"></div>
+<div class="rec-timer" id="recTimerDisp">0:00,0</div>
+<div class="rec-cancel-text" id="recCancelText">ОТМЕНА</div>
+</div>
+<!-- Кнопки справа -->
 <button type="button" class="rb-main" id="recMainBtn">
 <svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
 <svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>
@@ -373,49 +405,53 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="cs hidden" id="callScr">
 <video class="call-video hidden" id="remoteVid" autoplay playsinline></video>
 <video class="call-video-local hidden" id="localVid" autoplay playsinline muted></video>
+
+<!-- Top bar (video mode: back + name + status) -->
+<div id="callTopbar" style="display:none;position:absolute;top:0;left:0;right:0;padding:14px 16px;z-index:43;align-items:center;gap:10px">
+<button type="button" class="bb" id="callBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+<div style="flex:1;min-width:0"><div id="callTopName" style="color:#fff;font-size:18px;font-weight:500"></div><div id="callTopStatus" style="color:rgba(255,255,255,.6);font-size:13px"></div></div>
+</div>
+
 <!-- Incoming layout -->
-<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%">
-<div class="call-app">Мост</div>
+<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;padding-top:60px">
+<div style="color:rgba(255,255,255,.4);font-size:14px;margin-bottom:4px">Мост</div>
 <div class="call-name-inc" id="callNmInc"></div>
-<div class="call-status" id="callStInc">Входящий вызов...</div>
-<div class="call-av-wrap"><div class="call-av-ring-inc" id="callAvInc"></div></div>
+<div class="call-status" id="callStInc" style="margin-bottom:auto">Входящий вызов...</div>
+<div style="margin:auto 0"><div class="call-av-ring-inc" id="callAvInc"></div></div>
 </div>
-<!-- Outgoing / Active layout -->
-<div class="hidden" id="callOutWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%">
-<!-- Top bar with back button and name (for video mode) -->
-<div class="call-topbar" id="callTopbar" style="display:none;position:absolute;top:0;left:0;right:0;padding:12px 16px;z-index:43;display:flex;align-items:center;gap:10px">
-<button type="button" class="bb" id="callBack" style="display:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-<div id="callTopName" style="color:#fff;font-size:18px;font-weight:500;display:none"></div>
-<div id="callTopStatus" style="color:rgba(255,255,255,.6);font-size:13px;display:none"></div>
-</div>
-<!-- Avatar layout (for audio calls) -->
-<div id="callAvSection">
+
+<!-- Outgoing / Active layout (audio mode — center content) -->
+<div class="hidden" id="callOutWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;justify-content:center">
+<div id="callAvSection" style="display:flex;flex-direction:column;align-items:center">
 <div class="call-av-wrap"><div class="call-av-ring" id="callAvOut"></div></div>
-<div class="call-name" id="callNmOut"></div>
+<div class="call-name" id="callNmOut" style="margin-top:16px"></div>
 </div>
-<div class="call-status" id="callStOut">Запрос •••</div>
-<div class="call-timer hidden" id="callTm">00:00</div>
-<div style="color:rgba(255,255,255,.4);font-size:12px;text-align:center;margin-top:4px" id="callMode"></div>
+<div class="call-status" id="callStOut" style="margin-top:6px">Запрос •••</div>
+<div class="call-timer hidden" id="callTm" style="margin-top:6px">00:00</div>
 </div>
-<!-- Incoming buttons: decline + accept -->
+
+<!-- Incoming buttons: Отклонить + Ответить -->
 <div class="call-btns-inc hidden" id="callIncBtns">
-<div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb acc-video" id="callAV"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><span class="cb-label">Ответить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb acc-audio" id="callAV"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button><span class="cb-label">Ответить</span></div>
 </div>
-<!-- Outgoing buttons: динамик/повернуть, видео, убрать звук, завершить -->
+
+<!-- Outgoing / Active buttons: динамик|повернуть, видео, убрать звук, завершить -->
 <div class="call-btns hidden" id="callOutBtns">
-<div class="call-btn-wrap" id="callSpkWrap"><button type="button" class="cb-sm a" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
+<div class="call-btn-wrap" id="callSpkWrap"><button type="button" class="cb-sm" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
 <div class="call-btn-wrap hidden" id="callFlipWrap"><button type="button" class="cb-sm" id="callFlipO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button><span class="cb-label">повернуть</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb-sm" id="callVO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">видео</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb-sm" id="callMO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">убрать звук</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb end" id="callD"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">завершить</span></div>
 </div>
-<!-- Active call buttons: same as outgoing -->
+
+<!-- Active call buttons (duplicated IDs for active state) -->
 <div class="call-btns hidden" id="callActBtns">
-<div class="call-btn-wrap"><button type="button" class="cb-sm a" id="callS"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">Динамик</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callV"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">Камера</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callM"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">Микрофон</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb end" id="callDA"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Завершить</span></div>
+<div class="call-btn-wrap" id="callSpkWrapA"><button type="button" class="cb-sm" id="callS"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
+<div class="call-btn-wrap hidden" id="callFlipWrapA"><button type="button" class="cb-sm" id="callFlipA"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button><span class="cb-label">повернуть</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callV"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">видео</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callM"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">убрать звук</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb end" id="callDA"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">завершить</span></div>
 </div>
 </div>
 <!-- Confetti container -->
@@ -425,11 +461,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.2.2';
+var APP_VERSION='1.5.4';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
-var callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,callSpeaker=true,callVideo=false;
+var callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,callSpeaker=false,callVideo=false;
 var mediaRec=null,isRec=false,audioChunks=[],rrList={};
 var folders=['Все','Личные','Группы','Каналы','Архив'];
 var curFolder='Все',mutedChats={},archivedChats={},savedMsgs=[],schedMsgs=[];
@@ -608,16 +644,20 @@ var h='',ld='',ls='';
 ms.forEach(function(m){
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
-var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'');
+var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(selectMode?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
+if(selectMode)h+='<div class="sel-cb'+(selectedMsgs[m._key]?' checked':'')+'" data-k="'+(m._key||'')+'"></div>';
 h+='<div class="mac">';if(!me&&sa)h+=av(m.sender,28);
 h+='</div><div class="mc">';
 if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
 if(m.forwarded)h+='<div class="m-fwd">↪ Переслано от '+es(m.forwarded)+'</div>';
-h+='<div class="mb '+(me?'mn':'ot')+'">';
+h+='<div class="mb '+(me?'mn':'ot')+(m.audio?' voice-msg':'')+'">';
 if(m.replyTo)h+='<div class="mq"><div class="mqn" style="color:'+hc(m.replyTo.sender)+'">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
 if(m.image)h+='<img class="mi" src="'+m.image+'" onclick="vI(this.src)">';
-if(m.audio)h+='<div class="m-audio"><button onclick="playA(this,\''+m.audio+'\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--acc)"><polygon points="5 3 19 12 5 21"/></svg></button><div class="m-audio-bar"><div class="m-audio-prog"></div></div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'</div></div>';
+if(m.audio){
+var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));
+var waveBars='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);waveBars+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}
+h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-trans" onclick="alert(\'Транскрипция недоступна\')">→A</button></div>';}
 if(m.vidMsg)h+='<div class="m-vidmsg" onclick="playVidMsg(this)"><video src="'+m.vidMsg+'" playsinline loop></video><div class="m-vidmsg-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21"/></svg></div>'+(m.vidDur?'<div class="m-vidmsg-dur">'+m.vidDur+'</div>':'')+'</div>';
 if(m.file)h+='<div class="m-file" onclick="if(this.dataset.f.startsWith(\'data:\'))window.open(this.dataset.f)" data-f="'+es(m.file)+'"><div class="m-file-icon">📄</div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
 if(m.poll)h+=renderPoll(m);
@@ -632,12 +672,40 @@ Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" onclick="tgReact(\''+
 if(m.threadCount)h+='<div class="m-thread" onclick="openThread(\''+m._key+'\',\''+es(m.text||'')+'\')">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
 h+='</div></div></div>';ls=m.sender});
 a.innerHTML=h;if(wb)a.scrollTop=a.scrollHeight;
-// Long press
+// Bind audio play/pause buttons
+a.querySelectorAll('.m-audio-play').forEach(function(btn){
+btn.addEventListener('click',function(e){e.stopPropagation();playA(btn)})
+});
+// Long press on messages: bubble/avatar (500ms) → context menu, background (1000ms) → select mode
 a.querySelectorAll('.mr').forEach(function(el){var tm;
-el.addEventListener('touchstart',function(e){tm=setTimeout(function(){sRC(e,el)},500)},{passive:true});
-el.addEventListener('touchend',function(){clearTimeout(tm)});el.addEventListener('touchmove',function(){clearTimeout(tm)});
-el.addEventListener('contextmenu',function(e){e.preventDefault();sRC(e,el)})})}
-
+el.addEventListener('touchstart',function(e){
+  var tgt=e.target;
+  // Determine if touch is on bubble (.mb) or avatar (.mac, .avatar)
+  var onBubble=tgt.closest('.mb')||tgt.closest('.mac')||tgt.closest('.avatar');
+  if(onBubble){
+    // Bubble area → 500ms → context menu
+    tm=setTimeout(function(){if(!selectMode)sRC(e,el)},500);
+  }else{
+    // Background area → 1000ms → select mode
+    tm=setTimeout(function(){if(!selectMode)enterSelectMode()},1000);
+  }
+},{passive:true});
+el.addEventListener('touchend',function(){clearTimeout(tm)});
+el.addEventListener('touchmove',function(){clearTimeout(tm)});
+el.addEventListener('contextmenu',function(e){e.preventDefault();clearTimeout(tm);if(!selectMode)sRC(e,el)});
+// Click in select mode → toggle checkbox
+el.addEventListener('click',function(){if(selectMode){var k=el.getAttribute('data-k');if(k)toggleSelect(k)}})});
+// Long press on mArea background (empty space, no message)
+var bgTm;
+a.addEventListener('touchstart',function(e){
+  // Only if touch is directly on mArea (not on a .mr child)
+  if(e.target===a||e.target.classList.contains('dd')){
+    bgTm=setTimeout(function(){if(!selectMode)enterSelectMode()},1000);
+  }
+},{passive:true});
+a.addEventListener('touchend',function(){clearTimeout(bgTm)});
+a.addEventListener('touchmove',function(){clearTimeout(bgTm)});
+}
 // Read receipts - check
 function checkReadReceipts(rid,msgs){
 if(rid==='general'){msgs.forEach(function(m){if(m.sender===U&&m.ts)m._read=1});if(cRoom===rid)rMs(msgs);return}
@@ -661,13 +729,125 @@ h+='<div class="m-poll-opt" onclick="votePoll(\''+m._key+'\','+i+')"><div class=
 h+='<div style="font-size:10px;color:var(--tx3);margin-top:4px">'+total+' '+plural(total,'голос','голоса','голосов')+'</div></div>';return h}
 window.votePoll=function(k,i){db.ref('messages/'+cRoom+'/'+k+'/pollVotes/'+U).set(i)};
 
-// Play audio
-window.playA=function(b,src){var a=new Audio(src);var bar=b.parentElement.querySelector('.m-audio-prog');a.play();a.addEventListener('timeupdate',function(){if(a.duration)bar.style.width=(a.currentTime/a.duration*100)+'%'});a.addEventListener('ended',function(){bar.style.width='0%'})};
+// Play audio — play/pause toggle
+var currentAudio=null,currentAudioBtn=null;
+var playSvg='<svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg>';
+var pauseSvg='<svg width="20" height="20" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+window.playA=function(btn){
+var container=btn.closest('.m-audio');
+if(!container)return;
+var src=container.getAttribute('data-src');
+if(!src)return;
+
+// If same audio playing — pause
+if(currentAudio&&currentAudioBtn===btn&&!currentAudio.paused){
+  currentAudio.pause();
+  btn.innerHTML=playSvg;btn.classList.remove('paused');
+  return;
+}
+// If different audio playing — stop old
+if(currentAudio&&currentAudioBtn!==btn){
+  currentAudio.pause();currentAudio.currentTime=0;
+  currentAudioBtn.innerHTML=playSvg;currentAudioBtn.classList.remove('paused');
+}
+// If same audio paused — resume
+if(currentAudio&&currentAudioBtn===btn&&currentAudio.paused){
+  currentAudio.play();
+  btn.innerHTML=pauseSvg;btn.classList.add('paused');
+  return;
+}
+// New audio
+var a=new Audio(src);
+currentAudio=a;currentAudioBtn=btn;
+btn.innerHTML=pauseSvg;btn.classList.add('paused');
+
+var bars=container.querySelectorAll('.m-audio-wave-bar');
+var totalBars=bars.length;
+
+a.addEventListener('timeupdate',function(){
+  if(!a.duration)return;
+  var pct=a.currentTime/a.duration;
+  var playedCount=Math.floor(pct*totalBars);
+  bars.forEach(function(b,i){b.classList.toggle('played',i<playedCount)});
+});
+a.addEventListener('ended',function(){
+  btn.innerHTML=playSvg;btn.classList.remove('paused');
+  bars.forEach(function(b){b.classList.remove('played')});
+  // Mark as listened — remove unread dot
+  var dot=container.querySelector('.m-audio-unread');if(dot)dot.style.display='none';
+  currentAudio=null;currentAudioBtn=null;
+});
+a.play();
+};
 
 // Reactions
 window.tgReact=function(k,emoji){var ref=db.ref('messages/'+cRoom+'/'+k+'/reactions');ref.once('value',function(s){var d=s.val()||{};var found=null;Object.keys(d).forEach(function(x){if(d[x].user===U&&d[x].emoji===emoji)found=x});if(found)ref.child(found).remove();else ref.push({user:U,emoji:emoji})})};
 
 // Context menu
+var selectMode=false,selectedMsgs={};
+function enterSelectMode(){
+selectMode=true;selectedMsgs={};
+// Reset any recording state
+recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
+// Replace header
+var hdr=$('chatHdr');hdr._origHTML=hdr.innerHTML;
+hdr.innerHTML='<button type="button" class="bb" id="selClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="sel-hdr-count" id="selCount">0</div><button type="button" class="ib" id="selDelete"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
+$('selClose').addEventListener('click',exitSelectMode);
+$('selDelete').addEventListener('click',doSelectDelete);
+// Hide input bar
+$('inputBar').style.display='none';
+// Re-render messages with checkboxes
+rMs(rMsgs[cRoom]||[]);
+}
+function exitSelectMode(){
+selectMode=false;selectedMsgs={};
+// Reset any recording state
+recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
+// Restore header
+var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
+// Restore input bar
+$('inputBar').style.display='';
+// Re-render messages without checkboxes
+rMs(rMsgs[cRoom]||[]);
+// Re-bind header buttons
+$('cbb').addEventListener('click',goB);
+$('schBtn')&&$('schBtn').addEventListener('click',function(){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';rMs(rMsgs[cRoom]||[])}});
+$('phb')&&$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
+$('vidBtn')&&$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
+}
+function toggleSelect(key){
+if(selectedMsgs[key])delete selectedMsgs[key];else selectedMsgs[key]=true;
+var count=Object.keys(selectedMsgs).length;
+var sc=$('selCount');if(sc)sc.textContent=count;
+// Update checkbox visual
+document.querySelectorAll('.sel-cb').forEach(function(cb){
+  var k=cb.getAttribute('data-k');
+  cb.classList.toggle('checked',!!selectedMsgs[k]);
+});
+}
+function doSelectDelete(){
+var keys=Object.keys(selectedMsgs);if(!keys.length)return;
+var r=cRooms[cRoom];
+var isPrivate=cRoom!=='general'&&r&&r.members&&r.members.length===2;
+if(isPrivate){
+  var others=r.members.filter(function(m){return m!==U});
+  var otherName=others[0]||'собеседника';
+  if(confirm('Удалить у '+otherName+' тоже?')){
+    // Delete all selected from Firebase
+    keys.forEach(function(k){db.ref('messages/'+cRoom+'/'+k).remove()});
+    exitSelectMode();
+  }
+  // Cancel = return to select mode, don't delete
+}else{
+  // Group/general: delete only own messages
+  var msgs=rMsgs[cRoom]||[];
+  keys.forEach(function(k){
+    var m=msgs.find(function(x){return x._key===k});
+    if(m&&m.sender===U)db.ref('messages/'+cRoom+'/'+k).remove();
+  });
+  exitSelectMode();
+}
+}
 function sRC(e,el){rmC();var s=el.getAttribute('data-s'),t=el.getAttribute('data-t'),k=el.getAttribute('data-k'),me=s===U;
 var ov=document.createElement('div');ov.className='cto';var mn=document.createElement('div');mn.className='ctx';
 // Quick reactions
@@ -815,18 +995,49 @@ function sendDisappearing(){var t=$('mi').value.trim();if(!t)return;var secs=pro
 sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
-// Audio record function
-function startAudioRec(){if(isRec){mediaRec.stop();return}
-var recStart=Date.now();$('recMainBtn').classList.add('recording');
-navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
+// Audio record — hold-to-record with indicator, vibration, lock mode, min duration
+var audioRecStream=null,recTimerInt=null,recStartTime=0;
+function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
+function showRecIndicator(){
+$('inwNormal').classList.add('hidden');
+$('inwRec').classList.remove('hidden');
+$('recMainBtn').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+recStartTime=Date.now();
+recTimerInt=setInterval(function(){
+var elapsed=Date.now()-recStartTime;
+var s=Math.floor(elapsed/1000),ms=Math.floor((elapsed%1000)/100);
+var m=Math.floor(s/60);s=s%60;
+var disp=$('recTimerDisp');if(disp)disp.textContent=m+':'+(s<10?'0':'')+s+','+ms;
+},100);
+}
+function hideRecIndicator(){
+clearInterval(recTimerInt);recTimerInt=null;
+$('inwRec').classList.add('hidden');
+$('inwNormal').classList.remove('hidden');
+$('recTimerDisp').textContent='0:00,0';
+$('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
+updateRecIcon();
+}
+function startAudioRec(){
+vibrate(50);showRecIndicator();
+navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){audioRecStream=stream;mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
 mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
-mediaRec.onstop=function(){isRec=false;$('recMainBtn').classList.remove('recording');stream.getTracks().forEach(function(t){t.stop()});
-var blob=new Blob(audioChunks,{type:'audio/webm'});var reader=new FileReader();reader.onload=function(){
-var dur=Math.round((Date.now()-recStart)/1000);
+mediaRec.onstop=function(){isRec=false;
+var elapsed=Date.now()-recStartTime;
+hideRecIndicator();
+stream.getTracks().forEach(function(t){t.stop()});audioRecStream=null;
+// Мин. длительность 0.5 сек
+if(elapsed<500){return}
+vibrate(50);
+var blob=new Blob(audioChunks,{type:'audio/webm'});if(blob.size<100)return;
+var reader=new FileReader();reader.onload=function(){
+var dur=Math.round(elapsed/1000);
 var m=Math.floor(dur/60),s=dur%60;
 sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
-mediaRec.start(500)}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к микрофону. Используйте HTTPS.')})}
-
+mediaRec.start(500)}).catch(function(){hideRecIndicator();alert('Нет доступа к микрофону. Используйте HTTPS.')})}
+function stopAudioRec(){if(isRec&&mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
+function cancelAudioRec(){if(isRec&&mediaRec){mediaRec.ondataavailable=null;mediaRec.onstop=function(){isRec=false;hideRecIndicator();if(audioRecStream){audioRecStream.getTracks().forEach(function(t){t.stop()});audioRecStream=null}};mediaRec.stop()}else{hideRecIndicator()}}
+// Lock mode: ОТМЕНА кликабельна
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
 $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
@@ -835,23 +1046,27 @@ $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
 window.playVidMsg=function(el){var v=el.querySelector('video');var pb=el.querySelector('.m-vidmsg-play');
 if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='flex'}};
 
-// Video message recording
+// Video message recording — hold-to-record with vibration, min duration, preview
 var vrecStream=null,vrecRec=null,vrecChunks=[],vrecInt=null,vrecSec=0;
 function startVideoRec(){
-$('recMainBtn').classList.add('recording');
+vibrate(50);showRecIndicator();vrecSec=0;
 navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
-vrecStream=stream;vrecSec=0;$('vrecTimer').textContent='0:00';
-$('vrecPreview').querySelector('video').srcObject=stream;
-$('vrecOv').classList.remove('hidden');
-vrecChunks=[];vrecRec=new MediaRecorder(stream);
+vrecStream=stream;vrecChunks=[];vrecRec=new MediaRecorder(stream);
 vrecRec.ondataavailable=function(e){vrecChunks.push(e.data)};
 vrecRec.onstop=function(){
-$('recMainBtn').classList.remove('recording');
-vrecStream.getTracks().forEach(function(t){t.stop()});
+var elapsed=Date.now()-recStartTime;
+hideRecIndicator();
+if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}
+clearInterval(vrecInt);
+// Мин. длительность 0.5 сек
+if(elapsed<500)return;
+vibrate(50);
 var blob=new Blob(vrecChunks,{type:'video/webm'});
-if(blob.size<10)return;
-var reader=new FileReader();reader.onload=function(){
+if(blob.size<100)return;
 if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
+// Превью 1 сек, затем автоотправка
+setTimeout(function(){
+var reader=new FileReader();reader.onload=function(){
 var m=Math.floor(vrecSec/60),s=vrecSec%60;
 var dur=m+':'+(s<10?'0':'')+s;
 var inp=$('mi'),t=inp.value.trim();inp.value='';uSB();
@@ -859,21 +1074,11 @@ var msg={sender:U,ts:firebase.database.ServerValue.TIMESTAMP,vidMsg:reader.resul
 if(t)msg.text=t;
 db.ref('messages/'+cRoom).push(msg);
 db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.database.ServerValue.TIMESTAMP})
-};reader.readAsDataURL(blob)};
+};reader.readAsDataURL(blob)},1000)};
 vrecRec.start(500);
-vrecInt=setInterval(function(){vrecSec++;var m=Math.floor(vrecSec/60),s=vrecSec%60;$('vrecTimer').textContent=m+':'+(s<10?'0':'')+s;
-if(vrecSec>=30){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}},1000)
-}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере. Используйте HTTPS.')})}
-
-$('vrecStop').addEventListener('click',function(){
-if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();
-clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
-
-$('vrecCancel').addEventListener('click',function(){
-if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=null;vrecRec.stop()}
-if(vrecStream)vrecStream.getTracks().forEach(function(t){t.stop()});
-$('recMainBtn').classList.remove('recording');
-clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
+vrecInt=setInterval(function(){vrecSec++;if(vrecSec>=30)stopVideoRec()},1000)
+}).catch(function(){hideRecIndicator();alert('Нет доступа к камере. Используйте HTTPS.')})}
+function stopVideoRec(){if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();clearInterval(vrecInt)}
 
 // Emoji
 function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div>';p.innerHTML=h;
@@ -976,57 +1181,116 @@ var mi=$('mi'),sbb=$('sbb'),recMode='audio'; // 'audio' or 'video'
 function uSB(){var a=mi.value.trim().length>0;
 sbb.classList.toggle('hidden',!a);$('recMainBtn').classList.toggle('hidden',a)}
 function showRecTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tmr);t._tmr=setTimeout(function(){t.classList.add('hidden')},3000)}
+function updateRecIcon(){
+if(recMode==='audio'){$('recMicIcon').classList.remove('hidden');$('recVidIcon').classList.add('hidden')}
+else{$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden')}
+}
 mi.addEventListener('input',function(){uSB();sTp()});
 mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
 sbb.addEventListener('click',function(){sM()});
-// Record button: short tap (<500ms) = toggle mode, hold (>500ms) = record, release = send
-var recPressStart=0,recIsHold=false;
-$('recMainBtn').addEventListener('touchstart',function(e){
-e.preventDefault();recPressStart=Date.now();recIsHold=false;
-setTimeout(function(){
-  if(Date.now()-recPressStart>=480){recIsHold=true;
-    if(recMode==='audio')startAudioRec();else startVideoRec()}
-},500)},{passive:false});
-$('recMainBtn').addEventListener('touchend',function(){
-var dur=Date.now()-recPressStart;
-if(!recIsHold&&dur<500){
-  // Short tap — toggle mode
-  if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
-  else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
-}else if(recIsHold){
-  // Release after hold — stop recording & send
-  if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();
-  if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}
+
+// Record button logic:
+// Short tap (<500ms) = toggle mode audio↔video + tooltip
+// Hold (>=500ms) = start recording, release = stop & send
+// Swipe left = cancel (with visual feedback), Swipe up = lock mode
+var recPressStart=0,recHoldTimer=null,recIsHolding=false;
+function recBegin(){
+recPressStart=Date.now();recIsHolding=false;
+recHoldTimer=setTimeout(function(){
+  recIsHolding=true;
+  vibrate(50);
+  if(recMode==='audio')startAudioRec();else startVideoRec();
+},500);
 }
-recPressStart=0;recIsHold=false});
-$('recMainBtn').addEventListener('touchmove',function(){recPressStart=0;recIsHold=false});
-// Mouse fallback for desktop
-$('recMainBtn').addEventListener('mousedown',function(){recPressStart=Date.now();recIsHold=false;
-setTimeout(function(){if(Date.now()-recPressStart>=480){recIsHold=true;if(recMode==='audio')startAudioRec();else startVideoRec()}},500)});
-$('recMainBtn').addEventListener('mouseup',function(){var dur=Date.now()-recPressStart;
-if(!recIsHold&&dur<500){if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}}
-else if(recIsHold){if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}}
-recPressStart=0;recIsHold=false});
+function recEnd(){
+clearTimeout(recHoldTimer);
+var dur=Date.now()-recPressStart;
+if(!recIsHolding&&dur<500&&dur>0){
+  // Short tap (<500ms) — toggle mode
+  vibrate(30);
+  if(recMode==='audio'){
+    recMode='video';updateRecIcon();
+    showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.');
+  }else{
+    recMode='audio';updateRecIcon();
+    showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.');
+  }
+}
+// If recording started — do NOT stop on release. User uses ➤ or ОТМЕНА.
+recPressStart=0;recIsHolding=false;
+}
+
+// ➤ button: when recording, tap sends. When not recording, normal send.
+function recBtnTap(){
+if(isRecording()){
+  // Stop recording and send
+  if(recMode==='audio')stopAudioRec();
+  else stopVideoRec();
+}
+}
+
+// ОТМЕНА: cancel recording
+$('recCancelText').addEventListener('click',function(){
+if(isRecording()){
+  if(recMode==='audio')cancelAudioRec();
+  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){hideRecIndicator();if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
+}
+});
+
+// Touch events
+function isRecording(){return isRec||(vrecRec&&vrecRec.state==='recording')}
+$('recMainBtn').addEventListener('touchstart',function(e){
+e.preventDefault();
+if(isRecording()){
+  // Recording in progress — tap ➤ sends
+  recBtnTap();
+  return;
+}
+recBegin();
+},{passive:false});
+$('recMainBtn').addEventListener('touchend',function(e){
+e.preventDefault();
+if(!recIsHolding){
+  // Short tap ended — recEnd handles toggle
+  recEnd();
+}
+// If recording — do nothing on release
+},{passive:false});
+
+// Mouse events (desktop)
+$('recMainBtn').addEventListener('mousedown',function(e){
+if(isRecording()){recBtnTap();return}
+recBegin();
+});
+$('recMainBtn').addEventListener('mouseup',function(){
+if(!recIsHolding)recEnd();
+});
+$('recMainBtn').addEventListener('click',function(e){
+// Prevent double-fire from mousedown+click
+e.stopPropagation();
+});
 uSB();
 
 // Voice calls (WebRTC) — Мост
 var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
-var remoteStream=null;
+var incomingIsVideo=false;
 function showCallUI(n,isInc){
 $('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');
-callMuted=false;callSpeaker=true;callVideo=false;$('callMode').textContent='';
+callMuted=false;callSpeaker=true;callVideo=false;
 // Hide all sub-layouts
 $('callIncWrap').classList.add('hidden');$('callOutWrap').classList.add('hidden');
 $('callIncBtns').classList.add('hidden');$('callOutBtns').classList.add('hidden');$('callActBtns').classList.add('hidden');
-$('callTm').classList.add('hidden');
+$('callTm').classList.add('hidden');$('callTopbar').style.display='none';
 if(isInc){
   $('callScr').className='cs cs-inc';$('callIncWrap').classList.remove('hidden');$('callIncWrap').style.display='flex';
   $('callNmInc').textContent=n;$('callStInc').textContent='Входящий вызов...';
-  $('callAvInc').innerHTML=av(n,130);$('callIncBtns').classList.remove('hidden')
+  $('callAvInc').innerHTML=av(n,150);$('callIncBtns').classList.remove('hidden')
 }else{
   $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
   $('callNmOut').textContent=n;$('callStOut').textContent='Запрос •••';
-  $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden')
+  $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden');
+  $('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
+  updateCallVideoUI()
 }}
 function showActive(){
 $('callScr').className='cs cs-act';
@@ -1035,32 +1299,58 @@ $('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex
 $('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
 $('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
 $('callV').classList.toggle('a',callVideo);$('callS').classList.toggle('a',callSpeaker);
-$('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
-$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';
 updateCallVideoUI();
 callSec=0;$('callTm').textContent='00:00';
 callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
-function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
-// Fixed ontrack handler — properly separates audio and video
+function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');$('callTopbar').style.display='none';if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
+
+// ontrack handler — SEPARATED audio and video into independent streams
 function setupOntrack(){
-remoteStream=new MediaStream();
 callPC.ontrack=function(e){
-  remoteStream.addTrack(e.track);
-  if(e.track.kind==='video'){
-    $('remoteVid').srcObject=remoteStream;$('remoteVid').classList.remove('hidden');
-    $('callAvOut').parentElement.style.display='none';
-    e.track.onmute=function(){$('remoteVid').classList.add('hidden');$('callAvOut').parentElement.style.display=''};
-    e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');$('callAvOut').parentElement.style.display='none'}
-  }
   if(e.track.kind==='audio'){
-    var ra=document.getElementById('rAudio');if(ra)ra.remove();
-    var a=document.createElement('audio');a.id='rAudio';a.autoplay=true;a.srcObject=new MediaStream([e.track]);
-    a.volume=callSpeaker?1:.15;document.body.appendChild(a)
+    // Audio → own <audio> element, never remove on video arrival
+    var ra=document.getElementById('rAudio');
+    if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;document.body.appendChild(ra)}
+    ra.srcObject=new MediaStream([e.track]);
+    ra.volume=callSpeaker?1:.15;
+    ra.play().catch(function(){});
+  }
+  if(e.track.kind==='video'){
+    // Video → own MediaStream for <video>
+    $('remoteVid').srcObject=new MediaStream([e.track]);
+    $('remoteVid').classList.remove('hidden');
+    if($('callAvSection'))$('callAvSection').style.display='none';
+    e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
+    e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'}
   }
 }}
+
+// Update call UI based on video on/off
+function updateCallVideoUI(){
+var sec=$('callAvSection'),tb=$('callTopbar'),tn=$('callTopName'),ts=$('callTopStatus');
+// Outgoing buttons: swap speaker↔flip
+var sw=$('callSpkWrap'),fw=$('callFlipWrap');
+var swA=$('callSpkWrapA'),fwA=$('callFlipWrapA');
+if(callVideo){
+  // Video mode: hide avatar, show topbar with name, show local video, show flip
+  if(sec)sec.style.display='none';
+  tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
+  $('localVid').classList.remove('hidden');
+  if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
+  if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
+}else{
+  // Audio mode: show avatar, hide topbar, hide local video, show speaker
+  if(sec)sec.style.display='';
+  tb.style.display='none';
+  $('localVid').classList.add('hidden');
+  if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden');
+  if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
+}}
 window.startCall=function(target,withVideo){
-if(callActive)return;callPeer=target;callRole='caller';callActive=true;callVideo=!!withVideo;
-var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);startRing();
+if(callActive)return;callPeer=target;callRole='caller';callActive=true;
+var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);
+callVideo=!!withVideo;if(withVideo){$('callVO').classList.add('a');updateCallVideoUI()}
+startRing();
 var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
 navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 callStream=stream;
@@ -1076,7 +1366,7 @@ callRef.child('answer').on('value',function(s){var a=s.val();if(a&&callPC&&callP
 callRef.child('calleeIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='declined'){stopRing();endCallClean()}})})
 }).catch(function(err){console.error('getUserMedia error:',err);alert('Нет доступа к микрофону. Откройте через HTTPS (GitHub Pages).');endCallClean()})};
-function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
+function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';incomingIsVideo=!!data.video;callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='cancelled'){stopRing();endCallClean()}})}
 function accCall(withVideo){if(!callRef)return;stopRing();
 callVideo=!!withVideo;callSpeaker=!!withVideo;
@@ -1092,19 +1382,20 @@ callPC.onicecandidate=function(e){if(e.candidate)callRef.child('calleeIce').push
 callPC.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return callPC.createAnswer()}).then(function(a){return callPC.setLocalDescription(a)}).then(function(){
 callRef.child('answer').set({type:callPC.localDescription.type,sdp:callPC.localDescription.sdp});callRef.update({status:'active'});showActive();
 callRef.child('callerIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})})})})
-}).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.');endCallClean()})}
-function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}remoteStream=null;var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvOut'))$('callAvOut').parentElement.style.display='';hideCallUI();stopRing()}
+}).catch(function(){alert('Нет доступа к камере/микрофону. Используйте HTTPS.');endCallClean()})}
+function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;incomingIsVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvSection'))$('callAvSection').style.display='';hideCallUI();stopRing()}
 function listenCalls(){if(callListenerSet)return;callListenerSet=true;db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(s){var d=s.val();if(d&&d.to===U&&d.status==='ringing'&&!callActive)handleInc(s.key,d)})}
 // Button events
 function declineOrEnd(){stopRing();if(callRef){if(callRole==='callee')callRef.update({status:'declined'});else callRef.update({status:callActive&&callPC?'ended':'cancelled'})}endCallClean()}
 $('callD').addEventListener('click',declineOrEnd);$('callDA').addEventListener('click',declineOrEnd);$('callD2').addEventListener('click',declineOrEnd);
-// Incoming: accept with video (blue checkmark = answer)
-$('callAV').addEventListener('click',function(){accCall(true)});
+$('callBack').addEventListener('click',declineOrEnd);
+// Incoming: accept — audio or video depending on call type
+$('callAV').addEventListener('click',function(){accCall(incomingIsVideo)});
 // Mute toggle (both outgoing and active)
 function toggleMute(){callMuted=!callMuted;if(callStream)callStream.getAudioTracks().forEach(function(t){t.enabled=!callMuted});$('callM').classList.toggle('a',callMuted);$('callMO').classList.toggle('a',callMuted)}
 $('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('click',toggleMute);
 // Speaker toggle
-function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
+function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
 $('callS').addEventListener('click',toggleSpk);$('callSO').addEventListener('click',toggleSpk);
 // Camera toggle
 function toggleVid(){if(!callStream)return;
@@ -1126,11 +1417,6 @@ if(vt.length>0){
     updateCallVideoUI()
   }).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.')})
 }}
-function updateCallVideoUI(){var sec=$('callAvSection'),tb=$('callBack'),tn=$('callTopName'),ts=$('callTopStatus'),sw=$('callSpkWrap'),fw=$('callFlipWrap');
-if(callVideo){if(sec)sec.style.display='none';tb.style.display='';tn.style.display='';tn.textContent=$('callNmOut').textContent;ts.style.display='';ts.textContent=$('callStOut').textContent;
-if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');$('callScr').className='cs cs-act'}
-else{if(sec)sec.style.display='';tb.style.display='none';tn.style.display='none';ts.style.display='none';
-if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden')}}
 // Flip camera
 var facingMode='user';
 function flipCamera(){if(!callStream)return;
@@ -1142,10 +1428,10 @@ var nt=s.getVideoTracks()[0];callStream.removeTrack(vt[0]);callStream.addTrack(n
 if(callPC){var sender=callPC.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}
 $('localVid').srcObject=callStream}).catch(function(){facingMode=facingMode==='user'?'environment':'user'})}
 $('callFlipO').addEventListener('click',flipCamera);
-$('callBack').addEventListener('click',declineOrEnd);
+$('callFlipA').addEventListener('click',flipCamera);
 $('callV').addEventListener('click',toggleVid);$('callVO').addEventListener('click',toggleVid);
-$('phb').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
-$('vidBtn').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
+$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
+$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
 
 // Buttons
 $('cbb').addEventListener('click',goB);$('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('rpc').addEventListener('click',cRp);
