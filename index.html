@@ -444,7 +444,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.3.1';
+var APP_VERSION='1.3.2';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -840,6 +840,8 @@ sM(null,null,null,null,null,null,null,null,secs)}
 var audioRecStream=null,recTimerInt=null,recStartTime=0;
 function showRecIndicator(){
 var inw=$('inw');
+// Hide input field contents (emoji btn, input, attach btn)
+$('eb').style.display='none';$('mi').style.display='none';$('attBtn').style.display='none';
 var ind=document.createElement('div');ind.className='rec-indicator';ind.id='recInd';
 ind.innerHTML='<div class="rec-dot"></div><div class="rec-timer" id="recTimerDisp">0:00</div><div class="rec-cancel" id="recCancelBtn">ОТМЕНА</div>';
 inw.appendChild(ind);
@@ -857,6 +859,8 @@ var disp=$('recTimerDisp');if(disp)disp.textContent=m+':'+(s<10?'0':'')+s+','+ms
 function hideRecIndicator(){
 var ind=$('recInd');if(ind)ind.remove();
 clearInterval(recTimerInt);recTimerInt=null;
+// Restore input field contents
+$('eb').style.display='';$('mi').style.display='';$('attBtn').style.display='';
 $('recMainBtn').classList.remove('recording');
 // Restore mic/video SVG icons
 $('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
@@ -1061,26 +1065,35 @@ if(recIsHolding){
 recPressStart=0;recIsHolding=false;
 }
 
-// Touch events
+// Touch events — touchstart on button, touchmove/touchend on document (finger leaves button)
+var recTouchActive=false;
 $('recMainBtn').addEventListener('touchstart',function(e){
 e.preventDefault();
+recTouchActive=true;
 var touch=e.touches[0];recBegin(touch.clientX,touch.clientY);
 },{passive:false});
-$('recMainBtn').addEventListener('touchend',function(e){e.preventDefault();recEnd()},{passive:false});
-$('recMainBtn').addEventListener('touchmove',function(e){
-// Swipe left to cancel — if finger moved left past half screen width
+document.addEventListener('touchend',function(e){
+if(!recTouchActive)return;
+recTouchActive=false;
+recEnd();
+},{passive:true});
+document.addEventListener('touchmove',function(e){
+if(!recTouchActive||!recIsHolding)return;
 var touch=e.touches[0];
 var dx=recStartX-touch.clientX; // positive = swipe left
-if(dx>window.innerWidth*0.35){recCancel();return}
-// Cancel if moved far vertically
-var dy=Math.abs(touch.clientY-recStartY);
-if(dy>80)recCancel();
+// Swipe left >80px = cancel
+if(dx>80){recTouchActive=false;recCancel();return}
 },{passive:true});
 
 // Mouse events (desktop fallback)
-$('recMainBtn').addEventListener('mousedown',function(e){recBegin(e.clientX,e.clientY)});
-$('recMainBtn').addEventListener('mouseup',function(){recEnd()});
-$('recMainBtn').addEventListener('mouseleave',function(){if(recPressStart>0)recCancel()});
+var recMouseActive=false;
+$('recMainBtn').addEventListener('mousedown',function(e){recMouseActive=true;recBegin(e.clientX,e.clientY)});
+document.addEventListener('mouseup',function(){if(!recMouseActive)return;recMouseActive=false;recEnd()});
+document.addEventListener('mousemove',function(e){
+if(!recMouseActive||!recIsHolding)return;
+var dx=recStartX-e.clientX;
+if(dx>80){recMouseActive=false;recCancel()}
+});
 uSB();
 
 // Voice calls (WebRTC) — Мост
