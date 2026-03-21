@@ -457,7 +457,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.4.4';
+var APP_VERSION='1.4.5';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -731,8 +731,7 @@ var selectMode=false,selectedMsgs={};
 function enterSelectMode(){
 selectMode=true;selectedMsgs={};
 // Reset any recording state
-recTouchActive=false;recMouseActive=false;recPressStart=0;recIsHolding=false;
-clearTimeout(recHoldTimer);
+recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
 // Replace header
 var hdr=$('chatHdr');hdr._origHTML=hdr.innerHTML;
 hdr.innerHTML='<button type="button" class="bb" id="selClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="sel-hdr-count" id="selCount">0</div><button type="button" class="ib" id="selDelete"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
@@ -746,8 +745,7 @@ rMs(rMsgs[cRoom]||[]);
 function exitSelectMode(){
 selectMode=false;selectedMsgs={};
 // Reset any recording state
-recTouchActive=false;recMouseActive=false;recPressStart=0;recIsHolding=false;
-clearTimeout(recHoldTimer);
+recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
 // Restore header
 var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
 // Restore input bar
@@ -939,14 +937,13 @@ sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
 // Audio record — hold-to-record with indicator, vibration, lock mode, min duration
-var audioRecStream=null,recTimerInt=null,recStartTime=0,recLocked=false;
+var audioRecStream=null,recTimerInt=null,recStartTime=0;
 function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 function showRecIndicator(){
 $('inwNormal').classList.add('hidden');
 $('inwRec').classList.remove('hidden');
-$('recCancelText').classList.remove('danger');
 $('recMainBtn').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
-recStartTime=Date.now();recLocked=false;
+recStartTime=Date.now();
 recTimerInt=setInterval(function(){
 var elapsed=Date.now()-recStartTime;
 var s=Math.floor(elapsed/1000),ms=Math.floor((elapsed%1000)/100);
@@ -959,8 +956,6 @@ clearInterval(recTimerInt);recTimerInt=null;
 $('inwRec').classList.add('hidden');
 $('inwNormal').classList.remove('hidden');
 $('recTimerDisp').textContent='0:00,0';
-$('recCancelText').classList.remove('danger');
-recLocked=false;
 $('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
 updateRecIcon();
 }
@@ -984,7 +979,6 @@ mediaRec.start(500)}).catch(function(){hideRecIndicator();alert('Нет дост
 function stopAudioRec(){if(isRec&&mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
 function cancelAudioRec(){if(isRec&&mediaRec){mediaRec.ondataavailable=null;mediaRec.onstop=function(){isRec=false;hideRecIndicator();if(audioRecStream){audioRecStream.getTracks().forEach(function(t){t.stop()});audioRecStream=null}};mediaRec.stop()}else{hideRecIndicator()}}
 // Lock mode: ОТМЕНА кликабельна
-$('recCancelText').addEventListener('click',function(){if(recLocked)cancelAudioRec()});
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
 $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
@@ -1140,9 +1134,9 @@ sbb.addEventListener('click',function(){sM()});
 // Short tap (<500ms) = toggle mode audio↔video + tooltip
 // Hold (>=500ms) = start recording, release = stop & send
 // Swipe left = cancel (with visual feedback), Swipe up = lock mode
-var recPressStart=0,recHoldTimer=null,recIsHolding=false,recStartX=0,recStartY=0;
-function recBegin(x,y){
-recPressStart=Date.now();recIsHolding=false;recStartX=x;recStartY=y;
+var recPressStart=0,recHoldTimer=null,recIsHolding=false;
+function recBegin(){
+recPressStart=Date.now();recIsHolding=false;
 recHoldTimer=setTimeout(function(){
   recIsHolding=true;
   vibrate(50);
@@ -1153,7 +1147,7 @@ function recEnd(){
 clearTimeout(recHoldTimer);
 var dur=Date.now()-recPressStart;
 if(!recIsHolding&&dur<500&&dur>0){
-  // Short tap — toggle mode
+  // Short tap (<500ms) — toggle mode
   if(recMode==='audio'){
     recMode='video';updateRecIcon();
     showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.');
@@ -1161,94 +1155,59 @@ if(!recIsHolding&&dur<500&&dur>0){
     recMode='audio';updateRecIcon();
     showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.');
   }
-}else if(recIsHolding&&!recLocked){
-  // Release after hold — stop recording & send
+}
+// If recording started — do NOT stop on release. User uses ➤ or ОТМЕНА.
+recPressStart=0;recIsHolding=false;
+}
+
+// ➤ button: when recording, tap sends. When not recording, normal send.
+function recBtnTap(){
+if(isRecording()){
+  // Stop recording and send
   if(recMode==='audio')stopAudioRec();
   else stopVideoRec();
 }
-// If locked — do nothing on release, user controls via buttons
-recPressStart=0;recIsHolding=false;
-}
-function recCancel(){
-clearTimeout(recHoldTimer);
-if(recIsHolding||recLocked){
-  if(recMode==='audio'){cancelAudioRec()}
-  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){hideRecIndicator();if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
-}
-recPressStart=0;recIsHolding=false;
-}
-function enterLockMode(){
-recLocked=true;recIsHolding=false;
-vibrate(30);
-// In lock mode: кнопка ➤ отправляет при клике, ОТМЕНА кликабельна
 }
 
-// Touch events — touchstart on button, touchmove/touchend on document
-var recTouchActive=false;
+// ОТМЕНА: cancel recording
+$('recCancelText').addEventListener('click',function(){
+if(isRecording()){
+  if(recMode==='audio')cancelAudioRec();
+  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){hideRecIndicator();if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
+}
+});
+
+// Touch events
 function isRecording(){return isRec||(vrecRec&&vrecRec.state==='recording')}
 $('recMainBtn').addEventListener('touchstart',function(e){
 e.preventDefault();
-if(recLocked){
-  // In lock mode: tap send button → stop & send
-  if(recMode==='audio')stopAudioRec();else stopVideoRec();
-  recLocked=false;
+if(isRecording()){
+  // Recording in progress — tap ➤ sends
+  recBtnTap();
   return;
 }
-recTouchActive=true;
-var touch=e.touches[0];recBegin(touch.clientX,touch.clientY);
+recBegin();
 },{passive:false});
-document.addEventListener('touchend',function(e){
-if(!recTouchActive)return;
-recTouchActive=false;
-recEnd();
-},{passive:true});
-document.addEventListener('touchmove',function(e){
-if(!recTouchActive)return;
-// Работает и во время ожидания hold (500мс), и во время записи
-var touch=e.touches[0];
-var dx=recStartX-touch.clientX; // positive = swipe left
-var dy=recStartY-touch.clientY; // positive = swipe up
-
-// Visual feedback: подсветка ОТМЕНА при свайпе влево
-var ct=$('recCancelText');
-if(isRecording()){
-  if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
+$('recMainBtn').addEventListener('touchend',function(e){
+e.preventDefault();
+if(!recIsHolding){
+  // Short tap ended — recEnd handles toggle
+  recEnd();
 }
+// If recording — do nothing on release
+},{passive:false});
 
-// Свайп влево >80px = отмена (работает и до записи — отменяет hold timer)
-if(dx>80){
-  recTouchActive=false;
-  if(isRecording()){recCancel()}else{clearTimeout(recHoldTimer);recPressStart=0;recIsHolding=false}
-  return;
-}
-
-// Свайп вверх >60px = lock mode (только если запись уже идёт)
-if(dy>60&&isRecording()&&!recLocked){
-  recTouchActive=false;
-  enterLockMode();
-  return;
-}
-},{passive:true});
-
-// Mouse events (desktop fallback)
-var recMouseActive=false;
+// Mouse events (desktop)
 $('recMainBtn').addEventListener('mousedown',function(e){
-if(recLocked){
-  if(recMode==='audio')stopAudioRec();else stopVideoRec();
-  recLocked=false;return;
-}
-recMouseActive=true;recBegin(e.clientX,e.clientY)});
-document.addEventListener('mouseup',function(){if(!recMouseActive)return;recMouseActive=false;recEnd()});
-document.addEventListener('mousemove',function(e){
-if(!recMouseActive)return;
-var dx=recStartX-e.clientX;
-var dy=recStartY-e.clientY;
-var ct=$('recCancelText');
-if(isRecording()){
-  if(dx>30&&ct){ct.classList.add('danger')}else if(ct){ct.classList.remove('danger')}
-}
-if(dx>80){recMouseActive=false;if(isRecording()){recCancel()}else{clearTimeout(recHoldTimer);recPressStart=0;recIsHolding=false}return}
-if(dy>60&&isRecording()&&!recLocked){recMouseActive=false;enterLockMode();return}
+if(isRecording()){recBtnTap();return}
+recBegin();
+});
+$('recMainBtn').addEventListener('mouseup',function(){
+if(!recIsHolding)recEnd();
+});
+$('recMainBtn').addEventListener('click',function(e){
+// Prevent double-fire from mousedown+click
+e.stopPropagation();
 });
 uSB();
 
