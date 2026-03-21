@@ -221,28 +221,28 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Call screens */
 .cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden}
-.cs.cs-out{background:linear-gradient(180deg,#5b7cfa 0%,#3db8e8 100%);padding-top:60px}
-.cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%);padding-top:40px}
-.cs.cs-act{background:linear-gradient(180deg,#5b7cfa 0%,#3db8e8 100%);padding-top:60px}
-.call-av-wrap{margin:20px 0 16px;position:relative}
-.call-av-ring{width:140px;height:140px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;animation:cpulse 2.5s ease-in-out infinite}
-.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.cs.cs-out{background:linear-gradient(160deg,#667eea 0%,#5b6abf 30%,#764ba2 100%);padding-top:0}
+.cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%);padding-top:0}
+.cs.cs-act{background:linear-gradient(160deg,#667eea 0%,#5b6abf 30%,#764ba2 100%);padding-top:0}
+.call-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.call-av-ring{width:140px;height:140px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,255,255,.08);animation:cpulse 2.5s ease-in-out infinite}
+.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.06)}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
 .call-name{color:#fff;font-size:24px;font-weight:500;text-align:center}
 .call-name-inc{color:#fff;font-size:28px;font-weight:500;text-align:center;margin-bottom:4px}
 .call-app{color:rgba(255,255,255,.45);font-size:14px;font-weight:400;text-align:center;margin-bottom:12px}
-.call-status{color:rgba(255,255,255,.55);font-size:15px;font-weight:400;text-align:center;margin-top:4px}
-.call-timer{color:rgba(255,255,255,.85);font-size:20px;font-weight:500;text-align:center;margin-top:4px}
+.call-status{color:rgba(255,255,255,.55);font-size:15px;font-weight:400;text-align:center}
+.call-timer{color:rgba(255,255,255,.85);font-size:20px;font-weight:500;text-align:center}
 .call-btns{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:center;gap:24px;z-index:41;padding:0 20px}
-.call-btns-inc{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 50px}
+.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 60px}
 .call-btn-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
-.cb{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.cb{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .cb:active{transform:scale(.88)}
 .cb-sm{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .cb-sm:active{transform:scale(.88)}
 .cb-sm.a{background:rgba(255,255,255,.35)}
-.cb.dec{background:#E85D75}.cb.end{background:#E85D75}
-.cb.acc-audio{background:#4892f7}
+.cb.dec{background:#E85D75;width:64px;height:64px}.cb.end{background:#E85D75}
+.cb.acc-audio{background:#4892f7;width:64px;height:64px}
 .cb.acc-video{background:#00b894}
 .cb-label{color:rgba(255,255,255,.65);font-size:12px;font-weight:400;white-space:nowrap}
 /* Video elements */
@@ -373,49 +373,53 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="cs hidden" id="callScr">
 <video class="call-video hidden" id="remoteVid" autoplay playsinline></video>
 <video class="call-video-local hidden" id="localVid" autoplay playsinline muted></video>
+
+<!-- Top bar (video mode: back + name + status) -->
+<div id="callTopbar" style="display:none;position:absolute;top:0;left:0;right:0;padding:14px 16px;z-index:43;align-items:center;gap:10px">
+<button type="button" class="bb" id="callBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+<div style="flex:1;min-width:0"><div id="callTopName" style="color:#fff;font-size:18px;font-weight:500"></div><div id="callTopStatus" style="color:rgba(255,255,255,.6);font-size:13px"></div></div>
+</div>
+
 <!-- Incoming layout -->
-<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%">
-<div class="call-app">Мост</div>
+<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;padding-top:60px">
+<div style="color:rgba(255,255,255,.4);font-size:14px;margin-bottom:4px">Мост</div>
 <div class="call-name-inc" id="callNmInc"></div>
-<div class="call-status" id="callStInc">Входящий вызов...</div>
-<div class="call-av-wrap"><div class="call-av-ring-inc" id="callAvInc"></div></div>
+<div class="call-status" id="callStInc" style="margin-bottom:auto">Входящий вызов...</div>
+<div style="margin:auto 0"><div class="call-av-ring-inc" id="callAvInc"></div></div>
 </div>
-<!-- Outgoing / Active layout -->
-<div class="hidden" id="callOutWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%">
-<!-- Top bar with back button and name (for video mode) -->
-<div class="call-topbar" id="callTopbar" style="display:none;position:absolute;top:0;left:0;right:0;padding:12px 16px;z-index:43;display:flex;align-items:center;gap:10px">
-<button type="button" class="bb" id="callBack" style="display:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-<div id="callTopName" style="color:#fff;font-size:18px;font-weight:500;display:none"></div>
-<div id="callTopStatus" style="color:rgba(255,255,255,.6);font-size:13px;display:none"></div>
-</div>
-<!-- Avatar layout (for audio calls) -->
-<div id="callAvSection">
+
+<!-- Outgoing / Active layout (audio mode — center content) -->
+<div class="hidden" id="callOutWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;justify-content:center">
+<div id="callAvSection" style="display:flex;flex-direction:column;align-items:center">
 <div class="call-av-wrap"><div class="call-av-ring" id="callAvOut"></div></div>
-<div class="call-name" id="callNmOut"></div>
+<div class="call-name" id="callNmOut" style="margin-top:16px"></div>
 </div>
-<div class="call-status" id="callStOut">Запрос •••</div>
-<div class="call-timer hidden" id="callTm">00:00</div>
-<div style="color:rgba(255,255,255,.4);font-size:12px;text-align:center;margin-top:4px" id="callMode"></div>
+<div class="call-status" id="callStOut" style="margin-top:6px">Запрос •••</div>
+<div class="call-timer hidden" id="callTm" style="margin-top:6px">00:00</div>
 </div>
-<!-- Incoming buttons: decline + accept -->
+
+<!-- Incoming buttons: Отклонить + Ответить -->
 <div class="call-btns-inc hidden" id="callIncBtns">
-<div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb acc-video" id="callAV"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><span class="cb-label">Ответить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb acc-audio" id="callAV"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button><span class="cb-label">Ответить</span></div>
 </div>
-<!-- Outgoing buttons: динамик/повернуть, видео, убрать звук, завершить -->
+
+<!-- Outgoing / Active buttons: динамик|повернуть, видео, убрать звук, завершить -->
 <div class="call-btns hidden" id="callOutBtns">
-<div class="call-btn-wrap" id="callSpkWrap"><button type="button" class="cb-sm a" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
+<div class="call-btn-wrap" id="callSpkWrap"><button type="button" class="cb-sm" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
 <div class="call-btn-wrap hidden" id="callFlipWrap"><button type="button" class="cb-sm" id="callFlipO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button><span class="cb-label">повернуть</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb-sm" id="callVO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">видео</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb-sm" id="callMO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">убрать звук</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb end" id="callD"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">завершить</span></div>
 </div>
-<!-- Active call buttons: same as outgoing -->
+
+<!-- Active call buttons (duplicated IDs for active state) -->
 <div class="call-btns hidden" id="callActBtns">
-<div class="call-btn-wrap"><button type="button" class="cb-sm a" id="callS"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">Динамик</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callV"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">Камера</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callM"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">Микрофон</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb end" id="callDA"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Завершить</span></div>
+<div class="call-btn-wrap" id="callSpkWrapA"><button type="button" class="cb-sm" id="callS"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
+<div class="call-btn-wrap hidden" id="callFlipWrapA"><button type="button" class="cb-sm" id="callFlipA"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button><span class="cb-label">повернуть</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callV"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">видео</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callM"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">убрать звук</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb end" id="callDA"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">завершить</span></div>
 </div>
 </div>
 <!-- Confetti container -->
@@ -425,11 +429,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.2.2';
+var APP_VERSION='1.3.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
-var callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,callSpeaker=true,callVideo=false;
+var callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,callSpeaker=false,callVideo=false;
 var mediaRec=null,isRec=false,audioChunks=[],rrList={};
 var folders=['Все','Личные','Группы','Каналы','Архив'];
 var curFolder='Все',mutedChats={},archivedChats={},savedMsgs=[],schedMsgs=[];
@@ -1011,22 +1015,24 @@ uSB();
 
 // Voice calls (WebRTC) — Мост
 var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
-var remoteStream=null;
+var remoteAudioStream=null,remoteVideoStream=null,incomingIsVideo=false;
 function showCallUI(n,isInc){
 $('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');
-callMuted=false;callSpeaker=true;callVideo=false;$('callMode').textContent='';
+callMuted=false;callSpeaker=false;callVideo=false;
 // Hide all sub-layouts
 $('callIncWrap').classList.add('hidden');$('callOutWrap').classList.add('hidden');
 $('callIncBtns').classList.add('hidden');$('callOutBtns').classList.add('hidden');$('callActBtns').classList.add('hidden');
-$('callTm').classList.add('hidden');
+$('callTm').classList.add('hidden');$('callTopbar').style.display='none';
 if(isInc){
   $('callScr').className='cs cs-inc';$('callIncWrap').classList.remove('hidden');$('callIncWrap').style.display='flex';
   $('callNmInc').textContent=n;$('callStInc').textContent='Входящий вызов...';
-  $('callAvInc').innerHTML=av(n,130);$('callIncBtns').classList.remove('hidden')
+  $('callAvInc').innerHTML=av(n,150);$('callIncBtns').classList.remove('hidden')
 }else{
   $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
   $('callNmOut').textContent=n;$('callStOut').textContent='Запрос •••';
-  $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden')
+  $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden');
+  $('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
+  updateCallVideoUI()
 }}
 function showActive(){
 $('callScr').className='cs cs-act';
@@ -1035,37 +1041,65 @@ $('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex
 $('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
 $('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
 $('callV').classList.toggle('a',callVideo);$('callS').classList.toggle('a',callSpeaker);
-$('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
-$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';
 updateCallVideoUI();
 callSec=0;$('callTm').textContent='00:00';
 callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
-function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
-// Fixed ontrack handler — properly separates audio and video
+function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');$('callTopbar').style.display='none';if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
+
+// Fixed ontrack handler — SEPARATED audio and video streams (Bug #5)
 function setupOntrack(){
-remoteStream=new MediaStream();
+remoteAudioStream=null;remoteVideoStream=null;
 callPC.ontrack=function(e){
-  remoteStream.addTrack(e.track);
-  if(e.track.kind==='video'){
-    $('remoteVid').srcObject=remoteStream;$('remoteVid').classList.remove('hidden');
-    $('callAvOut').parentElement.style.display='none';
-    e.track.onmute=function(){$('remoteVid').classList.add('hidden');$('callAvOut').parentElement.style.display=''};
-    e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');$('callAvOut').parentElement.style.display='none'}
-  }
   if(e.track.kind==='audio'){
-    var ra=document.getElementById('rAudio');if(ra)ra.remove();
-    var a=document.createElement('audio');a.id='rAudio';a.autoplay=true;a.srcObject=new MediaStream([e.track]);
-    a.volume=callSpeaker?1:.15;document.body.appendChild(a)
+    // Audio track → separate <audio> element, never remove it
+    remoteAudioStream=new MediaStream([e.track]);
+    var ra=document.getElementById('rAudio');
+    if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;document.body.appendChild(ra)}
+    ra.srcObject=remoteAudioStream;
+    ra.volume=callSpeaker?1:.15;
+  }
+  if(e.track.kind==='video'){
+    // Video track → separate MediaStream for <video>
+    remoteVideoStream=new MediaStream([e.track]);
+    $('remoteVid').srcObject=remoteVideoStream;
+    $('remoteVid').classList.remove('hidden');
+    if($('callAvSection'))$('callAvSection').style.display='none';
+    e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
+    e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'}
   }
 }}
+
+// Update call UI based on video on/off
+function updateCallVideoUI(){
+var sec=$('callAvSection'),tb=$('callTopbar'),tn=$('callTopName'),ts=$('callTopStatus');
+// Outgoing buttons: swap speaker↔flip
+var sw=$('callSpkWrap'),fw=$('callFlipWrap');
+var swA=$('callSpkWrapA'),fwA=$('callFlipWrapA');
+if(callVideo){
+  // Video mode: hide avatar, show topbar with name, show local video, show flip
+  if(sec)sec.style.display='none';
+  tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
+  $('localVid').classList.remove('hidden');
+  if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
+  if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
+}else{
+  // Audio mode: show avatar, hide topbar, hide local video, show speaker
+  if(sec)sec.style.display='';
+  tb.style.display='none';
+  $('localVid').classList.add('hidden');
+  if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden');
+  if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
+}}
 window.startCall=function(target,withVideo){
-if(callActive)return;callPeer=target;callRole='caller';callActive=true;callVideo=!!withVideo;
-var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);startRing();
+if(callActive)return;callPeer=target;callRole='caller';callActive=true;callVideo=!!withVideo;callSpeaker=!!withVideo;
+var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);
+// If video call, immediately set callVideo and update UI before getUserMedia
+if(withVideo){callVideo=true;$('callVO').classList.add('a');updateCallVideoUI()}
+startRing();
 var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
 navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 callStream=stream;
 if(withVideo){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
-$('callVO').classList.toggle('a',callVideo);updateCallVideoUI();
 callPC=new RTCPeerConnection(iceS);
 stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
 setupOntrack();
@@ -1076,7 +1110,7 @@ callRef.child('answer').on('value',function(s){var a=s.val();if(a&&callPC&&callP
 callRef.child('calleeIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='declined'){stopRing();endCallClean()}})})
 }).catch(function(err){console.error('getUserMedia error:',err);alert('Нет доступа к микрофону. Откройте через HTTPS (GitHub Pages).');endCallClean()})};
-function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
+function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';incomingIsVideo=!!data.video;callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='cancelled'){stopRing();endCallClean()}})}
 function accCall(withVideo){if(!callRef)return;stopRing();
 callVideo=!!withVideo;callSpeaker=!!withVideo;
@@ -1092,19 +1126,20 @@ callPC.onicecandidate=function(e){if(e.candidate)callRef.child('calleeIce').push
 callPC.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return callPC.createAnswer()}).then(function(a){return callPC.setLocalDescription(a)}).then(function(){
 callRef.child('answer').set({type:callPC.localDescription.type,sdp:callPC.localDescription.sdp});callRef.update({status:'active'});showActive();
 callRef.child('callerIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})})})})
-}).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.');endCallClean()})}
-function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}remoteStream=null;var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvOut'))$('callAvOut').parentElement.style.display='';hideCallUI();stopRing()}
+}).catch(function(){alert('Нет доступа к камере/микрофону. Используйте HTTPS.');endCallClean()})}
+function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}remoteAudioStream=null;remoteVideoStream=null;var ra=document.getElementById('rAudio');if(ra){ra.srcObject=null;ra.remove()}if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;incomingIsVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvSection'))$('callAvSection').style.display='';hideCallUI();stopRing()}
 function listenCalls(){if(callListenerSet)return;callListenerSet=true;db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(s){var d=s.val();if(d&&d.to===U&&d.status==='ringing'&&!callActive)handleInc(s.key,d)})}
 // Button events
 function declineOrEnd(){stopRing();if(callRef){if(callRole==='callee')callRef.update({status:'declined'});else callRef.update({status:callActive&&callPC?'ended':'cancelled'})}endCallClean()}
 $('callD').addEventListener('click',declineOrEnd);$('callDA').addEventListener('click',declineOrEnd);$('callD2').addEventListener('click',declineOrEnd);
-// Incoming: accept with video (blue checkmark = answer)
-$('callAV').addEventListener('click',function(){accCall(true)});
+$('callBack').addEventListener('click',declineOrEnd);
+// Incoming: accept — audio or video depending on call type
+$('callAV').addEventListener('click',function(){accCall(incomingIsVideo)});
 // Mute toggle (both outgoing and active)
 function toggleMute(){callMuted=!callMuted;if(callStream)callStream.getAudioTracks().forEach(function(t){t.enabled=!callMuted});$('callM').classList.toggle('a',callMuted);$('callMO').classList.toggle('a',callMuted)}
 $('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('click',toggleMute);
 // Speaker toggle
-function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
+function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
 $('callS').addEventListener('click',toggleSpk);$('callSO').addEventListener('click',toggleSpk);
 // Camera toggle
 function toggleVid(){if(!callStream)return;
@@ -1126,11 +1161,6 @@ if(vt.length>0){
     updateCallVideoUI()
   }).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.')})
 }}
-function updateCallVideoUI(){var sec=$('callAvSection'),tb=$('callBack'),tn=$('callTopName'),ts=$('callTopStatus'),sw=$('callSpkWrap'),fw=$('callFlipWrap');
-if(callVideo){if(sec)sec.style.display='none';tb.style.display='';tn.style.display='';tn.textContent=$('callNmOut').textContent;ts.style.display='';ts.textContent=$('callStOut').textContent;
-if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');$('callScr').className='cs cs-act'}
-else{if(sec)sec.style.display='';tb.style.display='none';tn.style.display='none';ts.style.display='none';
-if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden')}}
 // Flip camera
 var facingMode='user';
 function flipCamera(){if(!callStream)return;
@@ -1142,7 +1172,7 @@ var nt=s.getVideoTracks()[0];callStream.removeTrack(vt[0]);callStream.addTrack(n
 if(callPC){var sender=callPC.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}
 $('localVid').srcObject=callStream}).catch(function(){facingMode=facingMode==='user'?'environment':'user'})}
 $('callFlipO').addEventListener('click',flipCamera);
-$('callBack').addEventListener('click',declineOrEnd);
+$('callFlipA').addEventListener('click',flipCamera);
 $('callV').addEventListener('click',toggleVid);$('callVO').addEventListener('click',toggleVid);
 $('phb').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
 $('vidBtn').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
