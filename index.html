@@ -98,14 +98,18 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mrc-i:active{border-color:var(--acc)}
 .mrc-i .cnt{font-size:12px;color:var(--tx2);font-weight:400}
 .m-link{color:#74B9FF;text-decoration:underline}
-.m-audio{display:flex;align-items:center;gap:10px;min-width:200px;padding:6px 4px}
+.m-audio{display:flex;align-items:center;gap:10px;min-width:200px;padding:6px 4px;position:relative}
 .m-audio-play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .m-audio-play svg{margin-left:2px}
+.m-audio-play.paused svg{margin-left:0}
 .m-audio-body{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 .m-audio-wave{display:flex;align-items:center;gap:1.5px;height:24px}
 .m-audio-wave-bar{width:2.5px;border-radius:2px;background:rgba(255,255,255,.5);transition:background .1s}
 .m-audio-wave-bar.played{background:rgba(255,255,255,.9)}
-.m-audio-dur{font-size:12px;color:rgba(255,255,255,.7);font-weight:400}
+.m-audio-dur{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;display:flex;align-items:center;gap:4px}
+.m-audio-unread{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.8);flex-shrink:0}
+.m-audio-trans{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.2);border:none;border-radius:10px;padding:2px 8px;font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;font-weight:500;font-family:'Roboto',sans-serif}
+.m-audio-trans:active{background:rgba(255,255,255,.35)}
 .m-audio-prog{display:none}
 .mb.mn .m-audio-play svg{fill:#E85D75}
 .mb.ot .m-audio-play svg{fill:var(--acc)}
@@ -457,7 +461,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.4.6';
+var APP_VERSION='1.5.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -651,8 +655,9 @@ h+='<div class="mb '+(me?'mn':'ot')+(m.audio?' voice-msg':'')+'">';
 if(m.replyTo)h+='<div class="mq"><div class="mqn" style="color:'+hc(m.replyTo.sender)+'">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
 if(m.image)h+='<img class="mi" src="'+m.image+'" onclick="vI(this.src)">';
 if(m.audio){
+var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));
 var waveBars='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);waveBars+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}
-h+='<div class="m-audio"><button class="m-audio-play" onclick="playA(this,\''+m.audio+'\')"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'</div></div></div>';}
+h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-trans" onclick="alert(\'Транскрипция недоступна\')">→A</button></div>';}
 if(m.vidMsg)h+='<div class="m-vidmsg" onclick="playVidMsg(this)"><video src="'+m.vidMsg+'" playsinline loop></video><div class="m-vidmsg-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21"/></svg></div>'+(m.vidDur?'<div class="m-vidmsg-dur">'+m.vidDur+'</div>':'')+'</div>';
 if(m.file)h+='<div class="m-file" onclick="if(this.dataset.f.startsWith(\'data:\'))window.open(this.dataset.f)" data-f="'+es(m.file)+'"><div class="m-file-icon">📄</div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
 if(m.poll)h+=renderPoll(m);
@@ -667,6 +672,10 @@ Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" onclick="tgReact(\''+
 if(m.threadCount)h+='<div class="m-thread" onclick="openThread(\''+m._key+'\',\''+es(m.text||'')+'\')">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
 h+='</div></div></div>';ls=m.sender});
 a.innerHTML=h;if(wb)a.scrollTop=a.scrollHeight;
+// Bind audio play/pause buttons
+a.querySelectorAll('.m-audio-play').forEach(function(btn){
+btn.addEventListener('click',function(e){e.stopPropagation();playA(btn)})
+});
 // Long press on messages: bubble/avatar (500ms) → context menu, background (1000ms) → select mode
 a.querySelectorAll('.mr').forEach(function(el){var tm;
 el.addEventListener('touchstart',function(e){
@@ -720,8 +729,56 @@ h+='<div class="m-poll-opt" onclick="votePoll(\''+m._key+'\','+i+')"><div class=
 h+='<div style="font-size:10px;color:var(--tx3);margin-top:4px">'+total+' '+plural(total,'голос','голоса','голосов')+'</div></div>';return h}
 window.votePoll=function(k,i){db.ref('messages/'+cRoom+'/'+k+'/pollVotes/'+U).set(i)};
 
-// Play audio
-window.playA=function(b,src){var a=new Audio(src);var bar=b.parentElement.querySelector('.m-audio-prog');a.play();a.addEventListener('timeupdate',function(){if(a.duration)bar.style.width=(a.currentTime/a.duration*100)+'%'});a.addEventListener('ended',function(){bar.style.width='0%'})};
+// Play audio — play/pause toggle
+var currentAudio=null,currentAudioBtn=null;
+var playSvg='<svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg>';
+var pauseSvg='<svg width="20" height="20" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
+window.playA=function(btn){
+var container=btn.closest('.m-audio');
+if(!container)return;
+var src=container.getAttribute('data-src');
+if(!src)return;
+
+// If same audio playing — pause
+if(currentAudio&&currentAudioBtn===btn&&!currentAudio.paused){
+  currentAudio.pause();
+  btn.innerHTML=playSvg;btn.classList.remove('paused');
+  return;
+}
+// If different audio playing — stop old
+if(currentAudio&&currentAudioBtn!==btn){
+  currentAudio.pause();currentAudio.currentTime=0;
+  currentAudioBtn.innerHTML=playSvg;currentAudioBtn.classList.remove('paused');
+}
+// If same audio paused — resume
+if(currentAudio&&currentAudioBtn===btn&&currentAudio.paused){
+  currentAudio.play();
+  btn.innerHTML=pauseSvg;btn.classList.add('paused');
+  return;
+}
+// New audio
+var a=new Audio(src);
+currentAudio=a;currentAudioBtn=btn;
+btn.innerHTML=pauseSvg;btn.classList.add('paused');
+
+var bars=container.querySelectorAll('.m-audio-wave-bar');
+var totalBars=bars.length;
+
+a.addEventListener('timeupdate',function(){
+  if(!a.duration)return;
+  var pct=a.currentTime/a.duration;
+  var playedCount=Math.floor(pct*totalBars);
+  bars.forEach(function(b,i){b.classList.toggle('played',i<playedCount)});
+});
+a.addEventListener('ended',function(){
+  btn.innerHTML=playSvg;btn.classList.remove('paused');
+  bars.forEach(function(b){b.classList.remove('played')});
+  // Mark as listened — remove unread dot
+  var dot=container.querySelector('.m-audio-unread');if(dot)dot.style.display='none';
+  currentAudio=null;currentAudioBtn=null;
+});
+a.play();
+};
 
 // Reactions
 window.tgReact=function(k,emoji){var ref=db.ref('messages/'+cRoom+'/'+k+'/reactions');ref.once('value',function(s){var d=s.val()||{};var found=null;Object.keys(d).forEach(function(x){if(d[x].user===U&&d[x].emoji===emoji)found=x});if(found)ref.child(found).remove();else ref.push({user:U,emoji:emoji})})};
