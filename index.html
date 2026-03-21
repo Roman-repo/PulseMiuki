@@ -143,7 +143,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .rec-timer{color:var(--tx);font-size:16px;font-weight:500;min-width:50px;padding:10px 0}
 .rec-cancel-text{color:var(--acc);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;cursor:pointer;transition:color .15s,transform .15s}
 .rec-cancel-text.danger{color:#E85D75;transform:scale(1.1)}
-.rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s}
+.rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s;touch-action:none;-webkit-user-select:none;user-select:none}
 .rb-main:active{transform:scale(.9)}
 .sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);transition:all .15s}
 .sb:active{transform:scale(.9)}
@@ -457,7 +457,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.4.2';
+var APP_VERSION='1.4.3';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -730,6 +730,9 @@ window.tgReact=function(k,emoji){var ref=db.ref('messages/'+cRoom+'/'+k+'/reacti
 var selectMode=false,selectedMsgs={};
 function enterSelectMode(){
 selectMode=true;selectedMsgs={};
+// Reset any recording state
+recTouchActive=false;recMouseActive=false;recPressStart=0;recIsHolding=false;
+clearTimeout(recHoldTimer);
 // Replace header
 var hdr=$('chatHdr');hdr._origHTML=hdr.innerHTML;
 hdr.innerHTML='<button type="button" class="bb" id="selClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="sel-hdr-count" id="selCount">0</div><button type="button" class="ib" id="selDelete"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
@@ -742,6 +745,9 @@ rMs(rMsgs[cRoom]||[]);
 }
 function exitSelectMode(){
 selectMode=false;selectedMsgs={};
+// Reset any recording state
+recTouchActive=false;recMouseActive=false;recPressStart=0;recIsHolding=false;
+clearTimeout(recHoldTimer);
 // Restore header
 var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
 // Restore input bar
@@ -1181,7 +1187,6 @@ vibrate(30);
 var recTouchActive=false;
 function isRecording(){return isRec||(vrecRec&&vrecRec.state==='recording')}
 $('recMainBtn').addEventListener('touchstart',function(e){
-e.preventDefault();
 if(recLocked){
   // In lock mode: tap send button → stop & send
   if(recMode==='audio')stopAudioRec();else stopVideoRec();
@@ -1190,7 +1195,7 @@ if(recLocked){
 }
 recTouchActive=true;
 var touch=e.touches[0];recBegin(touch.clientX,touch.clientY);
-},{passive:false});
+},{passive:true});
 document.addEventListener('touchend',function(e){
 if(!recTouchActive)return;
 recTouchActive=false;
