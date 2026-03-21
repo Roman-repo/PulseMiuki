@@ -279,7 +279,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="ls hidden" id="S0">
 <div class="ll"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
 <div class="lt">Мост</div>
-<div class="lsb" id="authMsg">Мост 1.1.0</div>
+<div class="lsb" id="authMsg">Мост 1.2.1</div>
 <input class="li" id="ni" placeholder="Имя пользователя" maxlength="20" autocomplete="off">
 <input class="li" id="pi" type="password" placeholder="Пароль (мин. 4)" maxlength="30">
 <div id="authErr" style="color:#E85D75;font-size:12px;margin-top:6px;min-height:16px"></div>
@@ -823,7 +823,7 @@ var blob=new Blob(audioChunks,{type:'audio/webm'});var reader=new FileReader();r
 var dur=Math.round((Date.now()-recStart)/1000);
 var m=Math.floor(dur/60),s=dur%60;
 sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
-mediaRec.start(500)}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к микрофону')})}
+mediaRec.start(500)}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к микрофону. Используйте HTTPS.')})}
 
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
@@ -861,7 +861,7 @@ db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.databa
 vrecRec.start(500);
 vrecInt=setInterval(function(){vrecSec++;var m=Math.floor(vrecSec/60),s=vrecSec%60;$('vrecTimer').textContent=m+':'+(s<10?'0':'')+s;
 if(vrecSec>=30){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}},1000)
-}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере')})}
+}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере. Используйте HTTPS.')})}
 
 $('vrecStop').addEventListener('click',function(){
 if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();
@@ -911,7 +911,7 @@ h+='<div class="sdi" data-u="'+es(u)+'" onclick="if(\''+es(u)+'\'!==U){tSb();sPC
 +(p.status?'<div style="color:var(--tx3);font-size:10px">'+es(p.status)+'</div>':'')
 +'</div>'+(u!==U?'<button type="button" class="ib" onclick="event.stopPropagation();tSb();startCall(\''+es(u)+'\',false)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></button>':'')+'</div>'});
 h+='<button type="button" class="lbtn" onclick="doLo()">Выйти</button>';
-h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост 1.1.0</div>';
+h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост 1.2.1</div>';
 $('sdContent').innerHTML=h}
 
 // Profile
@@ -958,19 +958,37 @@ function showRecTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList
 mi.addEventListener('input',function(){uSB();sTp()});
 mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
 sbb.addEventListener('click',function(){sM()});
-// Tap to toggle mode, hold to record
-var recHoldTmr=null,recHeld=false;
-$('recMainBtn').addEventListener('click',function(){
-if(recHeld){recHeld=false;return}
-// Toggle mode
-if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
-else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}});
-$('recMainBtn').addEventListener('touchstart',function(e){recHeld=false;recHoldTmr=setTimeout(function(){recHeld=true;if(recMode==='audio')startAudioRec();else startVideoRec()},400)},{passive:true});
-$('recMainBtn').addEventListener('touchend',function(){clearTimeout(recHoldTmr);if(recHeld){if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}}});
-$('recMainBtn').addEventListener('touchmove',function(){clearTimeout(recHoldTmr)});
+// Record button: short tap (<500ms) = toggle mode, hold (>500ms) = record, release = send
+var recPressStart=0,recIsHold=false;
+$('recMainBtn').addEventListener('touchstart',function(e){
+e.preventDefault();recPressStart=Date.now();recIsHold=false;
+setTimeout(function(){
+  if(Date.now()-recPressStart>=480){recIsHold=true;
+    if(recMode==='audio')startAudioRec();else startVideoRec()}
+},500)},{passive:false});
+$('recMainBtn').addEventListener('touchend',function(){
+var dur=Date.now()-recPressStart;
+if(!recIsHold&&dur<500){
+  // Short tap — toggle mode
+  if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
+  else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
+}else if(recIsHold){
+  // Release after hold — stop recording & send
+  if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();
+  if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}
+}
+recPressStart=0;recIsHold=false});
+$('recMainBtn').addEventListener('touchmove',function(){recPressStart=0;recIsHold=false});
+// Mouse fallback for desktop
+$('recMainBtn').addEventListener('mousedown',function(){recPressStart=Date.now();recIsHold=false;
+setTimeout(function(){if(Date.now()-recPressStart>=480){recIsHold=true;if(recMode==='audio')startAudioRec();else startVideoRec()}},500)});
+$('recMainBtn').addEventListener('mouseup',function(){var dur=Date.now()-recPressStart;
+if(!recIsHold&&dur<500){if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}}
+else if(recIsHold){if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}}
+recPressStart=0;recIsHold=false});
 uSB();
 
-// Voice calls (WebRTC) — Мост 1.1.0
+// Voice calls (WebRTC) — Мост 1.2.1
 var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
 var remoteStream=null;
 function showCallUI(n,isInc){
@@ -1022,28 +1040,28 @@ callPC.ontrack=function(e){
 window.startCall=function(target,withVideo){
 if(callActive)return;callPeer=target;callRole='caller';callActive=true;callVideo=!!withVideo;
 var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);startRing();
-navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:240}}).then(function(stream){
+var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
+navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 callStream=stream;
-if(!withVideo)stream.getVideoTracks().forEach(function(t){t.enabled=false});
-else{$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
+if(withVideo){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
 $('callVO').classList.toggle('a',callVideo);updateCallVideoUI();
 callPC=new RTCPeerConnection(iceS);
 stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
 setupOntrack();
 callPC.onicecandidate=function(e){if(e.candidate)callRef.child('callerIce').push(e.candidate.toJSON())};
 callPC.createOffer().then(function(o){return callPC.setLocalDescription(o)}).then(function(){
-callRef.set({from:U,to:target,offer:{type:callPC.localDescription.type,sdp:callPC.localDescription.sdp},status:'ringing',video:true,ts:firebase.database.ServerValue.TIMESTAMP});
+callRef.set({from:U,to:target,offer:{type:callPC.localDescription.type,sdp:callPC.localDescription.sdp},status:'ringing',video:!!withVideo,ts:firebase.database.ServerValue.TIMESTAMP});
 callRef.child('answer').on('value',function(s){var a=s.val();if(a&&callPC&&callPC.signalingState!=='closed')callPC.setRemoteDescription(new RTCSessionDescription(a)).then(function(){stopRing();showActive()}).catch(function(){})});
 callRef.child('calleeIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='declined'){stopRing();endCallClean()}})})
-}).catch(function(err){console.error('getUserMedia error:',err);alert('Нет доступа к камере/микрофону');endCallClean()})};
+}).catch(function(err){console.error('getUserMedia error:',err);alert('Нет доступа к микрофону. Откройте через HTTPS (GitHub Pages).');endCallClean()})};
 function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
 callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='cancelled'){stopRing();endCallClean()}})}
 function accCall(withVideo){if(!callRef)return;stopRing();
 callVideo=!!withVideo;callSpeaker=!!withVideo;
-navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:240}}).then(function(stream){callStream=stream;
-if(!withVideo)stream.getVideoTracks().forEach(function(t){t.enabled=false});
-else{$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
+var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
+navigator.mediaDevices.getUserMedia(constraints).then(function(stream){callStream=stream;
+if(withVideo){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
 updateCallVideoUI();
 callRef.once('value',function(s){var data=s.val();if(!data||!data.offer)return;
 callPC=new RTCPeerConnection(iceS);
@@ -1053,7 +1071,7 @@ callPC.onicecandidate=function(e){if(e.candidate)callRef.child('calleeIce').push
 callPC.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return callPC.createAnswer()}).then(function(a){return callPC.setLocalDescription(a)}).then(function(){
 callRef.child('answer').set({type:callPC.localDescription.type,sdp:callPC.localDescription.sdp});callRef.update({status:'active'});showActive();
 callRef.child('callerIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})})})})
-}).catch(function(){alert('Нет доступа к камере');endCallClean()})}
+}).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.');endCallClean()})}
 function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}remoteStream=null;var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvOut'))$('callAvOut').parentElement.style.display='';hideCallUI();stopRing()}
 function listenCalls(){if(callListenerSet)return;callListenerSet=true;db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(s){var d=s.val();if(d&&d.to===U&&d.status==='ringing'&&!callActive)handleInc(s.key,d)})}
 // Button events
@@ -1068,12 +1086,25 @@ $('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('cl
 function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
 $('callS').addEventListener('click',toggleSpk);$('callSO').addEventListener('click',toggleSpk);
 // Camera toggle
-function toggleVid(){if(!callStream)return;var vt=callStream.getVideoTracks();if(vt.length){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});callVideo=ns;
-$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);
-if(ns){$('localVid').srcObject=callStream;$('localVid').classList.remove('hidden')}
-else{$('localVid').classList.add('hidden')}
-// Toggle UI: avatar vs camera fullscreen
-updateCallVideoUI()}}
+function toggleVid(){if(!callStream)return;
+var vt=callStream.getVideoTracks();
+if(vt.length>0){
+  // Has video track — just toggle enabled
+  var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});callVideo=ns;
+  $('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);
+  if(ns){$('localVid').srcObject=callStream;$('localVid').classList.remove('hidden')}
+  else{$('localVid').classList.add('hidden')}
+  updateCallVideoUI()
+}else{
+  // No video track — request camera and add to stream+PC
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240}}).then(function(vs){
+    var nt=vs.getVideoTracks()[0];callStream.addTrack(nt);
+    if(callPC){callPC.addTrack(nt,callStream)}
+    callVideo=true;$('callV').classList.add('a');$('callVO').classList.add('a');
+    $('localVid').srcObject=callStream;$('localVid').classList.remove('hidden');
+    updateCallVideoUI()
+  }).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.')})
+}}
 function updateCallVideoUI(){var sec=$('callAvSection'),tb=$('callBack'),tn=$('callTopName'),ts=$('callTopStatus'),sw=$('callSpkWrap'),fw=$('callFlipWrap');
 if(callVideo){if(sec)sec.style.display='none';tb.style.display='';tn.style.display='';tn.textContent=$('callNmOut').textContent;ts.style.display='';ts.textContent=$('callStOut').textContent;
 if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');$('callScr').className='cs cs-act'}
@@ -1081,12 +1112,14 @@ else{if(sec)sec.style.display='';tb.style.display='none';tn.style.display='none'
 if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden')}}
 // Flip camera
 var facingMode='user';
-function flipCamera(){if(!callStream)return;facingMode=facingMode==='user'?'environment':'user';
-var vt=callStream.getVideoTracks();vt.forEach(function(t){t.stop()});
+function flipCamera(){if(!callStream)return;
+var vt=callStream.getVideoTracks();if(!vt.length)return;
+facingMode=facingMode==='user'?'environment':'user';
+vt.forEach(function(t){t.stop()});
 navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode,width:320,height:240}}).then(function(s){
 var nt=s.getVideoTracks()[0];callStream.removeTrack(vt[0]);callStream.addTrack(nt);
 if(callPC){var sender=callPC.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}
-$('localVid').srcObject=callStream}).catch(function(){})}
+$('localVid').srcObject=callStream}).catch(function(){facingMode=facingMode==='user'?'environment':'user'})}
 $('callFlipO').addEventListener('click',flipCamera);
 $('callBack').addEventListener('click',declineOrEnd);
 $('callV').addEventListener('click',toggleVid);$('callVO').addEventListener('click',toggleVid);
