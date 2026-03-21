@@ -1304,21 +1304,23 @@ callSec=0;$('callTm').textContent='00:00';
 callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
 function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');$('callTopbar').style.display='none';if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
 
-// ontrack handler — separates audio and video
+// ontrack handler — SEPARATED audio and video into independent streams
 function setupOntrack(){
-var remoteStream=new MediaStream();
 callPC.ontrack=function(e){
-  remoteStream.addTrack(e.track);
+  if(e.track.kind==='audio'){
+    // Audio → own <audio> element, never remove on video arrival
+    var ra=document.getElementById('rAudio');
+    if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;document.body.appendChild(ra)}
+    ra.srcObject=new MediaStream([e.track]);
+    ra.volume=callSpeaker?1:.15;
+  }
   if(e.track.kind==='video'){
-    $('remoteVid').srcObject=remoteStream;$('remoteVid').classList.remove('hidden');
+    // Video → own MediaStream for <video>
+    $('remoteVid').srcObject=new MediaStream([e.track]);
+    $('remoteVid').classList.remove('hidden');
     if($('callAvSection'))$('callAvSection').style.display='none';
     e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
     e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'}
-  }
-  if(e.track.kind==='audio'){
-    var ra=document.getElementById('rAudio');if(ra)ra.remove();
-    var a=document.createElement('audio');a.id='rAudio';a.autoplay=true;a.srcObject=new MediaStream([e.track]);
-    a.volume=callSpeaker?1:.15;document.body.appendChild(a)
   }
 }}
 
@@ -1344,8 +1346,10 @@ if(callVideo){
   if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
 }}
 window.startCall=function(target,withVideo){
-if(callActive)return;callPeer=target;callRole='caller';callActive=true;callVideo=!!withVideo;
-var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);startRing();
+if(callActive)return;callPeer=target;callRole='caller';callActive=true;
+var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);
+callVideo=!!withVideo;if(withVideo){$('callVO').classList.add('a');updateCallVideoUI()}
+startRing();
 var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
 navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 callStream=stream;
