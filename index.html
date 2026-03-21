@@ -122,23 +122,21 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .m-sched{border:1px dashed var(--acc);opacity:.6}
 
 /* Input bar - Telegram style */
-.inb{padding:6px 8px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:6px;align-items:center;backdrop-filter:blur(20px);flex-shrink:0}
-.inw{flex:1;background:var(--bg3);border-radius:20px;display:flex;align-items:center;padding:0 4px}
+.inb{padding:6px 8px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:8px;align-items:center;backdrop-filter:blur(20px);flex-shrink:0;position:relative}
+.inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center;padding:0 4px}
 .min{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;padding:10px 8px;min-width:0;font-weight:400}
 .min::placeholder{color:var(--tx3)}
-.ini{width:30px;height:30px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;padding:0;flex-shrink:0}
+.ini{width:34px;height:34px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;padding:0;flex-shrink:0}
 .ini:active{background:var(--bg3)}
-.sb{width:42px;height:42px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:var(--bg3);box-shadow:none;transition:all .2s}
-.sb.a{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3)}
-.sb.a svg{stroke:#fff}
-.sb svg{stroke:var(--tx3)}
-.right-btns{display:flex;gap:2px;align-items:center;flex-shrink:0}
+.rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s}
+.rb-main:active{transform:scale(.9)}
+.rb-main.recording{background:#E85D75;animation:rp 1s infinite}
+.sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);transition:all .15s}
+.sb:active{transform:scale(.9)}
+.rec-tooltip{position:absolute;bottom:60px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;z-index:16;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:ca .15s ease-out}
 .rec-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .rec-btn:active{background:var(--bg3)}
 .rec-btn.recording{background:rgba(232,93,117,.2);animation:rp 1s infinite}
-.vrec-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.vrec-btn:active{background:var(--bg3)}
-.vrec-btn.recording{background:rgba(102,126,234,.2);animation:rp 1s infinite}
 
 /* Video message */
 .m-vidmsg{width:200px;height:200px;border-radius:50%;overflow:hidden;cursor:pointer;position:relative;background:#000}
@@ -281,7 +279,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="ls hidden" id="S0">
 <div class="ll"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
 <div class="lt">Мост</div>
-<div class="lsb" id="authMsg">Мост 1.0.0</div>
+<div class="lsb" id="authMsg">Мост 1.1.0</div>
 <input class="li" id="ni" placeholder="Имя пользователя" maxlength="20" autocomplete="off">
 <input class="li" id="pi" type="password" placeholder="Пароль (мин. 4)" maxlength="30">
 <div id="authErr" style="color:#E85D75;font-size:12px;margin-top:6px;min-height:16px"></div>
@@ -330,16 +328,19 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="ma" id="mArea"></div>
 <div class="rb hidden" id="rpb"><div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div><button type="button" class="rbx" id="rpc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <div class="inb">
-<button type="button" class="ini" id="attBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
 <div class="inw">
-<button type="button" class="ini" id="eb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
-<input class="min" id="mi" placeholder="Сообщение..." autocomplete="off">
+<button type="button" class="ini" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+<input class="min" id="mi" placeholder="Сообщение" autocomplete="off">
+<button type="button" class="ini" id="attBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
 </div>
-<div class="right-btns" id="rightBtns">
-<button type="button" class="sb hidden" id="sbb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-<button type="button" class="rec-btn" id="recBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button>
-<button type="button" class="vrec-btn" id="vrecBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
-</div>
+<!-- Record / Send button -->
+<button type="button" class="rb-main" id="recMainBtn">
+<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+<svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>
+</button>
+<button type="button" class="sb hidden" id="sbb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+<!-- Tooltip -->
+<div class="rec-tooltip hidden" id="recTooltip"></div>
 </div>
 <div class="ep" id="epp"></div>
 <!-- Attach menu -->
@@ -380,23 +381,33 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 <!-- Outgoing / Active layout -->
 <div class="hidden" id="callOutWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%">
+<!-- Top bar with back button and name (for video mode) -->
+<div class="call-topbar" id="callTopbar" style="display:none;position:absolute;top:0;left:0;right:0;padding:12px 16px;z-index:43;display:flex;align-items:center;gap:10px">
+<button type="button" class="bb" id="callBack" style="display:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+<div id="callTopName" style="color:#fff;font-size:18px;font-weight:500;display:none"></div>
+<div id="callTopStatus" style="color:rgba(255,255,255,.6);font-size:13px;display:none"></div>
+</div>
+<!-- Avatar layout (for audio calls) -->
+<div id="callAvSection">
 <div class="call-av-wrap"><div class="call-av-ring" id="callAvOut"></div></div>
 <div class="call-name" id="callNmOut"></div>
-<div class="call-status" id="callStOut">Вызов...</div>
+</div>
+<div class="call-status" id="callStOut">Запрос •••</div>
 <div class="call-timer hidden" id="callTm">00:00</div>
 <div style="color:rgba(255,255,255,.4);font-size:12px;text-align:center;margin-top:4px" id="callMode"></div>
 </div>
-<!-- Incoming buttons: decline + accept audio + accept video -->
+<!-- Incoming buttons: decline + accept -->
 <div class="call-btns-inc hidden" id="callIncBtns">
 <div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
 <div class="call-btn-wrap"><button type="button" class="cb acc-video" id="callAV"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><span class="cb-label">Ответить</span></div>
 </div>
-<!-- Outgoing buttons: speaker, video, mic, end -->
+<!-- Outgoing buttons: динамик/повернуть, видео, убрать звук, завершить -->
 <div class="call-btns hidden" id="callOutBtns">
-<div class="call-btn-wrap"><button type="button" class="cb-sm a" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">Динамик</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callVO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">Камера</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callMO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">Микрофон</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb end" id="callD"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Завершить</span></div>
+<div class="call-btn-wrap" id="callSpkWrap"><button type="button" class="cb-sm a" id="callSO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button><span class="cb-label">динамик</span></div>
+<div class="call-btn-wrap hidden" id="callFlipWrap"><button type="button" class="cb-sm" id="callFlipO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button><span class="cb-label">повернуть</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callVO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span class="cb-label">видео</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb-sm" id="callMO"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button><span class="cb-label">убрать звук</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb end" id="callD"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">завершить</span></div>
 </div>
 <!-- Active call buttons: same as outgoing -->
 <div class="call-btns hidden" id="callActBtns">
@@ -802,16 +813,17 @@ function sendDisappearing(){var t=$('mi').value.trim();if(!t)return;var secs=pro
 sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
-$('recBtn').addEventListener('click',function(){if(isRec){mediaRec.stop();return}
-var recStart=Date.now();
-navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;$('recBtn').classList.add('recording');
+// Audio record function
+function startAudioRec(){if(isRec){mediaRec.stop();return}
+var recStart=Date.now();$('recMainBtn').classList.add('recording');
+navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
 mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
-mediaRec.onstop=function(){isRec=false;$('recBtn').classList.remove('recording');stream.getTracks().forEach(function(t){t.stop()});
+mediaRec.onstop=function(){isRec=false;$('recMainBtn').classList.remove('recording');stream.getTracks().forEach(function(t){t.stop()});
 var blob=new Blob(audioChunks,{type:'audio/webm'});var reader=new FileReader();reader.onload=function(){
 var dur=Math.round((Date.now()-recStart)/1000);
 var m=Math.floor(dur/60),s=dur%60;
 sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
-mediaRec.start(500)}).catch(function(){alert('Нет доступа к микрофону')})});
+mediaRec.start(500)}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к микрофону')})}
 
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
@@ -823,7 +835,8 @@ if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='f
 
 // Video message recording
 var vrecStream=null,vrecRec=null,vrecChunks=[],vrecInt=null,vrecSec=0;
-$('vrecBtn').addEventListener('click',function(){
+function startVideoRec(){
+$('recMainBtn').classList.add('recording');
 navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
 vrecStream=stream;vrecSec=0;$('vrecTimer').textContent='0:00';
 $('vrecPreview').querySelector('video').srcObject=stream;
@@ -831,14 +844,14 @@ $('vrecOv').classList.remove('hidden');
 vrecChunks=[];vrecRec=new MediaRecorder(stream);
 vrecRec.ondataavailable=function(e){vrecChunks.push(e.data)};
 vrecRec.onstop=function(){
+$('recMainBtn').classList.remove('recording');
 vrecStream.getTracks().forEach(function(t){t.stop()});
 var blob=new Blob(vrecChunks,{type:'video/webm'});
-if(blob.size<10)return;// cancelled
+if(blob.size<10)return;
 var reader=new FileReader();reader.onload=function(){
 if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
 var m=Math.floor(vrecSec/60),s=vrecSec%60;
 var dur=m+':'+(s<10?'0':'')+s;
-// Send video message
 var inp=$('mi'),t=inp.value.trim();inp.value='';uSB();
 var msg={sender:U,ts:firebase.database.ServerValue.TIMESTAMP,vidMsg:reader.result,vidDur:dur};
 if(t)msg.text=t;
@@ -848,7 +861,7 @@ db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.databa
 vrecRec.start(500);
 vrecInt=setInterval(function(){vrecSec++;var m=Math.floor(vrecSec/60),s=vrecSec%60;$('vrecTimer').textContent=m+':'+(s<10?'0':'')+s;
 if(vrecSec>=30){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}},1000)
-}).catch(function(){alert('Нет доступа к камере')})});
+}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере')})}
 
 $('vrecStop').addEventListener('click',function(){
 if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();
@@ -857,6 +870,7 @@ clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
 $('vrecCancel').addEventListener('click',function(){
 if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=null;vrecRec.stop()}
 if(vrecStream)vrecStream.getTracks().forEach(function(t){t.stop()});
+$('recMainBtn').classList.remove('recording');
 clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
 
 // Emoji
@@ -897,7 +911,7 @@ h+='<div class="sdi" data-u="'+es(u)+'" onclick="if(\''+es(u)+'\'!==U){tSb();sPC
 +(p.status?'<div style="color:var(--tx3);font-size:10px">'+es(p.status)+'</div>':'')
 +'</div>'+(u!==U?'<button type="button" class="ib" onclick="event.stopPropagation();tSb();startCall(\''+es(u)+'\',false)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></button>':'')+'</div>'});
 h+='<button type="button" class="lbtn" onclick="doLo()">Выйти</button>';
-h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост 1.0.0</div>';
+h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост 1.1.0</div>';
 $('sdContent').innerHTML=h}
 
 // Profile
@@ -936,17 +950,27 @@ folders.forEach(function(f){h+='<div class="ov-item"><div style="color:var(--tx)
 h+='<div style="padding:16px"><input class="pe-input" id="newFolder" placeholder="Новая папка..."><button type="button" class="ov-btn" style="margin:8px 0" onclick="var v=$(\'newFolder\').value.trim();if(v&&folders.indexOf(v)===-1){folders.push(v);saveLocal();renderFolderTabs();showFolders()}">Добавить</button></div></div>';
 $('ovFolders').innerHTML=h;$('ovFolders').classList.remove('hidden')};
 
-// Send btn
-var mi=$('mi'),sbb=$('sbb');
+// Send btn & record mode toggle
+var mi=$('mi'),sbb=$('sbb'),recMode='audio'; // 'audio' or 'video'
 function uSB(){var a=mi.value.trim().length>0;
-sbb.classList.toggle('hidden',!a);sbb.className='sb'+(a?' a':'')+(a?'':' hidden');
-$('recBtn').classList.toggle('hidden',a);$('vrecBtn').classList.toggle('hidden',a)}
+sbb.classList.toggle('hidden',!a);$('recMainBtn').classList.toggle('hidden',a)}
+function showRecTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tmr);t._tmr=setTimeout(function(){t.classList.add('hidden')},3000)}
 mi.addEventListener('input',function(){uSB();sTp()});
 mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
 sbb.addEventListener('click',function(){sM()});
+// Tap to toggle mode, hold to record
+var recHoldTmr=null,recHeld=false;
+$('recMainBtn').addEventListener('click',function(){
+if(recHeld){recHeld=false;return}
+// Toggle mode
+if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
+else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}});
+$('recMainBtn').addEventListener('touchstart',function(e){recHeld=false;recHoldTmr=setTimeout(function(){recHeld=true;if(recMode==='audio')startAudioRec();else startVideoRec()},400)},{passive:true});
+$('recMainBtn').addEventListener('touchend',function(){clearTimeout(recHoldTmr);if(recHeld){if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}}});
+$('recMainBtn').addEventListener('touchmove',function(){clearTimeout(recHoldTmr)});
 uSB();
 
-// Voice calls (WebRTC) — Мост 1.0.0
+// Voice calls (WebRTC) — Мост 1.1.0
 var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
 var remoteStream=null;
 function showCallUI(n,isInc){
@@ -962,7 +986,7 @@ if(isInc){
   $('callAvInc').innerHTML=av(n,130);$('callIncBtns').classList.remove('hidden')
 }else{
   $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
-  $('callNmOut').textContent=n;$('callStOut').textContent='Вызов...';
+  $('callNmOut').textContent=n;$('callStOut').textContent='Запрос •••';
   $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden')
 }}
 function showActive(){
@@ -972,7 +996,9 @@ $('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex
 $('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
 $('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
 $('callV').classList.toggle('a',callVideo);$('callS').classList.toggle('a',callSpeaker);
+$('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
 $('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';
+updateCallVideoUI();
 callSec=0;$('callTm').textContent='00:00';
 callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
 function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
@@ -1000,6 +1026,7 @@ navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:3
 callStream=stream;
 if(!withVideo)stream.getVideoTracks().forEach(function(t){t.enabled=false});
 else{$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
+$('callVO').classList.toggle('a',callVideo);updateCallVideoUI();
 callPC=new RTCPeerConnection(iceS);
 stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
 setupOntrack();
@@ -1017,6 +1044,7 @@ callVideo=!!withVideo;callSpeaker=!!withVideo;
 navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:240}}).then(function(stream){callStream=stream;
 if(!withVideo)stream.getVideoTracks().forEach(function(t){t.enabled=false});
 else{$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
+updateCallVideoUI();
 callRef.once('value',function(s){var data=s.val();if(!data||!data.offer)return;
 callPC=new RTCPeerConnection(iceS);
 stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
@@ -1040,7 +1068,27 @@ $('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('cl
 function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);$('callMode').textContent=callSpeaker?'Громкая связь':'Тихий режим';var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
 $('callS').addEventListener('click',toggleSpk);$('callSO').addEventListener('click',toggleSpk);
 // Camera toggle
-function toggleVid(){if(!callStream)return;var vt=callStream.getVideoTracks();if(vt.length){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});callVideo=ns;$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);if(ns){$('localVid').srcObject=callStream;$('localVid').classList.remove('hidden')}else{$('localVid').classList.add('hidden')}}}
+function toggleVid(){if(!callStream)return;var vt=callStream.getVideoTracks();if(vt.length){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});callVideo=ns;
+$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);
+if(ns){$('localVid').srcObject=callStream;$('localVid').classList.remove('hidden')}
+else{$('localVid').classList.add('hidden')}
+// Toggle UI: avatar vs camera fullscreen
+updateCallVideoUI()}}
+function updateCallVideoUI(){var sec=$('callAvSection'),tb=$('callBack'),tn=$('callTopName'),ts=$('callTopStatus'),sw=$('callSpkWrap'),fw=$('callFlipWrap');
+if(callVideo){if(sec)sec.style.display='none';tb.style.display='';tn.style.display='';tn.textContent=$('callNmOut').textContent;ts.style.display='';ts.textContent=$('callStOut').textContent;
+if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');$('callScr').className='cs cs-act'}
+else{if(sec)sec.style.display='';tb.style.display='none';tn.style.display='none';ts.style.display='none';
+if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden')}}
+// Flip camera
+var facingMode='user';
+function flipCamera(){if(!callStream)return;facingMode=facingMode==='user'?'environment':'user';
+var vt=callStream.getVideoTracks();vt.forEach(function(t){t.stop()});
+navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode,width:320,height:240}}).then(function(s){
+var nt=s.getVideoTracks()[0];callStream.removeTrack(vt[0]);callStream.addTrack(nt);
+if(callPC){var sender=callPC.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}
+$('localVid').srcObject=callStream}).catch(function(){})}
+$('callFlipO').addEventListener('click',flipCamera);
+$('callBack').addEventListener('click',declineOrEnd);
 $('callV').addEventListener('click',toggleVid);$('callVO').addEventListener('click',toggleVid);
 $('phb').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
 $('vidBtn').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
