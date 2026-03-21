@@ -819,18 +819,20 @@ function sendDisappearing(){var t=$('mi').value.trim();if(!t)return;var secs=pro
 sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
-// Audio record function
-function startAudioRec(){if(isRec){mediaRec.stop();return}
+// Audio record — hold-to-record only
+var audioRecStream=null;
+function startAudioRec(){
 var recStart=Date.now();$('recMainBtn').classList.add('recording');
-navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
+navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){audioRecStream=stream;mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
 mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
-mediaRec.onstop=function(){isRec=false;$('recMainBtn').classList.remove('recording');stream.getTracks().forEach(function(t){t.stop()});
-var blob=new Blob(audioChunks,{type:'audio/webm'});var reader=new FileReader();reader.onload=function(){
+mediaRec.onstop=function(){isRec=false;$('recMainBtn').classList.remove('recording');stream.getTracks().forEach(function(t){t.stop()});audioRecStream=null;
+var blob=new Blob(audioChunks,{type:'audio/webm'});if(blob.size<100)return;
+var reader=new FileReader();reader.onload=function(){
 var dur=Math.round((Date.now()-recStart)/1000);
 var m=Math.floor(dur/60),s=dur%60;
 sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
 mediaRec.start(500)}).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к микрофону. Используйте HTTPS.')})}
-
+function stopAudioRec(){if(isRec&&mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
 $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
@@ -839,23 +841,21 @@ $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
 window.playVidMsg=function(el){var v=el.querySelector('video');var pb=el.querySelector('.m-vidmsg-play');
 if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='flex'}};
 
-// Video message recording
+// Video message recording — hold-to-record (no overlay)
 var vrecStream=null,vrecRec=null,vrecChunks=[],vrecInt=null,vrecSec=0;
 function startVideoRec(){
-$('recMainBtn').classList.add('recording');
+$('recMainBtn').classList.add('recording');vrecSec=0;
 navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
-vrecStream=stream;vrecSec=0;$('vrecTimer').textContent='0:00';
-$('vrecPreview').querySelector('video').srcObject=stream;
-$('vrecOv').classList.remove('hidden');
-vrecChunks=[];vrecRec=new MediaRecorder(stream);
+vrecStream=stream;vrecChunks=[];vrecRec=new MediaRecorder(stream);
 vrecRec.ondataavailable=function(e){vrecChunks.push(e.data)};
 vrecRec.onstop=function(){
 $('recMainBtn').classList.remove('recording');
-vrecStream.getTracks().forEach(function(t){t.stop()});
+if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}
+clearInterval(vrecInt);
 var blob=new Blob(vrecChunks,{type:'video/webm'});
-if(blob.size<10)return;
-var reader=new FileReader();reader.onload=function(){
+if(blob.size<100)return;
 if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
+var reader=new FileReader();reader.onload=function(){
 var m=Math.floor(vrecSec/60),s=vrecSec%60;
 var dur=m+':'+(s<10?'0':'')+s;
 var inp=$('mi'),t=inp.value.trim();inp.value='';uSB();
@@ -865,19 +865,9 @@ db.ref('messages/'+cRoom).push(msg);
 db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.database.ServerValue.TIMESTAMP})
 };reader.readAsDataURL(blob)};
 vrecRec.start(500);
-vrecInt=setInterval(function(){vrecSec++;var m=Math.floor(vrecSec/60),s=vrecSec%60;$('vrecTimer').textContent=m+':'+(s<10?'0':'')+s;
-if(vrecSec>=30){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}},1000)
+vrecInt=setInterval(function(){vrecSec++;if(vrecSec>=30)stopVideoRec()},1000)
 }).catch(function(){$('recMainBtn').classList.remove('recording');alert('Нет доступа к камере. Используйте HTTPS.')})}
-
-$('vrecStop').addEventListener('click',function(){
-if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();
-clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
-
-$('vrecCancel').addEventListener('click',function(){
-if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=null;vrecRec.stop()}
-if(vrecStream)vrecStream.getTracks().forEach(function(t){t.stop()});
-$('recMainBtn').classList.remove('recording');
-clearInterval(vrecInt);$('vrecOv').classList.add('hidden')});
+function stopVideoRec(){if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();clearInterval(vrecInt)}
 
 // Emoji
 function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div>';p.innerHTML=h;
@@ -980,37 +970,71 @@ var mi=$('mi'),sbb=$('sbb'),recMode='audio'; // 'audio' or 'video'
 function uSB(){var a=mi.value.trim().length>0;
 sbb.classList.toggle('hidden',!a);$('recMainBtn').classList.toggle('hidden',a)}
 function showRecTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tmr);t._tmr=setTimeout(function(){t.classList.add('hidden')},3000)}
+function updateRecIcon(){
+if(recMode==='audio'){$('recMicIcon').classList.remove('hidden');$('recVidIcon').classList.add('hidden')}
+else{$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden')}
+}
 mi.addEventListener('input',function(){uSB();sTp()});
 mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
 sbb.addEventListener('click',function(){sM()});
-// Record button: short tap (<500ms) = toggle mode, hold (>500ms) = record, release = send
-var recPressStart=0,recIsHold=false;
-$('recMainBtn').addEventListener('touchstart',function(e){
-e.preventDefault();recPressStart=Date.now();recIsHold=false;
-setTimeout(function(){
-  if(Date.now()-recPressStart>=480){recIsHold=true;
-    if(recMode==='audio')startAudioRec();else startVideoRec()}
-},500)},{passive:false});
-$('recMainBtn').addEventListener('touchend',function(){
-var dur=Date.now()-recPressStart;
-if(!recIsHold&&dur<500){
-  // Short tap — toggle mode
-  if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
-  else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
-}else if(recIsHold){
-  // Release after hold — stop recording & send
-  if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();
-  if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}
+
+// Record button logic:
+// Short tap (<500ms) = toggle mode audio↔video + tooltip
+// Hold (>=500ms) = start recording, release = stop & send
+var recPressStart=0,recHoldTimer=null,recIsHolding=false,recStartX=0,recStartY=0;
+function recBegin(x,y){
+recPressStart=Date.now();recIsHolding=false;recStartX=x;recStartY=y;
+recHoldTimer=setTimeout(function(){
+  recIsHolding=true;
+  if(recMode==='audio')startAudioRec();else startVideoRec();
+},500);
 }
-recPressStart=0;recIsHold=false});
-$('recMainBtn').addEventListener('touchmove',function(){recPressStart=0;recIsHold=false});
-// Mouse fallback for desktop
-$('recMainBtn').addEventListener('mousedown',function(){recPressStart=Date.now();recIsHold=false;
-setTimeout(function(){if(Date.now()-recPressStart>=480){recIsHold=true;if(recMode==='audio')startAudioRec();else startVideoRec()}},500)});
-$('recMainBtn').addEventListener('mouseup',function(){var dur=Date.now()-recPressStart;
-if(!recIsHold&&dur<500){if(recMode==='audio'){recMode='video';$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}else{recMode='audio';$('recVidIcon').classList.add('hidden');$('recMicIcon').classList.remove('hidden');showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}}
-else if(recIsHold){if(recMode==='audio'&&isRec&&mediaRec)mediaRec.stop();if(recMode==='video'&&vrecRec&&vrecRec.state==='recording'){vrecRec.stop();clearInterval(vrecInt);$('vrecOv').classList.add('hidden')}}
-recPressStart=0;recIsHold=false});
+function recEnd(){
+clearTimeout(recHoldTimer);
+var dur=Date.now()-recPressStart;
+if(!recIsHolding&&dur<500&&dur>0){
+  // Short tap — toggle mode
+  if(recMode==='audio'){
+    recMode='video';updateRecIcon();
+    showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.');
+  }else{
+    recMode='audio';updateRecIcon();
+    showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.');
+  }
+}else if(recIsHolding){
+  // Release after hold — stop recording & send
+  if(recMode==='audio')stopAudioRec();
+  else stopVideoRec();
+}
+recPressStart=0;recIsHolding=false;
+}
+function recCancel(){
+clearTimeout(recHoldTimer);
+if(recIsHolding){
+  // Cancel recording without sending
+  if(recMode==='audio'){if(isRec&&mediaRec){mediaRec.ondataavailable=null;mediaRec.onstop=function(){isRec=false;$('recMainBtn').classList.remove('recording');if(audioRecStream){audioRecStream.getTracks().forEach(function(t){t.stop()});audioRecStream=null}};mediaRec.stop()}}
+  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){$('recMainBtn').classList.remove('recording');if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}}
+}
+recPressStart=0;recIsHolding=false;
+}
+
+// Touch events
+$('recMainBtn').addEventListener('touchstart',function(e){
+e.preventDefault();
+var touch=e.touches[0];recBegin(touch.clientX,touch.clientY);
+},{passive:false});
+$('recMainBtn').addEventListener('touchend',function(e){e.preventDefault();recEnd()},{passive:false});
+$('recMainBtn').addEventListener('touchmove',function(e){
+// Cancel only if finger moved far away (>50px)
+var touch=e.touches[0];
+var dx=touch.clientX-recStartX,dy=touch.clientY-recStartY;
+if(Math.sqrt(dx*dx+dy*dy)>50)recCancel();
+},{passive:true});
+
+// Mouse events (desktop fallback)
+$('recMainBtn').addEventListener('mousedown',function(e){recBegin(e.clientX,e.clientY)});
+$('recMainBtn').addEventListener('mouseup',function(){recEnd()});
+$('recMainBtn').addEventListener('mouseleave',function(){if(recPressStart>0)recCancel()});
 uSB();
 
 // Voice calls (WebRTC) — Мост
