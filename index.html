@@ -463,7 +463,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.3.0';
+var APP_VERSION='2.4.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -504,33 +504,104 @@ var themeNames={'dark':'🌙 Тёмная','light':'☀️ Светлая','madm
 function applyTheme(){$('app').setAttribute('data-theme',theme==='dark'?'':theme)}
 applyTheme();
 
-// PIN
-var storedPin=localStorage.getItem('pc_pin')||'',pinInput='';
-window._afterPin=null;
-function showPin(){if(!storedPin){$('SP').classList.add('hidden');$('S0').classList.remove('hidden');return}$('S0').classList.add('hidden');$('SP').classList.remove('hidden');pinInput='';renderPD();buildPK()}
-function renderPD(){var h='';for(var i=0;i<4;i++)h+='<div class="pin-dot'+(i<pinInput.length?' f':'')+'"></div>';$('pinDots').innerHTML=h}
-function buildPK(){var h='';for(var i=1;i<=9;i++)h+='<button type="button" class="pin-k" data-n="'+i+'">'+i+'</button>';h+='<button type="button" class="pin-k"></button><button type="button" class="pin-k" data-n="0">0</button><button type="button" class="pin-k" data-n="del">⌫</button>';$('pinKb').innerHTML=h;
-$('pinKb').querySelectorAll('.pin-k').forEach(function(b){b.addEventListener('click',function(){var n=b.getAttribute('data-n');if(!n)return;if(n==='del')pinInput=pinInput.slice(0,-1);else if(pinInput.length<4)pinInput+=n;renderPD();if(pinInput.length===4){if(pinInput===storedPin){$('SP').classList.add('hidden');if(window._afterPin){window._afterPin();window._afterPin=null}else $('S0').classList.remove('hidden')}else{$('pinMsg').textContent='Неверный PIN';pinInput='';renderPD();setTimeout(function(){$('pinMsg').textContent='4-значный код'},1500)}}})})}
 
-// Auth
+// ============ AuthManager — isolated auth/PIN module ============
+var AuthManager=(function(){
+var storedPin=localStorage.getItem('pc_pin')||'',pinInput='';
 var authMode='login';
-function updAuthUI(){if(authMode==='login'){$('lbn').classList.remove('hidden');$('regbn').classList.add('hidden');$('authSw').textContent='Нет аккаунта? Регистрация'}else{$('lbn').classList.add('hidden');$('regbn').classList.remove('hidden');$('authSw').textContent='Есть аккаунт? Войти'}$('authErr').textContent='';updAuthBtn()}
-function updAuthBtn(){var ok=$('ni').value.trim().length>=2&&$('pi').value.length>=4;$('lbn').className='lb'+(ok?' a':'');$('regbn').className='lb'+(ok?' a':'')}
-$('ni').addEventListener('input',updAuthBtn);$('pi').addEventListener('input',updAuthBtn);
-$('pi').addEventListener('keydown',function(e){if(e.key==='Enter'){if(authMode==='login')doLogin();else doReg()}});
-$('authSw').addEventListener('click',function(){authMode=authMode==='login'?'register':'login';updAuthUI()});
-$('lbn').addEventListener('click',doLogin);$('regbn').addEventListener('click',doReg);
+
+function log(msg){console.log('[AuthManager] '+msg)}
+
+// --- PIN ---
+function showPin(){
+  if(!storedPin){$('SP').classList.add('hidden');$('S0').classList.remove('hidden');return}
+  $('S0').classList.add('hidden');$('SP').classList.remove('hidden');pinInput='';renderDots();buildKeyboard();
+}
+function renderDots(){var h='';for(var i=0;i<4;i++)h+='<div class="pin-dot'+(i<pinInput.length?' f':'')+'"></div>';$('pinDots').innerHTML=h}
+function buildKeyboard(){
+  var h='';for(var i=1;i<=9;i++)h+='<button type="button" class="pin-k" data-n="'+i+'">'+i+'</button>';
+  h+='<button type="button" class="pin-k"></button><button type="button" class="pin-k" data-n="0">0</button><button type="button" class="pin-k" data-n="del">⌫</button>';
+  $('pinKb').innerHTML=h;
+  $('pinKb').querySelectorAll('.pin-k').forEach(function(b){b.addEventListener('click',function(){
+    var n=b.getAttribute('data-n');if(!n)return;
+    if(n==='del')pinInput=pinInput.slice(0,-1);else if(pinInput.length<4)pinInput+=n;
+    renderDots();
+    if(pinInput.length===4){
+      if(pinInput===storedPin){$('SP').classList.add('hidden');if(window._afterPin){window._afterPin();window._afterPin=null}else $('S0').classList.remove('hidden')}
+      else{$('pinMsg').textContent='Неверный PIN';pinInput='';renderDots();setTimeout(function(){$('pinMsg').textContent='4-значный код'},1500)}
+    }
+  })});
+}
+
+// --- Auth UI ---
+function updateUI(){
+  if(authMode==='login'){$('lbn').classList.remove('hidden');$('regbn').classList.add('hidden');$('authSw').textContent='Нет аккаунта? Регистрация'}
+  else{$('lbn').classList.add('hidden');$('regbn').classList.remove('hidden');$('authSw').textContent='Есть аккаунт? Войти'}
+  $('authErr').textContent='';updateBtn();
+}
+function updateBtn(){var ok=$('ni').value.trim().length>=2&&$('pi').value.length>=4;$('lbn').className='lb'+(ok?' a':'');$('regbn').className='lb'+(ok?' a':'')}
 async function hashPw(p){var e=new TextEncoder().encode(p+'_pulse_2026');var b=await crypto.subtle.digest('SHA-256',e);return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
-function doReg(){var n=$('ni').value.trim(),p=$('pi').value;if(n.length<2||p.length<4)return;$('authErr').textContent='';
-db.ref('accounts/'+n).once('value',function(s){if(s.val()){$('authErr').textContent='Имя занято';return}hashPw(p).then(function(h){db.ref('accounts/'+n).set({hash:h});db.ref('profiles/'+n).set({name:n,status:'',avatar:''});localStorage.setItem('pc_user',n);localStorage.setItem('pc_hash',h);enterApp(n)})})}
-function doLogin(){var n=$('ni').value.trim(),p=$('pi').value;if(n.length<2||p.length<4)return;$('authErr').textContent='';
-db.ref('accounts/'+n).once('value',function(s){var a=s.val();if(!a){$('authErr').textContent='Аккаунт не найден';return}hashPw(p).then(function(h){if(h!==a.hash){$('authErr').textContent='Неверный пароль';return}localStorage.setItem('pc_user',n);localStorage.setItem('pc_hash',h);enterApp(n)})})}
-function enterApp(n){U=n;$('S0').classList.add('hidden');$('S1').classList.remove('hidden');sPres();lOn();lCL();listenProfiles();listenCalls();reqNotif();loadLocal();renderFolderTabs();
-db.ref('profiles/'+n).once('value',function(s){if(!s.val())db.ref('profiles/'+n).set({name:n,status:'',avatar:''})})}
-function tryAutoLogin(){var s=localStorage.getItem('pc_user'),h=localStorage.getItem('pc_hash');if(!s||!h){$('S0').classList.remove('hidden');updAuthUI();return}storedPin=localStorage.getItem('pc_pin')||'';
-if(storedPin){showPin();window._afterPin=function(){$('SP').classList.add('hidden');db.ref('accounts/'+s).once('value',function(v){var a=v.val();if(a&&a.hash===h){listenProfiles();enterApp(s)}else{localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');$('S0').classList.remove('hidden');updAuthUI()}})};return}
-listenProfiles();db.ref('accounts/'+s).once('value',function(v){var a=v.val();if(a&&a.hash===h){enterApp(s)}else{localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');$('S0').classList.remove('hidden');updAuthUI()}})}
-function doLo(){endCallClean();db.ref('calls').off();callListenerSet=false;if(pRef){pRef.remove();pRef=null}Object.keys(rList).forEach(function(r){db.ref('messages/'+r).off()});db.ref('online').off();db.ref('chats').off();db.ref('profiles').off();rList={};rMsgs={};cRooms={};onU={};tpList={};rrList={};U=null;cRoom="general";localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');$('S2').classList.add('hidden');$('S1').classList.add('hidden');$('sov').classList.add('hidden');$('S0').classList.remove('hidden');updAuthUI()}
+
+// --- Register / Login ---
+function doReg(){
+  var n=$('ni').value.trim(),p=$('pi').value;if(n.length<2||p.length<4)return;$('authErr').textContent='';
+  db.ref('accounts/'+n).once('value',function(s){if(s.val()){$('authErr').textContent='Имя занято';return}
+    hashPw(p).then(function(h){db.ref('accounts/'+n).set({hash:h});db.ref('profiles/'+n).set({name:n,status:'',avatar:''});localStorage.setItem('pc_user',n);localStorage.setItem('pc_hash',h);enterApp(n)})});
+}
+function doLogin(){
+  var n=$('ni').value.trim(),p=$('pi').value;if(n.length<2||p.length<4)return;$('authErr').textContent='';
+  db.ref('accounts/'+n).once('value',function(s){var a=s.val();if(!a){$('authErr').textContent='Аккаунт не найден';return}
+    hashPw(p).then(function(h){if(h!==a.hash){$('authErr').textContent='Неверный пароль';return}localStorage.setItem('pc_user',n);localStorage.setItem('pc_hash',h);enterApp(n)})});
+}
+function enterApp(n){
+  U=n;$('S0').classList.add('hidden');$('S1').classList.remove('hidden');
+  sPres();lOn();lCL();listenProfiles();listenCalls();reqNotif();loadLocal();renderFolderTabs();
+  db.ref('profiles/'+n).once('value',function(s){if(!s.val())db.ref('profiles/'+n).set({name:n,status:'',avatar:''})});
+  log('entered as '+n);
+}
+
+// --- Auto login ---
+function tryAutoLogin(){
+  var s=localStorage.getItem('pc_user'),h=localStorage.getItem('pc_hash');
+  if(!s||!h){$('S0').classList.remove('hidden');updateUI();return}
+  storedPin=localStorage.getItem('pc_pin')||'';
+  if(storedPin){showPin();window._afterPin=function(){$('SP').classList.add('hidden');
+    db.ref('accounts/'+s).once('value',function(v){var a=v.val();if(a&&a.hash===h){listenProfiles();enterApp(s)}else{localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');$('S0').classList.remove('hidden');updateUI()}})};return}
+  listenProfiles();db.ref('accounts/'+s).once('value',function(v){var a=v.val();if(a&&a.hash===h){enterApp(s)}else{localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');$('S0').classList.remove('hidden');updateUI()}});
+}
+
+// --- Logout ---
+function logout(){
+  endCallClean();db.ref('calls').off();callListenerSet=false;
+  if(pRef){pRef.remove();pRef=null}
+  Object.keys(rList).forEach(function(r){db.ref('messages/'+r).off()});
+  db.ref('online').off();db.ref('chats').off();db.ref('profiles').off();
+  rList={};rMsgs={};cRooms={};onU={};tpList={};rrList={};U=null;cRoom='general';
+  localStorage.removeItem('pc_user');localStorage.removeItem('pc_hash');
+  $('S2').classList.add('hidden');$('S1').classList.add('hidden');$('sov').classList.add('hidden');$('S0').classList.remove('hidden');
+  updateUI();log('logged out');
+}
+
+// --- Save/get PIN for profile ---
+function setPin(pin){
+  if(pin.length===4&&/^\d{4}$/.test(pin)){storedPin=pin;localStorage.setItem('pc_pin',pin)}
+  else if(!pin){storedPin='';localStorage.removeItem('pc_pin')}
+}
+function getPin(){return storedPin}
+
+// --- Init: bind events ---
+function init(){
+  $('ni').addEventListener('input',updateBtn);$('pi').addEventListener('input',updateBtn);
+  $('pi').addEventListener('keydown',function(e){if(e.key==='Enter'){if(authMode==='login')doLogin();else doReg()}});
+  $('authSw').addEventListener('click',function(){authMode=authMode==='login'?'register':'login';updateUI()});
+  $('lbn').addEventListener('click',doLogin);$('regbn').addEventListener('click',doReg);
+  $('authMsg').textContent='Мост '+APP_VERSION;
+  tryAutoLogin();
+  log('initialized');
+}
+
+return{init:init,logout:logout,setPin:setPin,getPin:getPin,updateUI:updateUI};
+})();
 
 // Local storage helpers
 function loadLocal(){mutedChats=JSON.parse(localStorage.getItem('pc_muted')||'{}');archivedChats=JSON.parse(localStorage.getItem('pc_archived')||'{}');savedMsgs=JSON.parse(localStorage.getItem('pc_saved')||'[]');readTs=JSON.parse(localStorage.getItem('pc_readTs')||'{}');schedMsgs=JSON.parse(localStorage.getItem('pc_sched')||'[]');var sf=localStorage.getItem('pc_folders');if(sf)folders=JSON.parse(sf)}
@@ -1232,7 +1303,7 @@ h+='<div class="sdi" data-u="'+es(u)+'" onclick="if(\''+es(u)+'\'!==U){tSb();sPC
 +av(u,32)+'<div style="flex:1"><div style="color:var(--tx);font-size:13px;font-weight:600">'+es(u)+(u===U?' <span style="color:var(--tx3);font-weight:400">(вы)</span>':'')+'</div>'
 +(p.status?'<div style="color:var(--tx3);font-size:10px">'+es(p.status)+'</div>':'')
 +'</div>'+(u!==U?'<button type="button" class="ib" onclick="event.stopPropagation();tSb();startCall(\''+es(u)+'\',false)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></button>':'')+'</div>'});
-h+='<button type="button" class="lbtn" onclick="doLo()">Выйти</button>';
+h+='<button type="button" class="lbtn" onclick="AuthManager.logout()">Выйти</button>';
 h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост '+APP_VERSION+'</div>';
 $('sdContent').innerHTML=h}
 
@@ -1241,12 +1312,12 @@ window.showProfile=function(){tSb();var pr=profiles[U]||{};
 var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovProfile\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Профиль</div></div><div class="pec">';
 h+='<div class="pe-av" onclick="$(\'avFi\').click()">'+(pr.avatar?'<img src="'+pr.avatar+'">':av(U,80))+'</div>';
 h+='<div class="pe-label">Статус</div><input class="pe-input" id="peS" value="'+es(pr.status||'')+'" placeholder="Что нового?">';
-h+='<div class="pe-label">PIN-код</div><input class="pe-input" id="peP" value="'+es(storedPin)+'" placeholder="4 цифры (пусто=нет)" maxlength="4" inputmode="numeric">';
+h+='<div class="pe-label">PIN-код</div><input class="pe-input" id="peP" value="'+es(AuthManager.getPin())+'" placeholder="4 цифры (пусто=нет)" maxlength="4" inputmode="numeric">';
 h+='<button type="button" class="ov-btn" onclick="saveProfile()">Сохранить</button></div>';
 $('ovProfile').innerHTML=h;$('ovProfile').classList.remove('hidden')};
 window.saveProfile=function(){var st=$('peS').value.trim(),pin=$('peP').value.trim();
 db.ref('profiles/'+U+'/status').set(st);
-if(pin.length===4&&/^\d{4}$/.test(pin)){storedPin=pin;localStorage.setItem('pc_pin',pin)}else if(!pin){storedPin='';localStorage.removeItem('pc_pin')}
+AuthManager.setPin(pin)
 $('ovProfile').classList.add('hidden');renderSB()};
 $('avFi').addEventListener('change',function(){var f=$('avFi').files[0];if(!f)return;var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),s=Math.min(img.width,img.height,200);cv.width=s;cv.height=s;cv.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,s,s);var d=cv.toDataURL('image/jpeg',.7);db.ref('profiles/'+U+'/avatar').set(d)};img.src=e.target.result};rd.readAsDataURL(f);$('avFi').value=''});
 
@@ -1489,8 +1560,8 @@ $('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRoom
 $('cbb').addEventListener('click',goB);$('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('rpc').addEventListener('click',cRp);
 
 // Init
-$('authMsg').textContent='Мост '+APP_VERSION;
-tryAutoLogin();
+
+AuthManager.init();
 </script>
 </body>
 </html>
