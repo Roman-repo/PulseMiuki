@@ -256,7 +256,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .pe-label{color:var(--tx2);font-size:13px;font-weight:500;text-transform:uppercase;margin-top:12px;width:100%;max-width:280px}
 
 /* Call screens */
-.cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden;animation:csFade .3s ease-out}
+@keyframes csFade{from{opacity:0}to{opacity:1}}
 .cs.cs-out{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
 .cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%)}
 .cs.cs-act{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
@@ -463,7 +464,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.7.2';
+var APP_VERSION='2.7.3';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1555,20 +1556,20 @@ return{start:start,accept:accept,end:end,cleanup:cleanup,listen:listen,toggleMut
 window.startCall=CallManager.start;
 function endCallClean(){CallManager.cleanup()}
 function listenCalls(){CallManager.listen()}
-$('callD').addEventListener('click',function(){CallManager.end()});
-$('callDA').addEventListener('click',function(){CallManager.end()});
-$('callD2').addEventListener('click',function(){CallManager.end()});
+$('callD')&&$('callD').addEventListener('click',function(){CallManager.end()});
+$('callDA')&&$('callDA').addEventListener('click',function(){CallManager.end()});
+$('callD2')&&$('callD2').addEventListener('click',function(){CallManager.end()});
 // Speaker in video mode
-$('callSpkVid').addEventListener('click',function(){CallManager.toggleSpeaker()});
-$('callAV').addEventListener('click',function(){CallManager.accept(CallManager.getIncomingVideo())});
-$('callM').addEventListener('click',function(){CallManager.toggleMute()});
-$('callMO').addEventListener('click',function(){CallManager.toggleMute()});
-$('callS').addEventListener('click',function(){CallManager.toggleSpeaker()});
-$('callSO').addEventListener('click',function(){CallManager.toggleSpeaker()});
-$('callV').addEventListener('click',function(){CallManager.toggleVideo()});
-$('callVO').addEventListener('click',function(){CallManager.toggleVideo()});
-$('callFlipO').addEventListener('click',function(){CallManager.flipCam()});
-$('callFlipA').addEventListener('click',function(){CallManager.flipCam()});
+$('callSpkVid')&&$('callSpkVid').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callAV')&&$('callAV').addEventListener('click',function(){CallManager.accept(CallManager.getIncomingVideo())});
+$('callM')&&$('callM').addEventListener('click',function(){CallManager.toggleMute()});
+$('callMO')&&$('callMO').addEventListener('click',function(){CallManager.toggleMute()});
+$('callS')&&$('callS').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callSO')&&$('callSO').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callV')&&$('callV').addEventListener('click',function(){CallManager.toggleVideo()});
+$('callVO')&&$('callVO').addEventListener('click',function(){CallManager.toggleVideo()});
+$('callFlipO')&&$('callFlipO').addEventListener('click',function(){CallManager.flipCam()});
+$('callFlipA')&&$('callFlipA').addEventListener('click',function(){CallManager.flipCam()});
 // Buttons (non-header)
 $('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('rpc').addEventListener('click',cRp);
 
