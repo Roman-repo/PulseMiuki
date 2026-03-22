@@ -45,7 +45,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Header */
 .hdr{padding:14px 16px;display:flex;align-items:center;gap:10px;background:var(--bg2);border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);flex-shrink:0}
-.hdr-t{color:var(--tx);font-weight:600;font-size:20px;flex:1}
+.hdr-t{color:var(--tx);font-weight:600;font-size:20px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-s{color:var(--tx2);font-size:13px;font-weight:400}
 .hdr-s.tp{color:var(--acc)}
 .typing-dots span{animation:tdot 1.4s infinite;opacity:.2}
@@ -109,6 +109,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mt.ot{color:var(--tx3)}.mt.mn{color:rgba(255,255,255,.6)}
 .ck{font-size:13px;letter-spacing:-3px;margin-left:2px}
 .ck.read{color:#55EFC4}
+.cip-ck{font-size:12px;margin-right:2px}
 .mi{max-width:100%;border-radius:10px;margin-bottom:3px;cursor:pointer}
 .mq{background:rgba(102,126,234,.12);border-left:3px solid var(--acc);border-radius:4px;padding:6px 10px;margin-bottom:4px;font-size:14px}
 .mqn{font-weight:500;font-size:12px;margin-bottom:1px}
@@ -355,6 +356,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <!-- Chat List -->
 <div class="scr hidden" id="S1" style="background:var(--bg)">
 <div class="hdr"><div class="hdr-t" style="font-size:22px;font-weight:600">Мост</div>
+<button type="button" class="ib hidden" id="readAllBtn" title="Прочитать все"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/><polyline points="20 12 9 23 4 18"/></svg></button>
 <button type="button" class="ib" id="srBtn0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
 <button type="button" class="ib" id="clmb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
 <!-- Folder tabs -->
@@ -381,7 +383,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="scr hidden" id="S2" style="background:var(--bg)">
 <div class="hdr" id="chatHdr">
 <button type="button" class="bb" id="cbb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-<div style="flex:1;min-width:0"><div class="hdr-t" id="cht" style="font-size:17px"></div><div class="hdr-s" id="chs2"></div></div>
+<div id="chatHdrAv" style="flex-shrink:0"></div><div style="flex:1;min-width:0"><div class="hdr-t" id="cht" style="font-size:17px"></div><div class="hdr-s" id="chs2"></div></div>
 <button type="button" class="ib hidden" id="schBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
 <button type="button" class="ib hidden" id="phb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
 <button type="button" class="ib hidden" id="vidBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
@@ -491,20 +493,25 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.14.5';
+var APP_VERSION='2.15.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
 var ringInt=null;
 var rrList={};
 var folders=['Все','Личные','Группы','Каналы','Архив'];
-var curFolder='Все',mutedChats={},archivedChats={},savedMsgs=[],schedMsgs=[];
+var curFolder='Все',mutedChats={},archivedChats={},pinnedChats={},savedMsgs=[],schedMsgs=[];
 var threadMode=false,threadParent=null;
 var readTs={};
 
 function hc(n){if(!n)return C[0];var h=0;for(var i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return C[Math.abs(h)%C.length]}
 function av(n,s){if(!n)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;background:var(--bg3)">?</div>';var p=profiles[n];if(p&&p.avatar)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px"><img src="'+p.avatar+'"></div>';var c=hc(n);return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*.4)+'px;background:linear-gradient(135deg,'+c+','+c+'cc)">'+n.charAt(0).toUpperCase()+'</div>'}
 function ft(t){return new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function ftSmart(t){if(!t)return'';var d=new Date(t),now=new Date(),diff=now-d,days=Math.floor(diff/86400000);
+var isToday=d.toDateString()===now.toDateString();
+var yest=new Date(now);yest.setDate(yest.getDate()-1);var isYest=d.toDateString()===yest.toDateString();
+if(isToday)return ft(t);if(isYest)return'Вчера';if(days<7){var dn=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];return dn[d.getDay()]}
+var mn=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];return d.getDate()+' '+mn[d.getMonth()]}
 function fd(t){var d=new Date(t),td=new Date,yd=new Date;yd.setDate(yd.getDate()-1);if(d.toDateString()===td.toDateString())return'Сегодня';if(d.toDateString()===yd.toDateString())return'Вчера';return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}
 function es(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function gci(a,b){return[a,b].sort().join('__')}
@@ -639,8 +646,8 @@ return{init:init,logout:logout,setPin:setPin,getPin:getPin,updateUI:updateUI};
 })();
 
 // Local storage helpers
-function loadLocal(){mutedChats=JSON.parse(localStorage.getItem('pc_muted')||'{}');archivedChats=JSON.parse(localStorage.getItem('pc_archived')||'{}');savedMsgs=JSON.parse(localStorage.getItem('pc_saved')||'[]');readTs=JSON.parse(localStorage.getItem('pc_readTs')||'{}');schedMsgs=JSON.parse(localStorage.getItem('pc_sched')||'[]');var sf=localStorage.getItem('pc_folders');if(sf)folders=JSON.parse(sf)}
-function saveLocal(){localStorage.setItem('pc_muted',JSON.stringify(mutedChats));localStorage.setItem('pc_archived',JSON.stringify(archivedChats));localStorage.setItem('pc_saved',JSON.stringify(savedMsgs));localStorage.setItem('pc_readTs',JSON.stringify(readTs));localStorage.setItem('pc_sched',JSON.stringify(schedMsgs));localStorage.setItem('pc_folders',JSON.stringify(folders))}
+function loadLocal(){mutedChats=JSON.parse(localStorage.getItem('pc_muted')||'{}');archivedChats=JSON.parse(localStorage.getItem('pc_archived')||'{}');pinnedChats=JSON.parse(localStorage.getItem('pc_pinned')||'{}');savedMsgs=JSON.parse(localStorage.getItem('pc_saved')||'[]');readTs=JSON.parse(localStorage.getItem('pc_readTs')||'{}');schedMsgs=JSON.parse(localStorage.getItem('pc_sched')||'[]');var sf=localStorage.getItem('pc_folders');if(sf)folders=JSON.parse(sf)}
+function saveLocal(){localStorage.setItem('pc_muted',JSON.stringify(mutedChats));localStorage.setItem('pc_archived',JSON.stringify(archivedChats));localStorage.setItem('pc_pinned',JSON.stringify(pinnedChats));localStorage.setItem('pc_saved',JSON.stringify(savedMsgs));localStorage.setItem('pc_readTs',JSON.stringify(readTs));localStorage.setItem('pc_sched',JSON.stringify(schedMsgs));localStorage.setItem('pc_folders',JSON.stringify(folders))}
 
 // Presence & last seen
 function sPres(){var uid=U+'_'+Date.now();pRef=db.ref('online/'+uid);pRef.set({name:U,ts:firebase.database.ServerValue.TIMESTAMP});pRef.onDisconnect().remove();
@@ -665,7 +672,10 @@ Object.keys(cRooms).forEach(function(k){if(k==='general')return;var r=cRooms[k];
 var others=r.members.filter(function(m){return m!==U});var nm=r.groupName||others.join(', ');
 var isGroup=r.members.length>2,isChan=!!r.channel;
 its.push({id:k,name:nm,pv:r.lastText||'',t:r.lastTs||0,isGroup:isGroup,isChan:isChan})});
-its.sort(function(a,b){if(a.ig)return-1;if(b.ig)return 1;return(b.t||0)-(a.t||0)});
+its.sort(function(a,b){if(a.ig)return-1;if(b.ig)return 1;
+// REQ-28: закреплённые вверху
+var pa=pinnedChats[a.id]?1:0,pb=pinnedChats[b.id]?1:0;if(pa!==pb)return pb-pa;
+return(b.t||0)-(a.t||0)});
 // Filter by folder
 if(curFolder==='Личные')its=its.filter(function(i){return!i.ig&&!i.isGroup&&!i.isChan});
 else if(curFolder==='Группы')its=its.filter(function(i){return i.isGroup||i.ig});
@@ -680,24 +690,29 @@ its.forEach(function(it){
 var msgs=rMsgs[it.id]||[];var lastTs=msgs.length?msgs[msgs.length-1].ts:0;
 var myReadTs=readTs[it.id]||0;var unread=0;
 msgs.forEach(function(m){if(m.sender!==U&&m.ts>myReadTs)unread++});
-var isMuted=mutedChats[it.id];
+var isMuted=mutedChats[it.id],isPinned=pinnedChats[it.id];
 h+='<div class="ci'+(archivedChats[it.id]?' archived':'')+'" data-r="'+it.id+'">';
 if(it.ig)h+='<div class="avatar" style="width:52px;height:52px;font-size:20px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>';
 else if(it.isChan)h+='<div class="avatar" style="width:52px;height:52px;font-size:18px;background:linear-gradient(135deg,#0984E3,#00B894)">📢</div>';
 else if(it.isGroup)h+='<div class="avatar" style="width:52px;height:52px;font-size:18px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
 else{var _isOnl=!it.isGroup&&!it.isChan&&onU[it.name];h+='<div class="av-wrap">'+av(it.name,52)+(_isOnl?'<div class="online-dot"></div>':'')+'</div>'}
-// REQ-20: автор в группах
+// REQ-20: автор в группах + REQ-29: галочки
 var _pvText=it.pv;if((it.isGroup||it.ig)&&msgs.length){var _last=msgs[msgs.length-1];if(_last.sender&&!_last.system)_pvText=_last.sender+': '+(_last.text||'📷')}
-h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+(isMuted?' <span class="muted-icon">🔇</span>':'')+'</div><div class="cip'+(unread?' unread':'')+'">'+es(_pvText)+'</div></div>';
-h+='<div class="cit">'+(it.t?ft(it.t):'')+(unread?'<div class="badge">'+unread+'</div>':'')+'</div></div>'});
+var _ck='';if(msgs.length){var _lm=msgs[msgs.length-1];if(_lm.sender===U)_ck='<span class="ck'+(_lm._read===2?' read':'')+' cip-ck">'+(_lm._read>=1?'✓✓':'✓')+'</span> '}
+h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+(isMuted?' <span class="muted-icon">🔇</span>':'')+(isPinned?' <span style="opacity:.4;font-size:12px">📌</span>':'')+'</div><div class="cip'+(unread?' unread':'')+'">'+_ck+es(_pvText)+'</div></div>';
+h+='<div class="cit">'+(it.t?ftSmart(it.t):'')+(unread?'<div class="badge">'+unread+'</div>':'')+'</div></div>'});
 a.innerHTML=h||'<div style="padding:30px;text-align:center;color:var(--tx3);font-size:13px">Нет чатов</div>';
+// REQ-30: показать кнопку «прочитать все» если есть непрочитанные
+var _hasUnread=false;Object.keys(rMsgs).forEach(function(rid){var ms=rMsgs[rid]||[];var rt=readTs[rid]||0;ms.forEach(function(m){if(m.sender!==U&&m.ts>rt)_hasUnread=true})});
+$('readAllBtn').classList.toggle('hidden',!_hasUnread);
 a.querySelectorAll('.ci').forEach(function(el){el.addEventListener('click',function(){oC(el.getAttribute('data-r'))});
 // Long press for archive/mute
 var tm;el.addEventListener('touchstart',function(e){tm=setTimeout(function(){showChatCtx(e,el.getAttribute('data-r'))},600)},{passive:true});el.addEventListener('touchend',function(){clearTimeout(tm)});el.addEventListener('touchmove',function(){clearTimeout(tm)})})}
 
 function showChatCtx(e,rid){rmC();var ov=document.createElement('div');ov.className='cto';var mn=document.createElement('div');mn.className='ctx';
-var m1=document.createElement('div');m1.className='cti';m1.textContent=mutedChats[rid]?'🔔 Включить звук':'🔇 Без звука';m1.addEventListener('click',function(){if(mutedChats[rid])delete mutedChats[rid];else mutedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m1);
-var m2=document.createElement('div');m2.className='cti';m2.textContent=archivedChats[rid]?'📤 Из архива':'📥 В архив';m2.addEventListener('click',function(){if(archivedChats[rid])delete archivedChats[rid];else archivedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m2);
+var m0=document.createElement('div');m0.className='cti';m0.innerHTML=(pinnedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Открепить</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span>Закрепить</span>');m0.addEventListener('click',function(){if(pinnedChats[rid])delete pinnedChats[rid];else pinnedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m0);
+var m1=document.createElement('div');m1.className='cti';m1.innerHTML=mutedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M23 9l-6 6"/><path d="M17 9l6 6"/></svg><span>Включить звук</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><line x1="23" y1="9" x2="17" y2="15"/></svg><span>Без звука</span>';m1.addEventListener('click',function(){if(mutedChats[rid])delete mutedChats[rid];else mutedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m1);
+var m2=document.createElement('div');m2.className='cti';m2.innerHTML=archivedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 11 12 6 7 11"/><line x1="12" y1="6" x2="12" y2="18"/></svg><span>Из архива</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="18" x2="12" y2="6"/></svg><span>В архив</span>';m2.addEventListener('click',function(){if(archivedChats[rid])delete archivedChats[rid];else archivedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m2);
 var tx=e.touches?e.touches[0].clientX:e.clientX,ty=e.touches?e.touches[0].clientY:e.clientY;
 mn.style.left=Math.min(tx,innerWidth-180)+'px';mn.style.top=Math.min(ty,innerHeight-120)+'px';
 ov.addEventListener('click',rmC);document.body.appendChild(ov);document.body.appendChild(mn)}
@@ -709,8 +724,9 @@ db.ref('readReceipts/'+rid+'/'+U).set(firebase.database.ServerValue.TIMESTAMP)}
 // Open chat
 function oC(rid){cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');searchMode=false;$('srBar').classList.add('hidden');searchQ='';threadMode=false;$('threadBar').classList.add('hidden');
 var r=cRooms[rid];var isPriv=rid!=='general'&&r&&r.members&&r.members.length===2;
-if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden');$('vidBtn').classList.add('hidden')}
+if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden');$('vidBtn').classList.add('hidden');$('chatHdrAv').innerHTML='<div class="avatar" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>'}
 else{var others=r&&r.members?r.members.filter(function(m){return m!==U}):[];$('cht').textContent=r&&r.groupName?r.groupName:others.join(', ');$('phb').classList.toggle('hidden',!isPriv);$('vidBtn').classList.toggle('hidden',!isPriv);
+$('chatHdrAv').innerHTML=isPriv?av(others[0],32):'<div class="avatar" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
 if(isPriv&&onU[others[0]])$('chs2').textContent='онлайн';
 else if(isPriv)getLastSeen(others[0],function(t){if(cRoom===rid)$('chs2').textContent=t?'был(а) '+t:''})}
 $('schBtn').classList.remove('hidden');
@@ -1252,7 +1268,7 @@ function end(){
   clearTimeout(holdTimer);
   var dur=Date.now()-pressStart;
   if(!isHolding&&dur<500&&dur>0){
-    vibrate(50);
+    vibrate(30);
     if(mode==='audio'){mode='video';updateIcon();showTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
     else{mode='audio';updateIcon();showTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
   }
@@ -1338,6 +1354,8 @@ $('srIn').addEventListener('input',function(){searchQ=$('srIn').value;rMs(filter
 $('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
 // Search in chat list
 $('srBtn0').addEventListener('click',function(){$('srBar0').classList.toggle('hidden')});
+// REQ-30: Прочитать все
+$('readAllBtn').addEventListener('click',function(){Object.keys(cRooms).forEach(function(rid){markRead(rid)});markRead('general');rCL()});
 $('srIn0').addEventListener('input',function(){rCL()});
 $('srCl0').addEventListener('click',function(){$('srBar0').classList.add('hidden');$('srIn0').value='';rCL()});
 
