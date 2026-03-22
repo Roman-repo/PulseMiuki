@@ -208,7 +208,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Context menu */
 .ctx{position:fixed;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:3px;z-index:30;min-width:170px;backdrop-filter:blur(20px);animation:ca .12s ease-out;max-height:80vh;overflow-y:auto}
 @keyframes ca{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-.cti{display:flex;align-items:center;gap:8px;padding:10px 14px;color:var(--tx);font-size:15px;cursor:pointer;border-radius:8px;font-weight:400}
+.cti{display:flex;align-items:center;gap:10px;padding:10px 14px;color:var(--tx);font-size:15px;cursor:pointer;border-radius:8px;font-weight:400}
+.cti svg{flex-shrink:0;color:var(--tx2)}
 .cti:active{background:var(--bg3)}
 .cto{position:fixed;top:0;left:0;right:0;bottom:0;z-index:29}
 /* Select mode */
@@ -227,7 +228,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sd-profile-name{color:var(--tx);font-weight:600;font-size:16px}
 .sd-profile-status{color:var(--tx2);font-size:13px;margin-top:2px}
 .sd-sep{border-top:1px solid var(--brd);margin-top:12px;padding-top:12px}
-.sd-row{display:flex;align-items:center;gap:8px;padding:11px 0;color:var(--tx);font-size:15px;cursor:pointer;font-weight:400}
+.sd-row{display:flex;align-items:center;gap:10px;padding:11px 0;color:var(--tx);font-size:15px;cursor:pointer;font-weight:400}
+.sd-row svg{flex-shrink:0;color:var(--tx2)}
 .sd-row:active{opacity:.7}
 .sd-row-col{flex-direction:column;align-items:flex-start;gap:8px}
 .sd-theme-grid{display:flex;gap:6px;flex-wrap:wrap;width:100%}
@@ -482,7 +484,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.11.0';
+var APP_VERSION='2.12.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -958,18 +960,14 @@ addBtn.addEventListener('click',function(){
 });qr.appendChild(addBtn);
 mn.appendChild(qr);
 // Items
-var items=[{t:'↩️ Ответить',fn:function(){sRp(s,t);rmC()}},
-{t:'↪️ Переслать',fn:function(){rmC();forwardMsg(s,t,k)}},
-{t:'💬 Тред',fn:function(){rmC();openThread(k,t)}},
-{t:'📌 Закрепить',fn:function(){db.ref('chats/'+cRoom).update({pinned:t||'📷'});updatePin(cRoom);rmC()}},
-{t:'⭐ Сохранить',fn:function(){savedMsgs.push({room:cRoom,key:k,text:t,sender:s,ts:Date.now()});saveLocal();rmC()}}];
-if(me&&t)items.push({t:'✏️ Редактировать',fn:function(){startEdit(k,t);rmC()}});
-if(me)items.push({t:'🗑 Удалить',fn:function(){db.ref('messages/'+cRoom+'/'+k).remove();rmC()}});
-if(s!==U&&cRoom==='general')items.push({t:'✉️ Написать лично',fn:function(){rmC();sPC(s)}});
-if(s!==U)items.push({t:'📞 Позвонить',fn:function(){rmC();startCall(s,false)}});
-// Send with effect
-items.push({t:'🎉 Отправить конфетти',fn:function(){rmC();fireConfetti()}});
-items.forEach(function(it){var d=document.createElement('div');d.className='cti';d.textContent=it.t;d.addEventListener('click',it.fn);mn.appendChild(d)});
+var items=[{icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>',t:'Ответить',fn:function(){sRp(s,t);rmC()}},
+{icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>',t:'Переслать',fn:function(){rmC();forwardMsg(s,t,k)}},
+{icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',t:'Закрепить',fn:function(){db.ref('chats/'+cRoom).update({pinned:t||'📷'});updatePin(cRoom);rmC()}},
+{icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',t:'Сохранить',fn:function(){savedMsgs.push({room:cRoom,key:k,text:t,sender:s,ts:Date.now()});saveLocal();rmC()}}];
+if(me&&t)items.push({icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',t:'Редактировать',fn:function(){startEdit(k,t);rmC()}});
+if(me)items.push({icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',t:'Удалить',fn:function(){db.ref('messages/'+cRoom+'/'+k).remove();rmC()}});
+if(s!==U&&cRoom==='general')items.push({icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>',t:'Написать лично',fn:function(){rmC();sPC(s)}});
+items.forEach(function(it){var d=document.createElement('div');d.className='cti';d.innerHTML=it.icon+'<span>'+it.t+'</span>';d.addEventListener('click',it.fn);mn.appendChild(d)});
 var tx=e.touches?e.touches[0].clientX:e.clientX,ty=e.touches?e.touches[0].clientY:e.clientY;
 mn.style.left=Math.min(tx,innerWidth-190)+'px';mn.style.top=Math.min(ty,innerHeight-250)+'px';
 ov.addEventListener('click',rmC);document.body.appendChild(ov);document.body.appendChild(mn)}
@@ -1326,8 +1324,8 @@ var h='<div class="sd-profile" onclick="showSettings()">'+av(U,50)+'<div class="
 if(pr.status)h+='<div class="sd-profile-status">'+es(pr.status)+'</div>';
 h+='</div></div>';
 h+='<div class="sd-sep">';
-h+='<div class="sd-row" onclick="showSaved()">⭐ Сохранённые</div>';
-h+='<div class="sd-row" onclick="showSettings()">⚙️ Настройки</div>';
+h+='<div class="sd-row" onclick="showSaved()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Сохранённые</span></div>';
+h+='<div class="sd-row" onclick="showSettings()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Настройки</span></div>';
 h+='</div><div class="sdl">Онлайн ('+ns.length+')</div>';
 ns.forEach(function(u){var p=profiles[u]||{};
 h+='<div class="sdi" data-u="'+es(u)+'" onclick="if(\''+es(u)+'\'!==U){tSb();sPC(\''+es(u)+'\')}">'
@@ -1389,11 +1387,11 @@ $('ovFolders').innerHTML=h;$('ovFolders').classList.remove('hidden')};
 window.showSettings=function(){tSb();
 var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovSettings\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Настройки</div></div>';
 h+='<div class="ov-list" style="padding:16px">';
-h+='<div class="sd-row" onclick="showProfile();$(\'ovSettings\').classList.add(\'hidden\')">✏️ Профиль</div>';
-h+='<div class="sd-row" onclick="showFolders();$(\'ovSettings\').classList.add(\'hidden\')">📁 Папки чатов</div>';
-h+='<div class="sd-row" onclick="showQR();$(\'ovSettings\').classList.add(\'hidden\')">📱 QR-код</div>';
+h+='<div class="sd-row" onclick="showProfile();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Профиль</span></div>';
+h+='<div class="sd-row" onclick="showFolders();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Папки чатов</span></div>';
+h+='<div class="sd-row" onclick="showQR();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="4" height="4" rx="1"/><line x1="22" y1="14" x2="22" y2="14.01"/><line x1="22" y1="22" x2="22" y2="22.01"/><line x1="18" y1="22" x2="18" y2="22.01"/></svg><span>QR-код</span></div>';
 h+='<div class="sd-sep">';
-h+='<div class="sd-row sd-row-col">🎨 Тема<div class="sd-theme-grid">';
+h+='<div class="sd-row sd-row-col"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2"/><circle cx="17.5" cy="10.5" r="2"/><circle cx="8.5" cy="7.5" r="2"/><circle cx="6.5" cy="12" r="2"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg><span>Тема</span><div class="sd-theme-grid">';
 themes.forEach(function(t){h+='<button type="button" class="sd-theme-btn'+(theme===t?' act':'')+'" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();showSettings()">'+themeNames[t]+'</button>'});
 h+='</div></div>';
 h+='</div>';
