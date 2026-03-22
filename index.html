@@ -74,6 +74,15 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Messages */
 .ma{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch}
 .dd{text-align:center;margin:10px 0 6px;color:var(--tx3);font-size:13px;font-weight:500}
+.sys-call{color:var(--tx2);font-size:12px}
+.sys-missed{color:var(--red);font-size:12px;font-weight:500}
+.m-sticker{font-size:56px;line-height:1.1;padding:4px 0}
+.ec-tabs{display:flex;gap:4px;width:100%;margin-bottom:4px}
+.ect{background:none;border:none;color:var(--tx2);font-size:13px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Roboto',sans-serif;font-weight:400}
+.ect.act{color:var(--tx);background:var(--bg3);font-weight:500}
+.sg{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:4px 0}
+.si{font-size:32px;text-align:center;cursor:pointer;padding:6px;border-radius:8px}
+.si:active{background:var(--bg3)}
 .dd span{background:var(--bg3);padding:4px 14px;border-radius:16px}
 .mr{display:flex;align-items:flex-end;gap:6px}
 .mr.me{flex-direction:row-reverse}
@@ -466,7 +475,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.9.0';
+var APP_VERSION='2.10.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -729,6 +738,16 @@ var readData={};
 var h='',ld='',ls='';
 ms.forEach(function(m){
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
+// REQ-5+6: системные сообщения (звонки, пропущенные)
+if(m.system){h+='<div class="dd"><span class="'+(m.missed?'sys-missed':'sys-call')+'">'+es(m.text)+'</span></div>';ls='';return}
+// REQ-8: sticker — крупный эмодзи без пузыря
+if(m.sticker){
+  var me=m.sender===U,sa=m.sender!==ls;
+  h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
+  if(!me&&sa)h+='<div class="mac">'+av(m.sender,28)+'</div>';else h+='<div class="mac"></div>';
+  h+='<div class="mc">';if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+  h+='<div class="m-sticker">'+m.sticker+'</div>';
+  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;return}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
 var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
@@ -915,7 +934,18 @@ function sRC(e,el){rmC();var s=el.getAttribute('data-s'),t=el.getAttribute('data
 var ov=document.createElement('div');ov.className='cto';var mn=document.createElement('div');mn.className='ctx';
 // Quick reactions
 var qr=document.createElement('div');qr.style.cssText='display:flex;gap:3px;padding:5px 8px;border-bottom:1px solid var(--brd);margin-bottom:3px';
-QR.forEach(function(em){var b=document.createElement('span');b.textContent=em;b.style.cssText='font-size:18px;cursor:pointer;padding:3px';b.addEventListener('click',function(){tgReact(k,em);rmC()});qr.appendChild(b)});mn.appendChild(qr);
+QR.forEach(function(em){var b=document.createElement('span');b.textContent=em;b.style.cssText='font-size:18px;cursor:pointer;padding:3px';b.addEventListener('click',function(){tgReact(k,em);rmC()});qr.appendChild(b)});
+// REQ-9: кнопка + для полного набора эмодзи
+var addBtn=document.createElement('span');addBtn.textContent='+';addBtn.style.cssText='font-size:18px;cursor:pointer;padding:3px 6px;background:var(--bg3);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--tx2)';
+addBtn.addEventListener('click',function(){
+  rmC();var rov=document.createElement('div');rov.className='cto';
+  var rpn=document.createElement('div');rpn.className='ctx react-picker';rpn.style.cssText='max-width:280px;padding:8px';
+  var allEmoji=[];Object.values(EMOJIS).forEach(function(arr){arr.forEach(function(e){if(allEmoji.indexOf(e)===-1)allEmoji.push(e)})});
+  allEmoji.forEach(function(em){var eb=document.createElement('span');eb.textContent=em;eb.style.cssText='font-size:22px;cursor:pointer;padding:4px;display:inline-block';eb.addEventListener('click',function(){tgReact(k,em);rmC()});rpn.appendChild(eb)});
+  rov.appendChild(rpn);rov.addEventListener('click',function(ev){if(ev.target===rov)rmC()});document.body.appendChild(rov);
+  rpn.style.position='fixed';rpn.style.bottom='60px';rpn.style.left='50%';rpn.style.transform='translateX(-50%)';rpn.style.background='var(--bg2)';rpn.style.borderRadius='12px';rpn.style.boxShadow='0 4px 20px rgba(0,0,0,.4)';rpn.style.maxHeight='200px';rpn.style.overflowY='auto';
+});qr.appendChild(addBtn);
+mn.appendChild(qr);
 // Items
 var items=[{t:'↩️ Ответить',fn:function(){sRp(s,t);rmC()}},
 {t:'↪️ Переслать',fn:function(){rmC();forwardMsg(s,t,k)}},
@@ -1241,8 +1271,8 @@ if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='f
 
 
 // Emoji
-function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div>';p.innerHTML=h;
-p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});bEC()}
+var STICKERS=["😀","😎","🥳","😍","🤔","😱","😭","🤣","💪","🔥","❤️","👍","👎","🎉","💯","⭐","🙏","🫶","👀","💀","🦊","🐱","🐶","🌈","☀️","🌙","⚡","🍕","☕","🎮","🚀","💎"];
+function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});bEC()}
 function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').focus()})})}
 function tEm(){emO=!emO;$('epp').classList.toggle('open',emO)}
 function cEm(){emO=false;$('epp').classList.remove('open')}
@@ -1499,6 +1529,30 @@ function accept(withVideo){
 
 function end(){
   stopRing();
+  // REQ-5 + REQ-6: записать сообщение в чат
+  if(peer&&U){
+    var cid=gci(U,peer);
+    var isVideo=video||incomingVideo;
+    var callType=isVideo?'Видеозвонок':'Звонок';
+    if(sec>0){
+      // REQ-6: успешный звонок — записать длительность
+      var m=Math.floor(sec/60),s=sec%60;var dur=(m>0?m+':'+(s<10?'0':'')+s:'0:'+(s<10?'0':'')+s);
+      var icon=role==='caller'?'📞↗':'📞↙';
+      var txt=icon+' '+(role==='caller'?'Исходящий':'Входящий')+' '+callType.toLowerCase()+' '+dur;
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP});
+      db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
+    }else if(role==='callee'){
+      // REQ-5: отклонённый входящий — пропущенный
+      var txt='📞 Пропущенный '+(isVideo?'видеовызов':'вызов');
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP,missed:true});
+      db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
+    }else if(role==='caller'){
+      // Отменённый исходящий
+      var txt='📞↗ Отменённый '+(isVideo?'видеовызов':'вызов');
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP});
+      db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
+    }
+  }
   if(ref){if(role==='callee')ref.update({status:'declined'});else ref.update({status:active&&pc?'ended':'cancelled'})}
   cleanup();
 }
