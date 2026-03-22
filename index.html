@@ -464,7 +464,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.7.3';
+var APP_VERSION='2.7.4';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1382,7 +1382,7 @@ Recorder.init();
 
 // ============ CallManager — isolated WebRTC module ============
 var CallManager=(function(){
-var ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
+var ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}]};
 var pc=null,stream=null,ref=null,role=null,peer=null;
 var active=false,muted=false,speaker=true,video=false,incomingVideo=false;
 var timerInt=null,sec=0,listenerSet=false;
