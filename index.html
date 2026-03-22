@@ -65,6 +65,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cla{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .ci{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--brd);cursor:pointer;position:relative}
 .ci:active{background:var(--bg3)}
+.av-wrap{position:relative;flex-shrink:0}
+.online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--grn);border:2px solid var(--bg)}
 .ci.archived{opacity:.5}
 .cii{flex:1;min-width:0}
 .cin{color:var(--tx);font-weight:500;font-size:16px;display:flex;align-items:center;gap:6px}
@@ -82,6 +84,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .dd{text-align:center;margin:10px 0 6px;color:var(--tx3);font-size:13px;font-weight:500}
 .sys-call{color:var(--tx2);font-size:12px}
 .sys-missed{color:var(--red);font-size:12px;font-weight:500}
+.sys-unread{background:var(--acc);color:#fff;font-size:12px;font-weight:500;padding:4px 14px;border-radius:16px}
 .m-sticker{font-size:56px;line-height:1.1;padding:4px 0}
 .ec-tabs{display:flex;gap:4px;width:100%;margin-bottom:4px}
 .ect{background:none;border:none;color:var(--tx2);font-size:13px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Roboto',sans-serif;font-weight:400}
@@ -109,12 +112,14 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mq{background:rgba(102,126,234,.12);border-left:3px solid var(--acc);border-radius:4px;padding:6px 10px;margin-bottom:4px;font-size:14px}
 .mqn{font-weight:500;font-size:12px;margin-bottom:1px}
 .mqt{opacity:.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400}
+.m-readmore,.m-readless{color:var(--acc);cursor:pointer;font-weight:500;font-size:14px}
 .med{color:var(--tx2);font-size:11px;font-style:italic;font-weight:400}
 .mrc{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
 .mrc-i{background:var(--bg3);border-radius:12px;padding:2px 8px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:3px;border:1px solid transparent;transition:all .15s}
 .mrc-i:active{border-color:var(--acc)}
 .mrc-i .cnt{font-size:12px;color:var(--tx2);font-weight:400}
-.m-link{color:#74B9FF;text-decoration:underline}
+.m-link{color:#74B9FF;text-decoration:none}
+.m-link-card{display:inline-flex;align-items:center;gap:4px;background:rgba(116,185,255,.12);padding:2px 8px;border-radius:6px;font-size:13px}
 .m-audio{display:flex;align-items:center;gap:10px;min-width:200px;padding:6px 4px;position:relative}
 .m-audio-play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .m-audio-play svg{margin-left:2px}
@@ -411,11 +416,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="ep" id="epp"></div>
 <!-- Attach menu -->
 <div class="ctx hidden" id="attMenu" style="position:absolute;bottom:55px;left:8px;z-index:16">
-<div class="cti" id="attPhoto">📷 Фото</div>
-<div class="cti" id="attFile">📄 Файл</div>
-<div class="cti" id="attPoll">📊 Опрос</div>
-<div class="cti" id="attLoc">📍 Геолокация</div>
-<div class="cti" id="attSched">⏰ Запланировать</div>
+<div class="cti" id="attPhoto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Фото</span></div>
+<div class="cti" id="attFile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Файл</span></div>
+<div class="cti" id="attPoll"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Опрос</span></div>
+<div class="cti" id="attLoc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Геолокация</span></div>
+<div class="cti" id="attSched"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Запланировать</span></div>
 </div>
 </div>
 
@@ -484,7 +489,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.12.0';
+var APP_VERSION='2.13.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -502,7 +507,7 @@ function fd(t){var d=new Date(t),td=new Date,yd=new Date;yd.setDate(yd.getDate()
 function es(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function gci(a,b){return[a,b].sort().join('__')}
 function $(i){return document.getElementById(i)}
-function linkify(t){return es(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" class="m-link" onclick="event.stopPropagation()">$1</a>')}
+function linkify(t){return es(t).replace(/(https?:\/\/[^\s<]+)/g,function(url){var domain;try{domain=new URL(url).hostname}catch(e){domain=url}return'<a href="'+url+'" target="_blank" class="m-link" onclick="event.stopPropagation()"><span class="m-link-card"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'+es(domain)+'</span></a>'})}
 function plural(n,one,few,many){var a=Math.abs(n)%100,b=a%10;if(a>10&&a<20)return many;if(b>1&&b<5)return few;if(b===1)return one;return many}
 
 // Sound & notifications
@@ -678,8 +683,10 @@ h+='<div class="ci'+(archivedChats[it.id]?' archived':'')+'" data-r="'+it.id+'">
 if(it.ig)h+='<div class="avatar" style="width:42px;height:42px;font-size:18px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>';
 else if(it.isChan)h+='<div class="avatar" style="width:42px;height:42px;font-size:16px;background:linear-gradient(135deg,#0984E3,#00B894)">📢</div>';
 else if(it.isGroup)h+='<div class="avatar" style="width:42px;height:42px;font-size:16px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
-else h+=av(it.name,42);
-h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+(isMuted?' <span class="muted-icon">🔇</span>':'')+'</div><div class="cip'+(unread?' unread':'')+'">'+es(it.pv)+'</div></div>';
+else{var _isOnl=!it.isGroup&&!it.isChan&&onU[it.name];h+='<div class="av-wrap">'+av(it.name,42)+(_isOnl?'<div class="online-dot"></div>':'')+'</div>'}
+// REQ-20: автор в группах
+var _pvText=it.pv;if((it.isGroup||it.ig)&&msgs.length){var _last=msgs[msgs.length-1];if(_last.sender&&!_last.system)_pvText=_last.sender+': '+(_last.text||'📷')}
+h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+(isMuted?' <span class="muted-icon">🔇</span>':'')+'</div><div class="cip'+(unread?' unread':'')+'">'+es(_pvText)+'</div></div>';
 h+='<div class="cit">'+(it.t?ft(it.t):'')+(unread?'<div class="badge">'+unread+'</div>':'')+'</div></div>'});
 a.innerHTML=h||'<div style="padding:30px;text-align:center;color:var(--tx3);font-size:13px">Нет чатов</div>';
 a.querySelectorAll('.ci').forEach(function(el){el.addEventListener('click',function(){oC(el.getAttribute('data-r'))});
@@ -744,8 +751,10 @@ var a=$('mArea'),wb=a.scrollHeight-a.scrollTop-a.clientHeight<60;
 if(ms.length===0){a.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:40px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:13px">'+(searchMode?'Не найдено':'Начните разговор!')+'</div></div>';return}
 // Get read receipts for this room
 var readData={};
-var h='',ld='',ls='';
+var h='',ld='',ls='',_unreadShown=false,_myRdTs=readTs[cRoom]||0;
 for(var _i=0;_i<ms.length;_i++){var m=ms[_i];
+// REQ-23: разделитель непрочитанных
+if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){h+='<div class="dd" id="unreadDiv"><span class="sys-unread">Непрочитанные сообщения</span></div>';_unreadShown=true}
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 // REQ-5+6: системные сообщения (звонки, пропущенные)
 if(m.system){h+='<div class="dd"><span class="'+(m.missed?'sys-missed':'sys-call')+'">'+es(m.text)+'</span></div>';ls='';return}
@@ -773,10 +782,10 @@ var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));
 var waveBars='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);waveBars+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}
 h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-speed" data-action="audioSpeed">1x</button><button class="m-audio-trans" data-action="transcribe">→A</button></div>';}
 if(m.vidMsg)h+='<div class="m-vidmsg" data-action="playVid"><video src="'+m.vidMsg+'" playsinline loop></video><div class="m-vidmsg-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21"/></svg></div>'+(m.vidDur?'<div class="m-vidmsg-dur">'+m.vidDur+'</div>':'')+'</div>';
-if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"><div class="m-file-icon">📄</div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
+if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"><div class="m-file-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
 if(m.poll)h+=renderPoll(m);
-if(m.location)h+='<div class="m-loc" data-action="openMap" data-lat="'+m.location.lat+'" data-lng="'+m.location.lng+'" style="background:var(--bg3);padding:12px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font-size:24px">📍</span><div><div style="font-weight:600;font-size:13px;color:var(--tx)">Геолокация</div><div style="font-size:11px;color:var(--tx3)">'+m.location.lat.toFixed(5)+', '+m.location.lng.toFixed(5)+'</div><div style="font-size:11px;color:var(--acc)">Открыть в Google Maps</div></div></div>';
-if(m.text)h+='<span>'+linkify(m.text)+'</span>';
+if(m.location)h+='<div class="m-loc" data-action="openMap" data-lat="'+m.location.lat+'" data-lng="'+m.location.lng+'" style="background:var(--bg3);padding:12px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="color:var(--acc)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div style="font-weight:600;font-size:13px;color:var(--tx)">Геолокация</div><div style="font-size:11px;color:var(--tx3)">'+m.location.lat.toFixed(5)+', '+m.location.lng.toFixed(5)+'</div><div style="font-size:11px;color:var(--acc)">Открыть в Google Maps</div></div></div>';
+if(m.text){var _txt=m.text;if(_txt.length>300){h+='<span class="m-text-short">'+linkify(_txt.substr(0,300))+'<span class="m-readmore" data-action="readmore">... Читать далее</span></span><span class="m-text-full hidden">'+linkify(_txt)+'<span class="m-readless" data-action="readless"> Свернуть</span></span>'}else{h+='<span>'+linkify(_txt)+'</span>'}}
 if(m.edited)h+='<div class="med">изм.</div>';
 // REQ-16: группировка — скрыть время если следующее от того же автора <60 сек
 var _next=ms[_i+1];var _hideTime=_next&&_next.sender===m.sender&&!_next.system&&!_next.sticker&&_next.ts&&m.ts&&(_next.ts-m.ts<60000);
@@ -789,7 +798,10 @@ if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forE
 Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" data-action="react" data-key="'+m._key+'" data-emoji="'+e+'">'+e+'<span class="cnt">'+rc[e].c+'</span></div>'});h+='</div>'}
 if(m.threadCount)h+='<div class="m-thread" data-action="thread" data-key="'+m._key+'" data-text="'+es(m.text||'')+'">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
 h+='</div></div></div>';ls=m.sender}
-a.innerHTML=h;if(wb)a.scrollTop=a.scrollHeight;
+a.innerHTML=h;
+// REQ-23: scroll to first unread, otherwise scroll to bottom
+var _ud=$('unreadDiv');if(_ud&&!wb){_ud.scrollIntoView({behavior:'smooth',block:'center'})}
+else if(wb)a.scrollTop=a.scrollHeight;
 // Bind audio play/pause buttons
 a.querySelectorAll('.m-audio-play').forEach(function(btn){
 btn.addEventListener('click',function(e){e.stopPropagation();playA(btn)})
@@ -996,9 +1008,9 @@ rMs(msgs)};
 $('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
 
 // Reply/Edit
-function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent='↩️ '+s;$('rpt').textContent=t||'📷';$('rpb').classList.remove('hidden');$('mi').focus()}
+function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent=s;$('rpt').textContent=t||'📷';$('rpb').classList.remove('hidden');$('mi').focus()}
 function cRp(){rTo=null;editMsg=null;$('rpb').classList.add('hidden');$('mi').value='';uSB()}
-function startEdit(k,t){editMsg=k;rTo=null;$('rpn').textContent='✏️ Редактирование';$('rpt').textContent=t;$('rpb').classList.remove('hidden');$('mi').value=t;$('mi').focus()}
+function startEdit(k,t){editMsg=k;rTo=null;$('rpn').textContent='Редактирование';$('rpt').textContent=t;$('rpb').classList.remove('hidden');$('mi').value=t;$('mi').focus()}
 
 // Send message
 function sM(img,audio,audioDur,file,fileName,fileSize,poll,loc,disappear){
@@ -1017,6 +1029,7 @@ cRp();
 // Check for animation triggers
 if(t&&(t.indexOf('🎉')!==-1||t.toLowerCase().indexOf('congrat')!==-1||t.toLowerCase().indexOf('поздравл')!==-1))setTimeout(fireConfetti,300);
 db.ref('messages/'+cRoom).push(m);
+try{if(navigator.vibrate)navigator.vibrate(15)}catch(e){} // REQ-19
 var mt={lastText:t||(img?'📷':audio?'🎤':file?'📄':poll?'📊':loc?'📍':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
 if(cRoom!=='general'){var r=cRooms[cRoom];if(r&&r.members)mt.members=r.members;if(r&&r.groupName)mt.groupName=r.groupName;if(r&&r.channel)mt.channel=true}
 db.ref('chats/'+cRoom).update(mt);
@@ -1062,7 +1075,15 @@ render()}
 
 // Attachments menu
 var attOpen=false;
-$('attBtn').addEventListener('click',function(e){e.stopPropagation();attOpen=!attOpen;$('attMenu').classList.toggle('hidden',!attOpen)});
+// REQ-22: tap = photo, long press = full menu
+var _attTimer=null;
+$('attBtn').addEventListener('touchstart',function(e){e.stopPropagation();
+  _attTimer=setTimeout(function(){_attTimer=null;attOpen=!attOpen;$('attMenu').classList.toggle('hidden',!attOpen)},500);
+},{passive:true});
+$('attBtn').addEventListener('touchend',function(e){e.stopPropagation();
+  if(_attTimer){clearTimeout(_attTimer);_attTimer=null;$('fi').click()}
+},{passive:true});
+$('attBtn').addEventListener('click',function(e){e.stopPropagation();$('fi').click()});
 document.addEventListener('click',function(){if(attOpen){attOpen=false;$('attMenu').classList.add('hidden')}});
 $('attPhoto').addEventListener('click',function(){$('fi').click();$('attMenu').classList.add('hidden')});
 $('attFile').addEventListener('click',function(){$('fileFi').click();$('attMenu').classList.add('hidden')});
@@ -1680,6 +1701,8 @@ else if(action==='react'){var key=el.getAttribute('data-key'),emoji=el.getAttrib
 else if(action==='thread'){var key=el.getAttribute('data-key'),text=el.getAttribute('data-text');if(key)openThread(key,text)}
 else if(action==='vote'){var key=el.getAttribute('data-key'),opt=el.getAttribute('data-opt');if(key&&opt!==null)votePoll(key,parseInt(opt))}
 else if(action==='audioSpeed'){var s=AudioPlayer.cycleSpeed();el.textContent=s+'x'}
+else if(action==='readmore'){var mb=el.closest('.mb');if(mb){mb.querySelector('.m-text-short').classList.add('hidden');mb.querySelector('.m-text-full').classList.remove('hidden')}}
+else if(action==='readless'){var mb=el.closest('.mb');if(mb){mb.querySelector('.m-text-full').classList.add('hidden');mb.querySelector('.m-text-short').classList.remove('hidden')}}
 });
 
 // Init
