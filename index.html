@@ -491,7 +491,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.14.3';
+var APP_VERSION='2.14.5';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -759,7 +759,7 @@ for(var _i=0;_i<ms.length;_i++){var m=ms[_i];
 if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){h+='<div class="dd" id="unreadDiv"><span class="sys-unread">Непрочитанные сообщения</span></div>';_unreadShown=true}
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 // REQ-5+6: системные сообщения (звонки, пропущенные)
-if(m.system){h+='<div class="dd"><span class="'+(m.missed?'sys-missed':'sys-call')+'">'+es(m.text)+'</span></div>';ls='';return}
+if(m.system){h+='<div class="dd"><span class="'+(m.missed?'sys-missed':'sys-call')+'">'+es(m.text)+'</span></div>';ls='';continue}
 // REQ-8: sticker — крупный эмодзи без пузыря
 if(m.sticker){
   var me=m.sender===U,sa=m.sender!==ls;
@@ -767,7 +767,7 @@ if(m.sticker){
   if(!me&&sa)h+='<div class="mac">'+av(m.sender,28)+'</div>';else h+='<div class="mac"></div>';
   h+='<div class="mc">';if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="m-sticker">'+m.sticker+'</div>';
-  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;return}
+  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
 var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
@@ -1276,8 +1276,6 @@ function init(){
   $('recMainBtn').addEventListener('touchstart',function(e){
     e.preventDefault();
     if(active()){send();return}
-    // Warm up vibrate API (user gesture context)
-    try{navigator.vibrate&&navigator.vibrate(1)}catch(ex){}
     begin();
   },{passive:false});
   $('recMainBtn').addEventListener('touchend',function(e){
