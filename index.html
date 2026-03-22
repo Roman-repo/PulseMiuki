@@ -111,6 +111,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .m-audio-dur{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;display:flex;align-items:center;gap:4px}
 .m-audio-unread{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.8);flex-shrink:0}
 .m-audio-trans{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.2);border:none;border-radius:10px;padding:2px 8px;font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;font-weight:500;font-family:'Roboto',sans-serif}
+.m-audio-speed{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;font-weight:600;padding:3px 7px;border-radius:8px;cursor:pointer;font-family:'Roboto',sans-serif;flex-shrink:0}
 .m-audio-trans:active{background:rgba(255,255,255,.35)}
 .m-audio-prog{display:none}
 .mb.mn .m-audio-play svg{fill:#E85D75}
@@ -465,7 +466,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.8.0';
+var APP_VERSION='2.9.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -742,7 +743,7 @@ if(m.image)h+='<img class="mi" src="'+m.image+'" data-action="viewImg">';
 if(m.audio){
 var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));
 var waveBars='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);waveBars+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}
-h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-trans" data-action="transcribe">→A</button></div>';}
+h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-speed" data-action="audioSpeed">1x</button><button class="m-audio-trans" data-action="transcribe">→A</button></div>';}
 if(m.vidMsg)h+='<div class="m-vidmsg" data-action="playVid"><video src="'+m.vidMsg+'" playsinline loop></video><div class="m-vidmsg-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21"/></svg></div>'+(m.vidDur?'<div class="m-vidmsg-dur">'+m.vidDur+'</div>':'')+'</div>';
 if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"><div class="m-file-icon">📄</div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
 if(m.poll)h+=renderPoll(m);
@@ -818,57 +819,23 @@ window.votePoll=function(k,i){db.ref('messages/'+cRoom+'/'+k+'/pollVotes/'+U).se
 
 // ============ AudioPlayer — isolated audio playback module ============
 var AudioPlayer=(function(){
-var current=null,currentBtn=null;
+var current=null,currentBtn=null,speed=1;
 var playSvg='<svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg>';
 var pauseSvg='<svg width="20" height="20" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>';
-
 function play(btn){
-  var container=btn.closest('.m-audio');
-  if(!container)return;
-  var src=container.getAttribute('data-src');
-  if(!src)return;
-
-  // Same audio playing — pause
-  if(current&&currentBtn===btn&&!current.paused){
-    current.pause();
-    btn.innerHTML=playSvg;btn.classList.remove('paused');
-    return;
-  }
-  // Different audio playing — stop old
-  if(current&&currentBtn!==btn){
-    current.pause();current.currentTime=0;
-    currentBtn.innerHTML=playSvg;currentBtn.classList.remove('paused');
-  }
-  // Same audio paused — resume
-  if(current&&currentBtn===btn&&current.paused){
-    current.play();
-    btn.innerHTML=pauseSvg;btn.classList.add('paused');
-    return;
-  }
-  // New audio
-  var a=new Audio(src);
-  current=a;currentBtn=btn;
+  var container=btn.closest('.m-audio');if(!container)return;
+  var src=container.getAttribute('data-src');if(!src)return;
+  if(current&&currentBtn===btn&&!current.paused){current.pause();btn.innerHTML=playSvg;btn.classList.remove('paused');return}
+  if(current&&currentBtn!==btn){current.pause();current.currentTime=0;currentBtn.innerHTML=playSvg;currentBtn.classList.remove('paused');var os=currentBtn.closest('.m-audio');if(os){var osp=os.querySelector('.m-audio-speed');if(osp)osp.textContent='1x'}}
+  if(current&&currentBtn===btn&&current.paused){current.play();current.playbackRate=speed;btn.innerHTML=pauseSvg;btn.classList.add('paused');return}
+  var a=new Audio(src);a.playbackRate=speed;current=a;currentBtn=btn;
   btn.innerHTML=pauseSvg;btn.classList.add('paused');
-
-  var bars=container.querySelectorAll('.m-audio-wave-bar');
-  var totalBars=bars.length;
-
-  a.addEventListener('timeupdate',function(){
-    if(!a.duration)return;
-    var pct=a.currentTime/a.duration;
-    var playedCount=Math.floor(pct*totalBars);
-    bars.forEach(function(b,i){b.classList.toggle('played',i<playedCount)});
-  });
-  a.addEventListener('ended',function(){
-    btn.innerHTML=playSvg;btn.classList.remove('paused');
-    bars.forEach(function(b){b.classList.remove('played')});
-    var dot=container.querySelector('.m-audio-unread');if(dot)dot.style.display='none';
-    current=null;currentBtn=null;
-  });
-  a.play();
-}
-
-return{play:play};
+  var bars=container.querySelectorAll('.m-audio-wave-bar');var totalBars=bars.length;
+  a.addEventListener('timeupdate',function(){if(!a.duration)return;var pct=a.currentTime/a.duration;var pc=Math.floor(pct*totalBars);bars.forEach(function(b,i){b.classList.toggle('played',i<pc)})});
+  a.addEventListener('ended',function(){btn.innerHTML=playSvg;btn.classList.remove('paused');bars.forEach(function(b){b.classList.remove('played')});var dot=container.querySelector('.m-audio-unread');if(dot)dot.style.display='none';current=null;currentBtn=null});
+  a.play()}
+function cycleSpeed(){if(speed===1)speed=1.5;else if(speed===1.5)speed=2;else speed=1;if(current)current.playbackRate=speed;return speed}
+return{play:play,cycleSpeed:cycleSpeed,getSpeed:function(){return speed}};
 })();
 // Alias
 window.playA=function(btn){AudioPlayer.play(btn)};
@@ -1588,6 +1555,7 @@ else if(action==='openMap'){var lat=el.getAttribute('data-lat'),lng=el.getAttrib
 else if(action==='react'){var key=el.getAttribute('data-key'),emoji=el.getAttribute('data-emoji');if(key&&emoji)tgReact(key,emoji)}
 else if(action==='thread'){var key=el.getAttribute('data-key'),text=el.getAttribute('data-text');if(key)openThread(key,text)}
 else if(action==='vote'){var key=el.getAttribute('data-key'),opt=el.getAttribute('data-opt');if(key&&opt!==null)votePoll(key,parseInt(opt))}
+else if(action==='audioSpeed'){var s=AudioPlayer.cycleSpeed();el.textContent=s+'x'}
 });
 
 // Init
