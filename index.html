@@ -206,8 +206,22 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Sidebar */
 .so{position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;display:flex}
 .sd{width:280px;background:var(--bg2);border-right:1px solid var(--brd);padding:20px 16px;backdrop-filter:blur(20px);overflow-y:auto}
-.sd-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;color:var(--tx);font-size:15px;cursor:pointer;font-weight:400}
+.sd-profile{display:flex;align-items:center;gap:12px;cursor:pointer;padding-bottom:14px}
+.sd-profile-info{flex:1;min-width:0}
+.sd-profile-name{color:var(--tx);font-weight:600;font-size:16px}
+.sd-profile-status{color:var(--tx2);font-size:13px;margin-top:2px}
+.sd-sep{border-top:1px solid var(--brd);margin-top:12px;padding-top:12px}
+.sd-row{display:flex;align-items:center;gap:8px;padding:11px 0;color:var(--tx);font-size:15px;cursor:pointer;font-weight:400}
 .sd-row:active{opacity:.7}
+.sd-row-col{flex-direction:column;align-items:flex-start;gap:8px}
+.sd-theme-grid{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.sd-theme-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);font-size:13px;cursor:pointer;font-family:'Roboto',sans-serif;font-weight:400}
+.sd-theme-btn.act{border-color:var(--acc);background:rgba(102,126,234,.2)}
+.sd-about-label{color:var(--tx2);font-size:13px;margin-bottom:8px}
+.sd-about-name{color:var(--tx);font-size:15px;font-weight:500}
+.sd-about-ver{color:var(--tx2);font-size:14px;margin-top:4px}
+.sd-about-desc{color:var(--tx3);font-size:12px;margin-top:8px}
+.sd-version{text-align:center;color:var(--tx3);font-size:12px;margin-top:16px}
 .toggle{width:40px;height:22px;border-radius:11px;background:var(--bg3);position:relative;cursor:pointer;border:none;transition:background .2s}
 .toggle.on{background:var(--acc)}
 .toggle::after{content:'';width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s}
@@ -215,7 +229,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sdl{color:var(--tx2);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px}
 .sdi{display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer}
 .sdi:active{opacity:.7}
-.lbtn{margin-top:12px;width:100%;padding:12px;border-radius:10px;border:1px solid rgba(232,93,117,.3);background:rgba(232,93,117,.1);color:var(--red);font-size:15px;font-weight:500;cursor:pointer}
+.sdi-info{flex:1;min-width:0}
+.sdi-name{color:var(--tx);font-size:14px;font-weight:500}
+.sdi-you{color:var(--tx3);font-weight:400}
+.sdi-status{color:var(--tx3);font-size:12px;margin-top:1px}
+.lbtn{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:1px solid rgba(232,93,117,.3);background:rgba(232,93,117,.1);color:var(--red);font-size:15px;font-weight:500;cursor:pointer;font-family:'Roboto',sans-serif}
 .sdbk{flex:1}
 
 /* Overlays */
@@ -445,7 +463,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.5.2';
+var APP_VERSION='2.6.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1282,25 +1300,20 @@ $('srCl0').addEventListener('click',function(){$('srBar0').classList.add('hidden
 function tSb(){$('sov').classList.toggle('hidden')}
 function renderSB(){
 var ns=Object.keys(onU);var pr=profiles[U]||{};
-var h='<div style="cursor:pointer" onclick="showProfile()">'+av(U,50)+'</div><div style="color:var(--tx);font-weight:700;font-size:16px;margin-top:10px">'+es(U||'')+'</div>';
-if(pr.status)h+='<div style="color:var(--tx2);font-size:12px;margin-top:3px">'+es(pr.status)+'</div>';
-h+='<div style="border-top:1px solid var(--brd);margin-top:14px;padding-top:10px">';
-h+='<div class="sd-row" onclick="showProfile()">✏️ Профиль</div>';
-h+='<div class="sd-row" onclick="showSaved()">⭐ Сохранённые</div>';
-h+='<div class="sd-row" onclick="showQR()">📱 Мой QR-код</div>';
-h+='<div class="sd-row" onclick="showFolders()">📁 Папки</div>';
-h+='<div class="sd-row" onclick="showSettings()">⚙️ Настройки</div>';
-h+='<div class="sd-row" style="flex-direction:column;align-items:flex-start;gap:6px">🎨 Тема<div style="display:flex;gap:4px;flex-wrap:wrap;width:100%">';
-themes.forEach(function(t){h+='<button type="button" style="padding:6px 12px;border-radius:8px;border:1px solid '+(theme===t?'var(--acc)':'var(--brd)')+';background:'+(theme===t?'rgba(102,126,234,.2)':'var(--bg3)')+';color:var(--tx);font-size:13px;cursor:pointer;font-family:Roboto,sans-serif" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();renderSB()">'+themeNames[t]+'</button>'});
+var h='<div class="sd-profile" onclick="showSettings()">'+av(U,50)+'<div class="sd-profile-info"><div class="sd-profile-name">'+es(U||'')+'</div>';
+if(pr.status)h+='<div class="sd-profile-status">'+es(pr.status)+'</div>';
 h+='</div></div>';
+h+='<div class="sd-sep">';
+h+='<div class="sd-row" onclick="showSaved()">⭐ Сохранённые</div>';
+h+='<div class="sd-row" onclick="showSettings()">⚙️ Настройки</div>';
 h+='</div><div class="sdl">Онлайн ('+ns.length+')</div>';
 ns.forEach(function(u){var p=profiles[u]||{};
 h+='<div class="sdi" data-u="'+es(u)+'" onclick="if(\''+es(u)+'\'!==U){tSb();sPC(\''+es(u)+'\')}">'
-+av(u,32)+'<div style="flex:1"><div style="color:var(--tx);font-size:13px;font-weight:600">'+es(u)+(u===U?' <span style="color:var(--tx3);font-weight:400">(вы)</span>':'')+'</div>'
-+(p.status?'<div style="color:var(--tx3);font-size:10px">'+es(p.status)+'</div>':'')
++av(u,32)+'<div class="sdi-info"><div class="sdi-name">'+es(u)+(u===U?' <span class="sdi-you">(вы)</span>':'')+'</div>'
++(p.status?'<div class="sdi-status">'+es(p.status)+'</div>':'')
 +'</div>'+(u!==U?'<button type="button" class="ib" onclick="event.stopPropagation();tSb();startCall(\''+es(u)+'\',false)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></button>':'')+'</div>'});
 h+='<button type="button" class="lbtn" onclick="AuthManager.logout()">Выйти</button>';
-h+='<div style="text-align:center;color:var(--tx3);font-size:11px;margin-top:16px">Мост '+APP_VERSION+'</div>';
+h+='<div class="sd-version">Мост '+APP_VERSION+'</div>';
 $('sdContent').innerHTML=h}
 
 // Profile
@@ -1346,14 +1359,16 @@ h+='<div class="ov-list" style="padding:16px">';
 h+='<div class="sd-row" onclick="showProfile();$(\'ovSettings\').classList.add(\'hidden\')">✏️ Профиль</div>';
 h+='<div class="sd-row" onclick="showFolders();$(\'ovSettings\').classList.add(\'hidden\')">📁 Папки чатов</div>';
 h+='<div class="sd-row" onclick="showQR();$(\'ovSettings\').classList.add(\'hidden\')">📱 QR-код</div>';
-h+='<div class="sd-row" style="flex-direction:column;align-items:flex-start;gap:6px">🎨 Тема<div style="display:flex;gap:4px;flex-wrap:wrap;width:100%">';
-themes.forEach(function(t){h+='<button type="button" style="padding:6px 12px;border-radius:8px;border:1px solid '+(theme===t?'var(--acc)':'var(--brd)')+';background:'+(theme===t?'rgba(102,126,234,.2)':'var(--bg3)')+';color:var(--tx);font-size:13px;cursor:pointer;font-family:Roboto,sans-serif" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();showSettings()">'+themeNames[t]+'</button>'});
+h+='<div class="sd-sep">';
+h+='<div class="sd-row sd-row-col">🎨 Тема<div class="sd-theme-grid">';
+themes.forEach(function(t){h+='<button type="button" class="sd-theme-btn'+(theme===t?' act':'')+'" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();showSettings()">'+themeNames[t]+'</button>'});
 h+='</div></div>';
-h+='<div style="border-top:1px solid var(--brd);margin-top:16px;padding-top:16px">';
-h+='<div style="color:var(--tx2);font-size:13px;margin-bottom:8px">О приложении</div>';
-h+='<div style="color:var(--tx);font-size:15px;font-weight:500">Мост</div>';
-h+='<div style="color:var(--tx2);font-size:14px;margin-top:4px">Версия: '+APP_VERSION+'</div>';
-h+='<div style="color:var(--tx3);font-size:12px;margin-top:8px">Кроссплатформенный мессенджер</div>';
+h+='</div>';
+h+='<div class="sd-sep">';
+h+='<div class="sd-about-label">О приложении</div>';
+h+='<div class="sd-about-name">Мост</div>';
+h+='<div class="sd-about-ver">Версия: '+APP_VERSION+'</div>';
+h+='<div class="sd-about-desc">Кроссплатформенный мессенджер</div>';
 h+='</div></div>';
 $('ovSettings').innerHTML=h;$('ovSettings').classList.remove('hidden')};
 
