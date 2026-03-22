@@ -463,7 +463,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.1.0';
+var APP_VERSION='2.2.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -646,9 +646,9 @@ var h='',ld='',ls='';
 ms.forEach(function(m){
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
-var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(selectMode?' selectable':'');
+var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
-if(selectMode)h+='<div class="sel-cb'+(selectedMsgs[m._key]?' checked':'')+'" data-k="'+(m._key||'')+'"></div>';
+if(SelectManager.isActive())h+='<div class="sel-cb'+(SelectManager.isSelected(m._key)?' checked':'')+'" data-k="'+(m._key||'')+'"></div>';
 h+='<div class="mac">';if(!me&&sa)h+=av(m.sender,28);
 h+='</div><div class="mc">';
 if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
@@ -686,23 +686,23 @@ el.addEventListener('touchstart',function(e){
   var onBubble=tgt.closest('.mb')||tgt.closest('.mac')||tgt.closest('.avatar');
   if(onBubble){
     // Bubble area → 500ms → context menu
-    tm=setTimeout(function(){if(!selectMode)sRC(e,el)},500);
+    tm=setTimeout(function(){if(!SelectManager.isActive())sRC(e,el)},500);
   }else{
     // Background area → 1000ms → select mode
-    tm=setTimeout(function(){if(!selectMode)enterSelectMode()},1000);
+    tm=setTimeout(function(){if(!SelectManager.isActive())SelectManager.enter()},1000);
   }
 },{passive:true});
 el.addEventListener('touchend',function(){clearTimeout(tm)});
 el.addEventListener('touchmove',function(){clearTimeout(tm)});
-el.addEventListener('contextmenu',function(e){e.preventDefault();clearTimeout(tm);if(!selectMode)sRC(e,el)});
+el.addEventListener('contextmenu',function(e){e.preventDefault();clearTimeout(tm);if(!SelectManager.isActive())sRC(e,el)});
 // Click in select mode → toggle checkbox
-el.addEventListener('click',function(){if(selectMode){var k=el.getAttribute('data-k');if(k)toggleSelect(k)}})});
+el.addEventListener('click',function(){if(SelectManager.isActive()){var k=el.getAttribute('data-k');if(k)SelectManager.toggle(k)}})});
 // Long press on mArea background (empty space, no message)
 var bgTm;
 a.addEventListener('touchstart',function(e){
   // Only if touch is directly on mArea (not on a .mr child)
   if(e.target===a||e.target.classList.contains('dd')){
-    bgTm=setTimeout(function(){if(!selectMode)enterSelectMode()},1000);
+    bgTm=setTimeout(function(){if(!SelectManager.isActive())SelectManager.enter()},1000);
   }
 },{passive:true});
 a.addEventListener('touchend',function(){clearTimeout(bgTm)});
@@ -786,70 +786,77 @@ a.play();
 window.tgReact=function(k,emoji){var ref=db.ref('messages/'+cRoom+'/'+k+'/reactions');ref.once('value',function(s){var d=s.val()||{};var found=null;Object.keys(d).forEach(function(x){if(d[x].user===U&&d[x].emoji===emoji)found=x});if(found)ref.child(found).remove();else ref.push({user:U,emoji:emoji})})};
 
 // Context menu
-var selectMode=false,selectedMsgs={};
-function enterSelectMode(){
-selectMode=true;selectedMsgs={};
-// Reset any recording state
-recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
-// Replace header
-var hdr=$('chatHdr');hdr._origHTML=hdr.innerHTML;
-hdr.innerHTML='<button type="button" class="bb" id="selClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="sel-hdr-count" id="selCount">0</div><button type="button" class="ib" id="selDelete"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
-$('selClose').addEventListener('click',exitSelectMode);
-$('selDelete').addEventListener('click',doSelectDelete);
-// Hide input bar
-$('inputBar').style.display='none';
-// Re-render messages with checkboxes
-rMs(rMsgs[cRoom]||[]);
+
+// ============ SelectManager — isolated message selection module ============
+var SelectManager=(function(){
+var active=false,selected={};
+
+function log(msg){console.log('[SelectManager] '+msg)}
+
+function enter(){
+  active=true;selected={};
+  Recorder.cancel();
+  log('enter');
+  // Replace header
+  var hdr=$('chatHdr');hdr._origHTML=hdr.innerHTML;
+  hdr.innerHTML='<button type="button" class="bb" id="selClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="sel-hdr-count" id="selCount">0</div><button type="button" class="ib" id="selDelete"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
+  $('selClose').addEventListener('click',exit);
+  $('selDelete').addEventListener('click',doDelete);
+  $('inputBar').style.display='none';
+  rMs(rMsgs[cRoom]||[]);
 }
-function exitSelectMode(){
-selectMode=false;selectedMsgs={};
-// Reset any recording state
-recPressStart=0;recIsHolding=false;clearTimeout(recHoldTimer);
-// Restore header
-var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
-// Restore input bar
-$('inputBar').style.display='';
-// Re-render messages without checkboxes
-rMs(rMsgs[cRoom]||[]);
-// Re-bind header buttons
-$('cbb').addEventListener('click',goB);
-$('schBtn')&&$('schBtn').addEventListener('click',function(){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';rMs(rMsgs[cRoom]||[])}});
-$('phb')&&$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
-$('vidBtn')&&$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
+
+function exit(){
+  active=false;selected={};
+  log('exit');
+  var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
+  $('inputBar').style.display='';
+  rMs(rMsgs[cRoom]||[]);
+  // Re-bind header buttons (DOM was recreated by innerHTML)
+  $('cbb').addEventListener('click',goB);
+  $('schBtn')&&$('schBtn').addEventListener('click',function(){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';rMs(rMsgs[cRoom]||[])}});
+  $('phb')&&$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,false)});
+  $('vidBtn')&&$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,true)});
 }
-function toggleSelect(key){
-if(selectedMsgs[key])delete selectedMsgs[key];else selectedMsgs[key]=true;
-var count=Object.keys(selectedMsgs).length;
-var sc=$('selCount');if(sc)sc.textContent=count;
-// Update checkbox visual
-document.querySelectorAll('.sel-cb').forEach(function(cb){
-  var k=cb.getAttribute('data-k');
-  cb.classList.toggle('checked',!!selectedMsgs[k]);
-});
-}
-function doSelectDelete(){
-var keys=Object.keys(selectedMsgs);if(!keys.length)return;
-var r=cRooms[cRoom];
-var isPrivate=cRoom!=='general'&&r&&r.members&&r.members.length===2;
-if(isPrivate){
-  var others=r.members.filter(function(m){return m!==U});
-  var otherName=others[0]||'собеседника';
-  if(confirm('Удалить у '+otherName+' тоже?')){
-    // Delete all selected from Firebase
-    keys.forEach(function(k){db.ref('messages/'+cRoom+'/'+k).remove()});
-    exitSelectMode();
-  }
-  // Cancel = return to select mode, don't delete
-}else{
-  // Group/general: delete only own messages
-  var msgs=rMsgs[cRoom]||[];
-  keys.forEach(function(k){
-    var m=msgs.find(function(x){return x._key===k});
-    if(m&&m.sender===U)db.ref('messages/'+cRoom+'/'+k).remove();
+
+function toggle(key){
+  if(selected[key])delete selected[key];else selected[key]=true;
+  var count=Object.keys(selected).length;
+  var sc=$('selCount');if(sc)sc.textContent=count;
+  document.querySelectorAll('.sel-cb').forEach(function(cb){
+    var k=cb.getAttribute('data-k');
+    cb.classList.toggle('checked',!!selected[k]);
   });
-  exitSelectMode();
 }
+
+function doDelete(){
+  var keys=Object.keys(selected);if(!keys.length)return;
+  var r=cRooms[cRoom];
+  var isPrivate=cRoom!=='general'&&r&&r.members&&r.members.length===2;
+  if(isPrivate){
+    var others=r.members.filter(function(m){return m!==U});
+    var otherName=others[0]||'собеседника';
+    if(confirm('Удалить у '+otherName+' тоже?')){
+      keys.forEach(function(k){db.ref('messages/'+cRoom+'/'+k).remove()});
+      exit();
+    }
+  }else{
+    var msgs=rMsgs[cRoom]||[];
+    keys.forEach(function(k){
+      var m=msgs.find(function(x){return x._key===k});
+      if(m&&m.sender===U)db.ref('messages/'+cRoom+'/'+k).remove();
+    });
+    exit();
+  }
+  log('deleted '+keys.length);
 }
+
+return{
+  enter:enter,exit:exit,toggle:toggle,
+  isActive:function(){return active},
+  isSelected:function(key){return!!selected[key]}
+};
+})();
 function sRC(e,el){rmC();var s=el.getAttribute('data-s'),t=el.getAttribute('data-t'),k=el.getAttribute('data-k'),me=s===U;
 var ov=document.createElement('div');ov.className='cto';var mn=document.createElement('div');mn.className='ctx';
 // Quick reactions
