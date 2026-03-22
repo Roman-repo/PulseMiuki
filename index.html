@@ -491,7 +491,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.14.0';
+var APP_VERSION='2.14.3';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1131,7 +1131,7 @@ var timerInt=null,startTime=0;
 var pressStart=0,holdTimer=null,isHolding=false;
 
 function log(msg){console.log('[Recorder] '+msg)}
-function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
+function vibrate(ms){try{if(navigator.vibrate){navigator.vibrate(ms);console.log('[Recorder] vibrate '+ms+'ms')}}catch(e){}}
 
 // --- UI ---
 function showIndicator(){
@@ -1242,7 +1242,9 @@ function active(){return audioIsRec||(videoRec&&videoRec.state==='recording')}
 function begin(){
   pressStart=Date.now();isHolding=false;
   holdTimer=setTimeout(function(){
-    isHolding=true;vibrate(50);
+    isHolding=true;
+    // vibrate вызывается тут но может не работать (setTimeout разрывает gesture)
+    vibrate(50);
     if(mode==='audio')startAudio();else startVideo();
   },500);
 }
@@ -1250,7 +1252,7 @@ function end(){
   clearTimeout(holdTimer);
   var dur=Date.now()-pressStart;
   if(!isHolding&&dur<500&&dur>0){
-    vibrate(30);
+    vibrate(50);
     if(mode==='audio'){mode='video';updateIcon();showTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
     else{mode='audio';updateIcon();showTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
   }
@@ -1274,6 +1276,8 @@ function init(){
   $('recMainBtn').addEventListener('touchstart',function(e){
     e.preventDefault();
     if(active()){send();return}
+    // Warm up vibrate API (user gesture context)
+    try{navigator.vibrate&&navigator.vibrate(1)}catch(ex){}
     begin();
   },{passive:false});
   $('recMainBtn').addEventListener('touchend',function(e){
@@ -1662,7 +1666,7 @@ $('mArea').addEventListener('touchmove',function(e){
   var dx=e.touches[0].clientX-_swipeStartX,dy=e.touches[0].clientY-_swipeStartY;
   if(Math.abs(dy)>30&&!_swipeActive){_swipeMr=null;return}
   if(dx>10){_swipeActive=true;var shift=Math.min(dx,80);_swipeMr.style.transform='translateX('+shift+'px)';_swipeMr.style.transition='none';
-    if(dx>=60&&!_swipeVibrated){_swipeVibrated=true;try{if(navigator.vibrate)navigator.vibrate(20)}catch(ex){}}
+    if(dx>=40&&!_swipeVibrated){_swipeVibrated=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(ex){}}
   }
 },{passive:true});
 $('mArea').addEventListener('touchend',function(){
