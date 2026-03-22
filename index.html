@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
 <style>
 :root{--bg:#0a0a1a;--bg2:rgba(15,12,41,.95);--bg3:rgba(255,255,255,.08);--tx:#fff;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.3);--acc:#667eea;--acc2:#764ba2;--brd:rgba(255,255,255,.06);--grn:#00b894;--red:#E85D75}
 [data-theme="light"]{--bg:#f0f2f5;--bg2:rgba(255,255,255,.95);--bg3:rgba(0,0,0,.06);--tx:#1a1a2e;--tx2:rgba(0,0,0,.5);--tx3:rgba(0,0,0,.3);--brd:rgba(0,0,0,.08);--acc:#667eea;--acc2:#764ba2;--grn:#00b894;--red:#E85D75}
@@ -461,7 +463,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='1.5.4';
+var APP_VERSION='2.0.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1271,168 +1273,194 @@ e.stopPropagation();
 });
 uSB();
 
-// Voice calls (WebRTC) — Мост
-var iceS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
-var incomingIsVideo=false;
-function showCallUI(n,isInc){
-$('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');
-callMuted=false;callSpeaker=true;callVideo=false;
-// Hide all sub-layouts
-$('callIncWrap').classList.add('hidden');$('callOutWrap').classList.add('hidden');
-$('callIncBtns').classList.add('hidden');$('callOutBtns').classList.add('hidden');$('callActBtns').classList.add('hidden');
-$('callTm').classList.add('hidden');$('callTopbar').style.display='none';
-if(isInc){
-  $('callScr').className='cs cs-inc';$('callIncWrap').classList.remove('hidden');$('callIncWrap').style.display='flex';
-  $('callNmInc').textContent=n;$('callStInc').textContent='Входящий вызов...';
-  $('callAvInc').innerHTML=av(n,150);$('callIncBtns').classList.remove('hidden')
-}else{
-  $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
-  $('callNmOut').textContent=n;$('callStOut').textContent='Запрос •••';
-  $('callAvOut').innerHTML=av(n,120);$('callOutBtns').classList.remove('hidden');
-  $('callVO').classList.toggle('a',callVideo);$('callSO').classList.toggle('a',callSpeaker);
-  updateCallVideoUI()
-}}
-function showActive(){
-$('callScr').className='cs cs-act';
-$('callIncWrap').classList.add('hidden');$('callIncBtns').classList.add('hidden');
-$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
-$('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
-$('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
-$('callV').classList.toggle('a',callVideo);$('callS').classList.toggle('a',callSpeaker);
-updateCallVideoUI();
-callSec=0;$('callTm').textContent='00:00';
-callTimerInt=setInterval(function(){callSec++;var m=Math.floor(callSec/60),s=callSec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000)}
-function hideCallUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');$('callTopbar').style.display='none';if(callTimerInt){clearInterval(callTimerInt);callTimerInt=null}}
+// ============ CallManager — isolated WebRTC module ============
+var CallManager=(function(){
+var ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}]};
+var pc=null,stream=null,ref=null,role=null,peer=null;
+var active=false,muted=false,speaker=true,video=false,incomingVideo=false;
+var timerInt=null,sec=0,listenerSet=false;
 
-// ontrack handler — SEPARATED audio and video into independent streams
+function log(msg){console.log('[CallManager] '+msg)}
+
+function showUI(name,isInc){
+  $('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');
+  muted=false;speaker=true;video=false;
+  $('callIncWrap').classList.add('hidden');$('callOutWrap').classList.add('hidden');
+  $('callIncBtns').classList.add('hidden');$('callOutBtns').classList.add('hidden');$('callActBtns').classList.add('hidden');
+  $('callTm').classList.add('hidden');$('callTopbar').style.display='none';
+  if(isInc){
+    $('callScr').className='cs cs-inc';$('callIncWrap').classList.remove('hidden');$('callIncWrap').style.display='flex';
+    $('callNmInc').textContent=name;$('callStInc').textContent='Входящий вызов...';
+    $('callAvInc').innerHTML=av(name,150);$('callIncBtns').classList.remove('hidden');
+  }else{
+    $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
+    $('callNmOut').textContent=name;$('callStOut').textContent='Запрос •••';
+    $('callAvOut').innerHTML=av(name,120);$('callOutBtns').classList.remove('hidden');
+    $('callVO').classList.toggle('a',video);$('callSO').classList.toggle('a',speaker);
+    updateVideoUI();
+  }
+}
+function showActiveUI(){
+  $('callScr').className='cs cs-act';
+  $('callIncWrap').classList.add('hidden');$('callIncBtns').classList.add('hidden');
+  $('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
+  $('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
+  $('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
+  $('callV').classList.toggle('a',video);$('callS').classList.toggle('a',speaker);
+  updateVideoUI();
+  sec=0;$('callTm').textContent='00:00';
+  timerInt=setInterval(function(){sec++;var m=Math.floor(sec/60),s=sec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000);
+}
+function hideUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');$('callTopbar').style.display='none';if(timerInt){clearInterval(timerInt);timerInt=null}}
+function updateVideoUI(){
+  var s=$('callAvSection'),tb=$('callTopbar'),tn=$('callTopName'),ts=$('callTopStatus');
+  var sw=$('callSpkWrap'),fw=$('callFlipWrap'),swA=$('callSpkWrapA'),fwA=$('callFlipWrapA');
+  if(video){
+    if(s)s.style.display='none';tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
+    $('localVid').classList.remove('hidden');
+    if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
+    if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
+  }else{
+    if(s)s.style.display='';tb.style.display='none';$('localVid').classList.add('hidden');
+    if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden');
+    if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
+  }
+}
+
 function setupOntrack(){
-callPC.ontrack=function(e){
-  if(e.track.kind==='audio'){
-    // Audio → own <audio> element, never remove on video arrival
-    var ra=document.getElementById('rAudio');
-    if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;document.body.appendChild(ra)}
-    ra.srcObject=new MediaStream([e.track]);
-    ra.volume=callSpeaker?1:.15;
-    ra.play().catch(function(){});
-  }
-  if(e.track.kind==='video'){
-    // Video → own MediaStream for <video>
-    $('remoteVid').srcObject=new MediaStream([e.track]);
-    $('remoteVid').classList.remove('hidden');
-    if($('callAvSection'))$('callAvSection').style.display='none';
-    e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
-    e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'}
-  }
-}}
+  log('setupOntrack');
+  pc.ontrack=function(e){
+    log('ontrack: '+e.track.kind+' readyState='+e.track.readyState+' streams='+e.streams.length);
+    if(e.track.kind==='audio'){
+      var ra=document.getElementById('rAudio');
+      if(!ra){ra=document.createElement('audio');ra.id='rAudio';ra.autoplay=true;ra.playsInline=true;ra.setAttribute('playsinline','');ra.setAttribute('autoplay','');document.body.appendChild(ra);log('created <audio>')}
+      ra.srcObject=(e.streams&&e.streams[0])?e.streams[0]:new MediaStream([e.track]);
+      ra.volume=1;
+      try{ra.play().then(function(){log('audio play OK')}).catch(function(err){log('audio play ERR: '+err.message)})}catch(ex){log('audio play EX: '+ex)}
+    }
+    if(e.track.kind==='video'){
+      var vs=(e.streams&&e.streams[0])?e.streams[0]:new MediaStream([e.track]);
+      $('remoteVid').srcObject=vs;$('remoteVid').classList.remove('hidden');
+      try{$('remoteVid').play().catch(function(){})}catch(ex){}
+      if($('callAvSection'))$('callAvSection').style.display='none';
+      e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
+      e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'};
+      log('video track attached');
+    }
+  };
+  pc.oniceconnectionstatechange=function(){log('ICE: '+pc.iceConnectionState)};
+  pc.onconnectionstatechange=function(){log('Conn: '+(pc.connectionState||'n/a'))};
+}
 
-// Update call UI based on video on/off
-function updateCallVideoUI(){
-var sec=$('callAvSection'),tb=$('callTopbar'),tn=$('callTopName'),ts=$('callTopStatus');
-// Outgoing buttons: swap speaker↔flip
-var sw=$('callSpkWrap'),fw=$('callFlipWrap');
-var swA=$('callSpkWrapA'),fwA=$('callFlipWrapA');
-if(callVideo){
-  // Video mode: hide avatar, show topbar with name, show local video, show flip
-  if(sec)sec.style.display='none';
-  tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
-  $('localVid').classList.remove('hidden');
-  if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
-  if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
-}else{
-  // Audio mode: show avatar, hide topbar, hide local video, show speaker
-  if(sec)sec.style.display='';
-  tb.style.display='none';
-  $('localVid').classList.add('hidden');
-  if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden');
-  if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
-}}
-window.startCall=function(target,withVideo){
-if(callActive)return;callPeer=target;callRole='caller';callActive=true;
-var cid=U+'__to__'+target+'__'+Date.now();callRef=db.ref('calls/'+cid);showCallUI(target,false);
-callVideo=!!withVideo;if(withVideo){$('callVO').classList.add('a');updateCallVideoUI()}
-startRing();
-var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
-navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
-callStream=stream;
-if(withVideo){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
-$('callVO').classList.toggle('a',callVideo);updateCallVideoUI();
-callPC=new RTCPeerConnection(iceS);
-stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
-setupOntrack();
-callPC.onicecandidate=function(e){if(e.candidate)callRef.child('callerIce').push(e.candidate.toJSON())};
-callPC.createOffer().then(function(o){return callPC.setLocalDescription(o)}).then(function(){
-callRef.set({from:U,to:target,offer:{type:callPC.localDescription.type,sdp:callPC.localDescription.sdp},status:'ringing',video:!!withVideo,ts:firebase.database.ServerValue.TIMESTAMP});
-callRef.child('answer').on('value',function(s){var a=s.val();if(a&&callPC&&callPC.signalingState!=='closed')callPC.setRemoteDescription(new RTCSessionDescription(a)).then(function(){stopRing();showActive()}).catch(function(){})});
-callRef.child('calleeIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
-callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='declined'){stopRing();endCallClean()}})})
-}).catch(function(err){console.error('getUserMedia error:',err);alert('Нет доступа к микрофону. Откройте через HTTPS (GitHub Pages).');endCallClean()})};
-function handleInc(cid,data){if(callActive)return;callActive=true;callPeer=data.from;callRole='callee';incomingIsVideo=!!data.video;callRef=db.ref('calls/'+cid);showCallUI(data.from,true);startRing();showNotif('Входящий вызов',data.from+' звонит');
-callRef.child('status').on('value',function(s){var v=s.val();if(v==='ended'||v==='cancelled'){stopRing();endCallClean()}})}
-function accCall(withVideo){if(!callRef)return;stopRing();
-callVideo=!!withVideo;callSpeaker=!!withVideo;
-var constraints=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
-navigator.mediaDevices.getUserMedia(constraints).then(function(stream){callStream=stream;
-if(withVideo){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}
-updateCallVideoUI();
-callRef.once('value',function(s){var data=s.val();if(!data||!data.offer)return;
-callPC=new RTCPeerConnection(iceS);
-stream.getTracks().forEach(function(t){callPC.addTrack(t,stream)});
-setupOntrack();
-callPC.onicecandidate=function(e){if(e.candidate)callRef.child('calleeIce').push(e.candidate.toJSON())};
-callPC.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return callPC.createAnswer()}).then(function(a){return callPC.setLocalDescription(a)}).then(function(){
-callRef.child('answer').set({type:callPC.localDescription.type,sdp:callPC.localDescription.sdp});callRef.update({status:'active'});showActive();
-callRef.child('callerIce').on('child_added',function(s){var c=s.val();if(c&&callPC&&callPC.signalingState!=='closed')callPC.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})})})})
-}).catch(function(){alert('Нет доступа к камере/микрофону. Используйте HTTPS.');endCallClean()})}
-function endCallClean(){if(callPC){try{callPC.close()}catch(e){}callPC=null}if(callStream){callStream.getTracks().forEach(function(t){t.stop()});callStream=null}var ra=document.getElementById('rAudio');if(ra)ra.remove();if(callRef){callRef.child('answer').off();callRef.child('callerIce').off();callRef.child('calleeIce').off();callRef.child('status').off()}callRef=null;callActive=false;callPeer=null;callRole=null;callMuted=false;callVideo=false;incomingIsVideo=false;$('remoteVid').srcObject=null;$('localVid').srcObject=null;if($('callAvSection'))$('callAvSection').style.display='';hideCallUI();stopRing()}
-function listenCalls(){if(callListenerSet)return;callListenerSet=true;db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(s){var d=s.val();if(d&&d.to===U&&d.status==='ringing'&&!callActive)handleInc(s.key,d)})}
-// Button events
-function declineOrEnd(){stopRing();if(callRef){if(callRole==='callee')callRef.update({status:'declined'});else callRef.update({status:callActive&&callPC?'ended':'cancelled'})}endCallClean()}
-$('callD').addEventListener('click',declineOrEnd);$('callDA').addEventListener('click',declineOrEnd);$('callD2').addEventListener('click',declineOrEnd);
-$('callBack').addEventListener('click',declineOrEnd);
-// Incoming: accept — audio or video depending on call type
-$('callAV').addEventListener('click',function(){accCall(incomingIsVideo)});
-// Mute toggle (both outgoing and active)
-function toggleMute(){callMuted=!callMuted;if(callStream)callStream.getAudioTracks().forEach(function(t){t.enabled=!callMuted});$('callM').classList.toggle('a',callMuted);$('callMO').classList.toggle('a',callMuted)}
-$('callM').addEventListener('click',toggleMute);$('callMO').addEventListener('click',toggleMute);
-// Speaker toggle
-function toggleSpk(){callSpeaker=!callSpeaker;$('callS').classList.toggle('a',callSpeaker);$('callSO').classList.toggle('a',callSpeaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=callSpeaker?1:.15}
-$('callS').addEventListener('click',toggleSpk);$('callSO').addEventListener('click',toggleSpk);
-// Camera toggle
-function toggleVid(){if(!callStream)return;
-var vt=callStream.getVideoTracks();
-if(vt.length>0){
-  // Has video track — just toggle enabled
-  var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});callVideo=ns;
-  $('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);
-  if(ns){$('localVid').srcObject=callStream;$('localVid').classList.remove('hidden')}
-  else{$('localVid').classList.add('hidden')}
-  updateCallVideoUI()
-}else{
-  // No video track — request camera and add to stream+PC
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240}}).then(function(vs){
-    var nt=vs.getVideoTracks()[0];callStream.addTrack(nt);
-    if(callPC){callPC.addTrack(nt,callStream)}
-    callVideo=true;$('callV').classList.add('a');$('callVO').classList.add('a');
-    $('localVid').srcObject=callStream;$('localVid').classList.remove('hidden');
-    updateCallVideoUI()
-  }).catch(function(){alert('Нет доступа к камере. Используйте HTTPS.')})
-}}
-// Flip camera
-var facingMode='user';
-function flipCamera(){if(!callStream)return;
-var vt=callStream.getVideoTracks();if(!vt.length)return;
-facingMode=facingMode==='user'?'environment':'user';
-vt.forEach(function(t){t.stop()});
-navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode,width:320,height:240}}).then(function(s){
-var nt=s.getVideoTracks()[0];callStream.removeTrack(vt[0]);callStream.addTrack(nt);
-if(callPC){var sender=callPC.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}
-$('localVid').srcObject=callStream}).catch(function(){facingMode=facingMode==='user'?'environment':'user'})}
-$('callFlipO').addEventListener('click',flipCamera);
-$('callFlipA').addEventListener('click',flipCamera);
-$('callV').addEventListener('click',toggleVid);$('callVO').addEventListener('click',toggleVid);
-$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,false)});
-$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)startCall(o,true)});
+function cleanup(){
+  log('cleanup');
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(stream){stream.getTracks().forEach(function(t){t.stop()});stream=null}
+  var ra=document.getElementById('rAudio');if(ra)ra.remove();
+  if(ref){ref.child('answer').off();ref.child('callerIce').off();ref.child('calleeIce').off();ref.child('status').off()}
+  ref=null;active=false;peer=null;role=null;muted=false;video=false;incomingVideo=false;
+  $('remoteVid').srcObject=null;$('localVid').srcObject=null;
+  if($('callAvSection'))$('callAvSection').style.display='';
+  hideUI();stopRing();
+}
 
+function start(target,withVideo){
+  if(active)return;log('start → '+target+' video='+withVideo);
+  peer=target;role='caller';active=true;
+  var cid=U+'__to__'+target+'__'+Date.now();ref=db.ref('calls/'+cid);
+  showUI(target,false);video=!!withVideo;
+  if(withVideo){$('callVO').classList.add('a');updateVideoUI()}
+  startRing();
+  var con=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
+  navigator.mediaDevices.getUserMedia(con).then(function(s){
+    stream=s;log('gUM OK: '+s.getTracks().map(function(t){return t.kind}).join(','));
+    if(withVideo){$('localVid').srcObject=s;$('localVid').classList.remove('hidden')}
+    pc=new RTCPeerConnection(ICE);
+    s.getTracks().forEach(function(t){pc.addTrack(t,s)});
+    setupOntrack();
+    pc.onicecandidate=function(e){if(e.candidate){ref.child('callerIce').push(e.candidate.toJSON());log('ICE cand sent')}};
+    pc.createOffer().then(function(o){return pc.setLocalDescription(o)}).then(function(){
+      ref.set({from:U,to:target,offer:{type:pc.localDescription.type,sdp:pc.localDescription.sdp},status:'ringing',video:!!withVideo,ts:firebase.database.ServerValue.TIMESTAMP});
+      ref.child('answer').on('value',function(sn){var a=sn.val();if(a&&pc&&pc.signalingState!=='closed'){log('got answer');pc.setRemoteDescription(new RTCSessionDescription(a)).then(function(){stopRing();showActiveUI()}).catch(function(err){log('setRemote ERR: '+err)})}});
+      ref.child('calleeIce').on('child_added',function(sn){var c=sn.val();if(c&&pc&&pc.signalingState!=='closed')pc.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
+      ref.child('status').on('value',function(sn){var v=sn.val();if(v==='ended'||v==='declined'){stopRing();cleanup()}});
+    })
+  }).catch(function(err){log('gUM ERR: '+err.message);alert('Нет доступа к микрофону/камере.');cleanup()});
+}
+
+function handleIncoming(cid,data){
+  if(active)return;log('incoming from '+data.from);
+  active=true;peer=data.from;role='callee';incomingVideo=!!data.video;
+  ref=db.ref('calls/'+cid);showUI(data.from,true);startRing();
+  showNotif('Входящий вызов',data.from+' звонит');
+  ref.child('status').on('value',function(sn){var v=sn.val();if(v==='ended'||v==='cancelled'){stopRing();cleanup()}});
+}
+
+function accept(withVideo){
+  if(!ref)return;stopRing();video=!!withVideo;speaker=true;
+  log('accept video='+withVideo);
+  var con=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
+  navigator.mediaDevices.getUserMedia(con).then(function(s){
+    stream=s;log('gUM OK: '+s.getTracks().map(function(t){return t.kind}).join(','));
+    if(withVideo){$('localVid').srcObject=s;$('localVid').classList.remove('hidden')}
+    updateVideoUI();
+    ref.once('value',function(sn){var data=sn.val();if(!data||!data.offer)return;
+      pc=new RTCPeerConnection(ICE);
+      s.getTracks().forEach(function(t){pc.addTrack(t,s)});
+      setupOntrack();
+      pc.onicecandidate=function(e){if(e.candidate){ref.child('calleeIce').push(e.candidate.toJSON());log('ICE cand sent')}};
+      pc.setRemoteDescription(new RTCSessionDescription(data.offer)).then(function(){return pc.createAnswer()}).then(function(a){return pc.setLocalDescription(a)}).then(function(){
+        ref.child('answer').set({type:pc.localDescription.type,sdp:pc.localDescription.sdp});
+        ref.update({status:'active'});log('answer sent');showActiveUI();
+        ref.child('callerIce').on('child_added',function(sn){var c=sn.val();if(c&&pc&&pc.signalingState!=='closed')pc.addIceCandidate(new RTCIceCandidate(c)).catch(function(){})});
+      })
+    })
+  }).catch(function(){alert('Нет доступа к камере/микрофону.');cleanup()});
+}
+
+function end(){
+  stopRing();
+  if(ref){if(role==='callee')ref.update({status:'declined'});else ref.update({status:active&&pc?'ended':'cancelled'})}
+  cleanup();
+}
+
+function toggleMute(){muted=!muted;if(stream)stream.getAudioTracks().forEach(function(t){t.enabled=!muted});$('callM').classList.toggle('a',muted);$('callMO').classList.toggle('a',muted)}
+function toggleSpeaker(){speaker=!speaker;$('callS').classList.toggle('a',speaker);$('callSO').classList.toggle('a',speaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=speaker?1:.15}
+function toggleVideo(){
+  if(!stream)return;var vt=stream.getVideoTracks();
+  if(vt.length>0){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});video=ns;$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);if(ns){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}else{$('localVid').classList.add('hidden')}updateVideoUI()}
+  else{navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:320,height:240}}).then(function(vs){var nt=vs.getVideoTracks()[0];stream.addTrack(nt);if(pc){pc.addTrack(nt,stream)}video=true;$('callV').classList.add('a');$('callVO').classList.add('a');$('localVid').srcObject=stream;$('localVid').classList.remove('hidden');updateVideoUI()}).catch(function(){alert('Нет доступа к камере.')})}
+}
+var facing='user';
+function flipCam(){
+  if(!stream)return;var vt=stream.getVideoTracks();if(!vt.length)return;
+  facing=facing==='user'?'environment':'user';vt.forEach(function(t){t.stop()});
+  navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:320,height:240}}).then(function(s){var nt=s.getVideoTracks()[0];stream.removeTrack(vt[0]);stream.addTrack(nt);if(pc){var sender=pc.getSenders().find(function(x){return x.track&&x.track.kind==='video'});if(sender)sender.replaceTrack(nt)}$('localVid').srcObject=stream}).catch(function(){facing=facing==='user'?'environment':'user'})
+}
+function listen(){
+  if(listenerSet)return;listenerSet=true;
+  db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(sn){var d=sn.val();if(d&&d.to===U&&d.status==='ringing'&&!active)handleIncoming(sn.key,d)});
+}
+return{start:start,accept:accept,end:end,cleanup:cleanup,listen:listen,toggleMute:toggleMute,toggleSpeaker:toggleSpeaker,toggleVideo:toggleVideo,flipCam:flipCam,isActive:function(){return active},getIncomingVideo:function(){return incomingVideo}};
+})();
+window.startCall=CallManager.start;
+function endCallClean(){CallManager.cleanup()}
+function listenCalls(){CallManager.listen()}
+$('callD').addEventListener('click',function(){CallManager.end()});
+$('callDA').addEventListener('click',function(){CallManager.end()});
+$('callD2').addEventListener('click',function(){CallManager.end()});
+$('callBack').addEventListener('click',function(){CallManager.end()});
+$('callAV').addEventListener('click',function(){CallManager.accept(CallManager.getIncomingVideo())});
+$('callM').addEventListener('click',function(){CallManager.toggleMute()});
+$('callMO').addEventListener('click',function(){CallManager.toggleMute()});
+$('callS').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callSO').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callV').addEventListener('click',function(){CallManager.toggleVideo()});
+$('callVO').addEventListener('click',function(){CallManager.toggleVideo()});
+$('callFlipO').addEventListener('click',function(){CallManager.flipCam()});
+$('callFlipA').addEventListener('click',function(){CallManager.flipCam()});
+$('phb').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,false)});
+$('vidBtn').addEventListener('click',function(e){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,true)});
 // Buttons
 $('cbb').addEventListener('click',goB);$('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('rpc').addEventListener('click',cRp);
 
