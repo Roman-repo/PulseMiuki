@@ -259,20 +259,21 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden;animation:csFade .3s ease-out}
 @keyframes csFade{from{opacity:0}to{opacity:1}}
 .cs.cs-out{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
-.cs.cs-inc{background:linear-gradient(180deg,#1a1a2e 0%,#2d2d4e 50%,#1a1a2e 100%)}
+.cs.cs-inc{background:linear-gradient(180deg,#2c2541 0%,#3d3557 40%,#2c2541 100%)}
 .cs.cs-act{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
 .call-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
 .call-av-ring{width:160px;height:160px;border-radius:50%;border:4px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,255,255,.08);animation:cpulse 2.5s ease-in-out infinite}
 .call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.06)}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
 .call-name{color:#fff;font-size:26px;font-weight:500;text-align:center}
-.call-name-inc{color:#fff;font-size:28px;font-weight:500;text-align:center;margin-bottom:4px}
+.call-name-inc{color:#fff;font-size:30px;font-weight:500;text-align:center;margin-top:8px}
+.call-inc-type{color:rgba(255,255,255,.5);font-size:15px;font-weight:400;text-align:center}
 .call-status{color:rgba(255,255,255,.6);font-size:15px;font-weight:400;text-align:center}
 .call-status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);margin-left:6px;animation:sdot 1.5s ease-in-out infinite}
 @keyframes sdot{0%,100%{opacity:.3}50%{opacity:1}}
 .call-timer{color:rgba(255,255,255,.9);font-size:22px;font-weight:500;text-align:center}
 .call-btns{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:41;padding:0 16px}
-.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 60px}
+.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 70px}
 .call-btn-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
 .cb{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .cb:active{transform:scale(.9)}
@@ -281,6 +282,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cb-sm.a{background:rgba(255,255,255,.45)}
 .cb.dec{background:#E85D75}.cb.end{background:#ff3b30}
 .cb.acc-audio{background:#4892f7}
+.cb-inc{width:64px;height:64px}
 .cb.acc-video{background:#00b894}
 .cb-label{color:rgba(255,255,255,.7);font-size:11px;font-weight:400;white-space:nowrap}
 .call-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:39}
@@ -415,12 +417,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <button type="button" class="cb-sm" id="callSpkVid" style="width:40px;height:40px;background:rgba(255,255,255,.15)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
 </div>
 
-<!-- Incoming layout -->
-<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;padding-top:60px">
-<div style="color:rgba(255,255,255,.4);font-size:14px;margin-bottom:4px">Мост</div>
+<!-- Incoming layout (Telegram-style) -->
+<div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;padding-top:80px">
+<div class="call-inc-type" id="callIncType">Аудиовызов Мост...</div>
 <div class="call-name-inc" id="callNmInc"></div>
-<div class="call-status" id="callStInc" style="margin-bottom:auto">Входящий вызов...</div>
-<div style="margin:auto 0"><div class="call-av-ring-inc" id="callAvInc"></div></div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center"><div class="call-av-ring-inc" id="callAvInc"></div></div>
 </div>
 
 <!-- Outgoing / Active layout (audio mode — center content) -->
@@ -435,8 +436,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 <!-- Incoming buttons: Отклонить + Ответить -->
 <div class="call-btns-inc hidden" id="callIncBtns">
-<div class="call-btn-wrap"><button type="button" class="cb dec" id="callD2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="23" y1="1" x2="1" y2="23"/></svg></button><span class="cb-label">Отклонить</span></div>
-<div class="call-btn-wrap"><button type="button" class="cb acc-audio" id="callAV"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><span class="cb-label">Ответить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb cb-inc dec" id="callD2"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><span class="cb-label">Отклонить</span></div>
+<div class="call-btn-wrap"><button type="button" class="cb cb-inc acc-audio" id="callAV"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button><span class="cb-label">Ответить</span></div>
 </div>
 
 <!-- Outgoing buttons: динамик, видео (выкл), микрофон (вкл), завершить -->
@@ -464,7 +465,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.7.5';
+var APP_VERSION='2.8.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1397,8 +1398,9 @@ function showUI(name,isInc){
   $('callTm').classList.add('hidden');$('callTopbar').style.display='none';
   if(isInc){
     $('callScr').className='cs cs-inc';$('callIncWrap').classList.remove('hidden');$('callIncWrap').style.display='flex';
-    $('callNmInc').textContent=name;$('callStInc').textContent='Входящий вызов...';
-    $('callAvInc').innerHTML=av(name,150);$('callIncBtns').classList.remove('hidden');
+    $('callNmInc').textContent=name;
+    $('callIncType').textContent=(incomingVideo?'Видеовызов':'Аудиовызов')+' Мост...';
+    $('callAvInc').innerHTML=av(name,170);$('callIncBtns').classList.remove('hidden');
   }else{
     $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
     $('callNmOut').textContent=name;$('callStOut').innerHTML='Запрос <span class="call-status-dot"></span>';
