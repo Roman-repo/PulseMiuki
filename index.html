@@ -463,19 +463,19 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.0.0';
+var APP_VERSION='2.1.0';
 var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
 var callPC=null,callStream=null,callRef=null,callRole=null,callPeer=null,callActive=false,callMuted=false,callTimerInt=null,callSec=0,ringInt=null,callListenerSet=false,callSpeaker=false,callVideo=false;
-var mediaRec=null,isRec=false,audioChunks=[],rrList={};
+var rrList={};
 var folders=['Все','Личные','Группы','Каналы','Архив'];
 var curFolder='Все',mutedChats={},archivedChats={},savedMsgs=[],schedMsgs=[];
 var threadMode=false,threadParent=null;
 var readTs={};
 
-function hc(n){var h=0;for(var i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return C[Math.abs(h)%C.length]}
-function av(n,s){var p=profiles[n];if(p&&p.avatar)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px"><img src="'+p.avatar+'"></div>';var c=hc(n);return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*.4)+'px;background:linear-gradient(135deg,'+c+','+c+'cc)">'+n.charAt(0).toUpperCase()+'</div>'}
+function hc(n){if(!n)return C[0];var h=0;for(var i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return C[Math.abs(h)%C.length]}
+function av(n,s){if(!n)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;background:var(--bg3)">?</div>';var p=profiles[n];if(p&&p.avatar)return'<div class="avatar" style="width:'+s+'px;height:'+s+'px"><img src="'+p.avatar+'"></div>';var c=hc(n);return'<div class="avatar" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s*.4)+'px;background:linear-gradient(135deg,'+c+','+c+'cc)">'+n.charAt(0).toUpperCase()+'</div>'}
 function ft(t){return new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 function fd(t){var d=new Date(t),td=new Date,yd=new Date;yd.setDate(yd.getDate()-1);if(d.toDateString()===td.toDateString())return'Сегодня';if(d.toDateString()===yd.toDateString())return'Вчера';return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}
 function es(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
@@ -998,47 +998,177 @@ sM(null,null,null,null,null,null,null,null,secs)}
 
 // Voice messages
 // Audio record — hold-to-record with indicator, vibration, lock mode, min duration
-var audioRecStream=null,recTimerInt=null,recStartTime=0;
+
+// ============ Recorder — isolated recording module ============
+var Recorder=(function(){
+var mode='audio'; // 'audio' or 'video'
+var audioStream=null,audioRec=null,audioChunks=[],audioIsRec=false;
+var videoStream=null,videoRec=null,videoChunks=[],videoInt=null,videoSec=0;
+var timerInt=null,startTime=0;
+var pressStart=0,holdTimer=null,isHolding=false;
+
+function log(msg){console.log('[Recorder] '+msg)}
 function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
-function showRecIndicator(){
-$('inwNormal').classList.add('hidden');
-$('inwRec').classList.remove('hidden');
-$('recMainBtn').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
-recStartTime=Date.now();
-recTimerInt=setInterval(function(){
-var elapsed=Date.now()-recStartTime;
-var s=Math.floor(elapsed/1000),ms=Math.floor((elapsed%1000)/100);
-var m=Math.floor(s/60);s=s%60;
-var disp=$('recTimerDisp');if(disp)disp.textContent=m+':'+(s<10?'0':'')+s+','+ms;
-},100);
+
+// --- UI ---
+function showIndicator(){
+  $('inwNormal').classList.add('hidden');
+  $('inwRec').classList.remove('hidden');
+  $('recMainBtn').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+  startTime=Date.now();
+  timerInt=setInterval(function(){
+    var elapsed=Date.now()-startTime;
+    var s=Math.floor(elapsed/1000),ms=Math.floor((elapsed%1000)/100);
+    var m=Math.floor(s/60);s=s%60;
+    var disp=$('recTimerDisp');if(disp)disp.textContent=m+':'+(s<10?'0':'')+s+','+ms;
+  },100);
 }
-function hideRecIndicator(){
-clearInterval(recTimerInt);recTimerInt=null;
-$('inwRec').classList.add('hidden');
-$('inwNormal').classList.remove('hidden');
-$('recTimerDisp').textContent='0:00,0';
-$('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
-updateRecIcon();
+function hideIndicator(){
+  clearInterval(timerInt);timerInt=null;
+  $('inwRec').classList.add('hidden');
+  $('inwNormal').classList.remove('hidden');
+  $('recTimerDisp').textContent='0:00,0';
+  $('recMainBtn').innerHTML='<svg id="recMicIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><svg id="recVidIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>';
+  updateIcon();
 }
-function startAudioRec(){
-vibrate(50);showRecIndicator();
-navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){audioRecStream=stream;mediaRec=new MediaRecorder(stream);audioChunks=[];isRec=true;
-mediaRec.ondataavailable=function(e){audioChunks.push(e.data)};
-mediaRec.onstop=function(){isRec=false;
-var elapsed=Date.now()-recStartTime;
-hideRecIndicator();
-stream.getTracks().forEach(function(t){t.stop()});audioRecStream=null;
-// Мин. длительность 0.5 сек
-if(elapsed<500){return}
-vibrate(50);
-var blob=new Blob(audioChunks,{type:'audio/webm'});if(blob.size<100)return;
-var reader=new FileReader();reader.onload=function(){
-var dur=Math.round(elapsed/1000);
-var m=Math.floor(dur/60),s=dur%60;
-sM(null,reader.result,m+':'+(s<10?'0':'')+s)};reader.readAsDataURL(blob)};
-mediaRec.start(500)}).catch(function(){hideRecIndicator();alert('Нет доступа к микрофону. Используйте HTTPS.')})}
-function stopAudioRec(){if(isRec&&mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
-function cancelAudioRec(){if(isRec&&mediaRec){mediaRec.ondataavailable=null;mediaRec.onstop=function(){isRec=false;hideRecIndicator();if(audioRecStream){audioRecStream.getTracks().forEach(function(t){t.stop()});audioRecStream=null}};mediaRec.stop()}else{hideRecIndicator()}}
+function updateIcon(){
+  var mic=$('recMicIcon'),vid=$('recVidIcon');
+  if(!mic||!vid)return;
+  if(mode==='audio'){mic.classList.remove('hidden');vid.classList.add('hidden')}
+  else{mic.classList.add('hidden');vid.classList.remove('hidden')}
+}
+function showTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tmr);t._tmr=setTimeout(function(){t.classList.add('hidden')},3000)}
+function updateSendBtn(){var a=$('mi').value.trim().length>0;$('sbb').classList.toggle('hidden',!a);$('recMainBtn').classList.toggle('hidden',a)}
+
+// --- Audio recording ---
+function startAudio(){
+  log('startAudio');vibrate(50);showIndicator();
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    audioStream=stream;audioRec=new MediaRecorder(stream);audioChunks=[];audioIsRec=true;
+    audioRec.ondataavailable=function(e){audioChunks.push(e.data)};
+    audioRec.onstop=function(){
+      audioIsRec=false;
+      var elapsed=Date.now()-startTime;
+      hideIndicator();
+      stream.getTracks().forEach(function(t){t.stop()});audioStream=null;
+      if(elapsed<500){log('too short, discarded');return}
+      vibrate(50);
+      var blob=new Blob(audioChunks,{type:'audio/webm'});if(blob.size<100)return;
+      var reader=new FileReader();reader.onload=function(){
+        var dur=Math.round(elapsed/1000);var m=Math.floor(dur/60),s=dur%60;
+        sM(null,reader.result,m+':'+(s<10?'0':'')+s);log('audio sent')};
+      reader.readAsDataURL(blob);
+    };
+    audioRec.start(500);log('audio recording started');
+  }).catch(function(err){hideIndicator();log('gUM audio ERR: '+err.message);alert('Нет доступа к микрофону. Используйте HTTPS.')})
+}
+function stopAudio(){if(audioIsRec&&audioRec&&audioRec.state==='recording'){audioRec.stop();log('audio stopped')}}
+function cancelAudio(){
+  if(audioIsRec&&audioRec){
+    audioRec.ondataavailable=null;
+    audioRec.onstop=function(){audioIsRec=false;hideIndicator();if(audioStream){audioStream.getTracks().forEach(function(t){t.stop()});audioStream=null}};
+    audioRec.stop();log('audio cancelled');
+  }else{hideIndicator()}
+}
+
+// --- Video recording ---
+function startVideo(){
+  log('startVideo');vibrate(50);showIndicator();videoSec=0;
+  navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
+    videoStream=stream;videoChunks=[];videoRec=new MediaRecorder(stream);
+    videoRec.ondataavailable=function(e){videoChunks.push(e.data)};
+    videoRec.onstop=function(){
+      var elapsed=Date.now()-startTime;
+      hideIndicator();
+      if(videoStream){videoStream.getTracks().forEach(function(t){t.stop()});videoStream=null}
+      clearInterval(videoInt);
+      if(elapsed<500){log('too short, discarded');return}
+      vibrate(50);
+      var blob=new Blob(videoChunks,{type:'video/webm'});
+      if(blob.size<100)return;
+      if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
+      setTimeout(function(){
+        var reader=new FileReader();reader.onload=function(){
+          var m=Math.floor(videoSec/60),s=videoSec%60;var dur=m+':'+(s<10?'0':'')+s;
+          var inp=$('mi'),t=inp.value.trim();inp.value='';updateSendBtn();
+          var msg={sender:U,ts:firebase.database.ServerValue.TIMESTAMP,vidMsg:reader.result,vidDur:dur};
+          if(t)msg.text=t;
+          db.ref('messages/'+cRoom).push(msg);
+          db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.database.ServerValue.TIMESTAMP});
+          log('video sent');
+        };reader.readAsDataURL(blob)},1000);
+    };
+    videoRec.start(500);
+    videoInt=setInterval(function(){videoSec++;if(videoSec>=30)stopVideo()},1000);
+    log('video recording started');
+  }).catch(function(err){hideIndicator();log('gUM video ERR: '+err.message);alert('Нет доступа к камере. Используйте HTTPS.')})
+}
+function stopVideo(){if(videoRec&&videoRec.state==='recording'){videoRec.stop();clearInterval(videoInt);log('video stopped')}}
+function cancelVideo(){
+  if(videoRec&&videoRec.state==='recording'){
+    videoRec.ondataavailable=null;
+    videoRec.onstop=function(){hideIndicator();if(videoStream){videoStream.getTracks().forEach(function(t){t.stop()});videoStream=null}clearInterval(videoInt)};
+    videoRec.stop();log('video cancelled');
+  }else{hideIndicator()}
+}
+
+// --- Is recording? ---
+function active(){return audioIsRec||(videoRec&&videoRec.state==='recording')}
+
+// --- Button logic ---
+function begin(){
+  pressStart=Date.now();isHolding=false;
+  holdTimer=setTimeout(function(){
+    isHolding=true;vibrate(50);
+    if(mode==='audio')startAudio();else startVideo();
+  },500);
+}
+function end(){
+  clearTimeout(holdTimer);
+  var dur=Date.now()-pressStart;
+  if(!isHolding&&dur<500&&dur>0){
+    vibrate(30);
+    if(mode==='audio'){mode='video';updateIcon();showTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
+    else{mode='audio';updateIcon();showTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
+  }
+  pressStart=0;isHolding=false;
+}
+function send(){
+  if(active()){if(mode==='audio')stopAudio();else stopVideo()}
+}
+function cancel(){
+  if(active()){if(mode==='audio')cancelAudio();else cancelVideo()}
+}
+
+// --- Init: bind events ---
+function init(){
+  $('mi').addEventListener('input',function(){updateSendBtn();sTp()});
+  $('mi').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
+  $('sbb').addEventListener('click',function(){sM()});
+  $('recCancelText').addEventListener('click',function(){cancel()});
+
+  // Touch
+  $('recMainBtn').addEventListener('touchstart',function(e){
+    e.preventDefault();
+    if(active()){send();return}
+    begin();
+  },{passive:false});
+  $('recMainBtn').addEventListener('touchend',function(e){
+    e.preventDefault();
+    if(!isHolding)end();
+  },{passive:false});
+
+  // Mouse
+  $('recMainBtn').addEventListener('mousedown',function(){if(active()){send();return}begin()});
+  $('recMainBtn').addEventListener('mouseup',function(){if(!isHolding)end()});
+  $('recMainBtn').addEventListener('click',function(e){e.stopPropagation()});
+
+  updateSendBtn();
+  log('initialized');
+}
+
+return{init:init,active:active,updateSendBtn:updateSendBtn,cancel:cancel,updateIcon:updateIcon};
+})();
 // Lock mode: ОТМЕНА кликабельна
 // Image viewer
 window.vI=function(src){$('ivi').src=src;$('ivw').classList.remove('hidden')};
@@ -1048,39 +1178,6 @@ $('ivw').addEventListener('click',function(){this.classList.add('hidden')});
 window.playVidMsg=function(el){var v=el.querySelector('video');var pb=el.querySelector('.m-vidmsg-play');
 if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='flex'}};
 
-// Video message recording — hold-to-record with vibration, min duration, preview
-var vrecStream=null,vrecRec=null,vrecChunks=[],vrecInt=null,vrecSec=0;
-function startVideoRec(){
-vibrate(50);showRecIndicator();vrecSec=0;
-navigator.mediaDevices.getUserMedia({audio:true,video:{facingMode:'user',width:320,height:320}}).then(function(stream){
-vrecStream=stream;vrecChunks=[];vrecRec=new MediaRecorder(stream);
-vrecRec.ondataavailable=function(e){vrecChunks.push(e.data)};
-vrecRec.onstop=function(){
-var elapsed=Date.now()-recStartTime;
-hideRecIndicator();
-if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}
-clearInterval(vrecInt);
-// Мин. длительность 0.5 сек
-if(elapsed<500)return;
-vibrate(50);
-var blob=new Blob(vrecChunks,{type:'video/webm'});
-if(blob.size<100)return;
-if(blob.size>3*1024*1024){alert('Видео слишком большое (макс 30 сек)');return}
-// Превью 1 сек, затем автоотправка
-setTimeout(function(){
-var reader=new FileReader();reader.onload=function(){
-var m=Math.floor(vrecSec/60),s=vrecSec%60;
-var dur=m+':'+(s<10?'0':'')+s;
-var inp=$('mi'),t=inp.value.trim();inp.value='';uSB();
-var msg={sender:U,ts:firebase.database.ServerValue.TIMESTAMP,vidMsg:reader.result,vidDur:dur};
-if(t)msg.text=t;
-db.ref('messages/'+cRoom).push(msg);
-db.ref('chats/'+cRoom).update({lastText:'🎥 Видео',lastTs:firebase.database.ServerValue.TIMESTAMP})
-};reader.readAsDataURL(blob)},1000)};
-vrecRec.start(500);
-vrecInt=setInterval(function(){vrecSec++;if(vrecSec>=30)stopVideoRec()},1000)
-}).catch(function(){hideRecIndicator();alert('Нет доступа к камере. Используйте HTTPS.')})}
-function stopVideoRec(){if(vrecRec&&vrecRec.state==='recording')vrecRec.stop();clearInterval(vrecInt)}
 
 // Emoji
 function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div>';p.innerHTML=h;
@@ -1178,100 +1275,12 @@ h+='<div style="color:var(--tx3);font-size:12px;margin-top:8px">Кросспла
 h+='</div></div>';
 $('ovSettings').innerHTML=h;$('ovSettings').classList.remove('hidden')};
 
-// Send btn & record mode toggle
-var mi=$('mi'),sbb=$('sbb'),recMode='audio'; // 'audio' or 'video'
-function uSB(){var a=mi.value.trim().length>0;
-sbb.classList.toggle('hidden',!a);$('recMainBtn').classList.toggle('hidden',a)}
-function showRecTooltip(msg){var t=$('recTooltip');t.textContent=msg;t.classList.remove('hidden');clearTimeout(t._tmr);t._tmr=setTimeout(function(){t.classList.add('hidden')},3000)}
-function updateRecIcon(){
-if(recMode==='audio'){$('recMicIcon').classList.remove('hidden');$('recVidIcon').classList.add('hidden')}
-else{$('recMicIcon').classList.add('hidden');$('recVidIcon').classList.remove('hidden')}
-}
-mi.addEventListener('input',function(){uSB();sTp()});
-mi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sM()}});
-sbb.addEventListener('click',function(){sM()});
 
-// Record button logic:
-// Short tap (<500ms) = toggle mode audio↔video + tooltip
-// Hold (>=500ms) = start recording, release = stop & send
-// Swipe left = cancel (with visual feedback), Swipe up = lock mode
-var recPressStart=0,recHoldTimer=null,recIsHolding=false;
-function recBegin(){
-recPressStart=Date.now();recIsHolding=false;
-recHoldTimer=setTimeout(function(){
-  recIsHolding=true;
-  vibrate(50);
-  if(recMode==='audio')startAudioRec();else startVideoRec();
-},500);
-}
-function recEnd(){
-clearTimeout(recHoldTimer);
-var dur=Date.now()-recPressStart;
-if(!recIsHolding&&dur<500&&dur>0){
-  // Short tap (<500ms) — toggle mode
-  vibrate(30);
-  if(recMode==='audio'){
-    recMode='video';updateRecIcon();
-    showRecTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.');
-  }else{
-    recMode='audio';updateRecIcon();
-    showRecTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.');
-  }
-}
-// If recording started — do NOT stop on release. User uses ➤ or ОТМЕНА.
-recPressStart=0;recIsHolding=false;
-}
+// Recorder aliases for backward compat
+function uSB(){Recorder.updateSendBtn()}
+function isRecording(){return Recorder.active()}
+Recorder.init();
 
-// ➤ button: when recording, tap sends. When not recording, normal send.
-function recBtnTap(){
-if(isRecording()){
-  // Stop recording and send
-  if(recMode==='audio')stopAudioRec();
-  else stopVideoRec();
-}
-}
-
-// ОТМЕНА: cancel recording
-$('recCancelText').addEventListener('click',function(){
-if(isRecording()){
-  if(recMode==='audio')cancelAudioRec();
-  else{if(vrecRec&&vrecRec.state==='recording'){vrecRec.ondataavailable=null;vrecRec.onstop=function(){hideRecIndicator();if(vrecStream){vrecStream.getTracks().forEach(function(t){t.stop()});vrecStream=null}clearInterval(vrecInt)};vrecRec.stop()}else{hideRecIndicator()}}
-}
-});
-
-// Touch events
-function isRecording(){return isRec||(vrecRec&&vrecRec.state==='recording')}
-$('recMainBtn').addEventListener('touchstart',function(e){
-e.preventDefault();
-if(isRecording()){
-  // Recording in progress — tap ➤ sends
-  recBtnTap();
-  return;
-}
-recBegin();
-},{passive:false});
-$('recMainBtn').addEventListener('touchend',function(e){
-e.preventDefault();
-if(!recIsHolding){
-  // Short tap ended — recEnd handles toggle
-  recEnd();
-}
-// If recording — do nothing on release
-},{passive:false});
-
-// Mouse events (desktop)
-$('recMainBtn').addEventListener('mousedown',function(e){
-if(isRecording()){recBtnTap();return}
-recBegin();
-});
-$('recMainBtn').addEventListener('mouseup',function(){
-if(!recIsHolding)recEnd();
-});
-$('recMainBtn').addEventListener('click',function(e){
-// Prevent double-fire from mousedown+click
-e.stopPropagation();
-});
-uSB();
 
 // ============ CallManager — isolated WebRTC module ============
 var CallManager=(function(){
