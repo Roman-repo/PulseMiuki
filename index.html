@@ -168,7 +168,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Input bar - Telegram style */
 .inb{padding:6px 8px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--brd);display:flex;gap:8px;align-items:center;backdrop-filter:blur(20px);flex-shrink:0;position:relative}
-.inw{flex:1;background:var(--bg3);border-radius:22px;display:flex;align-items:center;padding:0 4px}
+.inw{flex:1;background:var(--bg3);border:1px solid rgba(102,126,234,.2);border-radius:22px;display:flex;align-items:center;padding:0 4px}
 .inw-rec{padding:0 16px;gap:10px}
 .min{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;padding:10px 8px;min-width:0;font-weight:400}
 .min::placeholder{color:var(--tx3)}
@@ -210,13 +210,14 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sri::placeholder{color:var(--tx3)}
 
 /* Emoji panel */
-.ep{display:none;position:absolute;bottom:55px;left:6px;right:6px;background:var(--bg2);border:1px solid var(--brd);border-radius:14px;padding:6px;z-index:15;max-height:200px;overflow-y:auto;backdrop-filter:blur(20px)}
-.ep.open{display:block}
-.ec{display:flex;gap:2px;padding:2px 2px 6px;border-bottom:1px solid var(--brd);margin-bottom:6px;overflow-x:auto}
-.ecb{background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;border-radius:6px;opacity:.5;flex-shrink:0}
+.ep{position:absolute;bottom:55px;left:6px;right:6px;background:var(--bg2);border:1px solid var(--brd);border-radius:14px;padding:6px;z-index:15;max-height:260px;overflow-y:auto;backdrop-filter:blur(20px);transform:translateY(20px);opacity:0;transition:transform .25s ease-out,opacity .25s ease-out;pointer-events:none;display:block}
+.ep.open{transform:translateY(0);opacity:1;pointer-events:auto}
+.ec{display:flex;gap:2px;padding:2px 2px 6px;border-bottom:1px solid var(--brd);margin-bottom:6px;overflow-x:auto;flex-shrink:0}
+.ecb{background:none;border:none;cursor:pointer;font-size:18px;padding:4px 6px;border-radius:6px;opacity:.5;flex-shrink:0}
 .ecb.act{opacity:1;background:var(--bg3)}
-.eg{display:grid;grid-template-columns:repeat(8,1fr);gap:1px}
-.ei{font-size:20px;padding:4px;text-align:center;cursor:pointer;border-radius:6px}
+.eg{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.ei{font-size:24px;padding:4px;text-align:center;cursor:pointer;border-radius:8px}
+.ei:active{background:var(--bg3)}
 .ei:active{background:var(--bg3)}
 
 /* Context menu */
@@ -404,7 +405,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="inb" id="inputBar">
 <!-- Состояние 1: Обычный ввод -->
 <div class="inw" id="inwNormal">
-<button type="button" class="ini" id="eb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+<button type="button" class="ini" id="eb"><svg id="ebSmile" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><svg id="ebKb" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg></button>
 <input class="min" id="mi" placeholder="Сообщение" autocomplete="off">
 <button type="button" class="ini" id="attBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
 </div>
@@ -499,8 +500,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.16.0';
-var EMOJIS={"😊":["😀","😂","🤣","😊","😍","🥰","😘","😎","🤩","🥳","😋","😜","🤗","🤔","😏","😅","😢","😭","😤","😡","🥺","😱"],"👍":["👍","👎","👏","🙌","🤝","✌️","🫶","❤️","🔥","💯","⭐","🎉","💪","🙏","👀","💀"],"🌞":["🌞","🌈","⚡","❄️","🌊","🌸","🐱","🐶","🦊","🐻","🦋"],"🍕":["🍕","🍔","🍣","🍰","☕","🍺","🍎"],"💬":["💬","📱","💻","🎮","🎵","📸","🏠","🚗","✈️","🎁","✅","❌"]};
+var APP_VERSION='2.17.0';
+var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
 var ringInt=null;
@@ -1362,8 +1363,8 @@ if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='f
 var STICKERS=["😀","😎","🥳","😍","🤔","😱","😭","🤣","💪","🔥","❤️","👍","👎","🎉","💯","⭐","🙏","🫶","👀","💀","🦊","🐱","🐶","🌈","☀️","🌙","⚡","🍕","☕","🎮","🚀","💎"];
 function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});bEC()}
 function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').focus()})})}
-function tEm(){emO=!emO;$('epp').classList.toggle('open',emO)}
-function cEm(){emO=false;$('epp').classList.remove('open')}
+function tEm(){emO=!emO;$('epp').classList.toggle('open',emO);$('ebSmile').classList.toggle('hidden',emO);$('ebKb').classList.toggle('hidden',!emO)}
+function cEm(){emO=false;$('epp').classList.remove('open');$('ebSmile').classList.remove('hidden');$('ebKb').classList.add('hidden')}
 bEP();$('eb').addEventListener('click',tEm);
 
 // REQ-12: Scroll-to-bottom button
