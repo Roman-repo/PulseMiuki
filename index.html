@@ -286,18 +286,18 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cs{position:absolute;top:0;left:0;right:0;bottom:0;z-index:40;display:flex;flex-direction:column;align-items:center;overflow:hidden;animation:csFade .3s ease-out}
 @keyframes csFade{from{opacity:0}to{opacity:1}}
 .cs.cs-out{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
-.cs.cs-inc{background:linear-gradient(180deg,#2c2541 0%,#3d3557 40%,#2c2541 100%)}
+.cs.cs-inc{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
 .cs.cs-act{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
 .call-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
 .call-av-ring{width:170px;height:170px;border-radius:50%;border:4px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,255,255,.08);position:relative}
-.call-av-ring::before,.call-av-ring::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.15);animation:ringPulse 3s ease-out infinite}
+.call-av-ring::before,.call-av-ring::after{content:'';position:absolute;border-radius:50%;border:2.5px solid rgba(255,255,255,.25);animation:ringPulse 3s ease-out infinite}
 .call-av-ring::before{width:220px;height:220px;animation-delay:0s}
 .call-av-ring::after{width:270px;height:270px;animation-delay:1s}
 .call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.08);position:relative}
-.call-av-ring-inc::before,.call-av-ring-inc::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.15);animation:ringPulse 3s ease-out infinite}
+.call-av-ring-inc::before,.call-av-ring-inc::after{content:'';position:absolute;border-radius:50%;border:2.5px solid rgba(255,255,255,.25);animation:ringPulse 3s ease-out infinite}
 .call-av-ring-inc::before{width:220px;height:220px;animation-delay:0s}
 .call-av-ring-inc::after{width:270px;height:270px;animation-delay:1s}
-@keyframes ringPulse{0%{transform:scale(.85);opacity:.6}100%{transform:scale(1.15);opacity:0}}
+@keyframes ringPulse{0%{transform:scale(.85);opacity:.7}100%{transform:scale(1.15);opacity:0}}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
 .call-name{color:#fff;font-size:26px;font-weight:500;text-align:center}
 .call-name-inc{color:#fff;font-size:30px;font-weight:500;text-align:center;margin-top:8px}
@@ -307,7 +307,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 @keyframes sdot{0%,100%{opacity:.3}50%{opacity:1}}
 .call-timer{color:rgba(255,255,255,.9);font-size:22px;font-weight:500;text-align:center}
 .call-btns{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:41;padding:0 16px}
-.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 70px}
+.call-btns-inc{position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:space-around;z-index:41;padding:0 40px}
 .call-btn-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
 .cb{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .cb:active{transform:scale(.9)}
@@ -501,7 +501,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.18.4';
+var APP_VERSION='2.18.5';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
