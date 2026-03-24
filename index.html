@@ -75,12 +75,6 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cip{color:var(--tx3);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:400}
 .cip.unread{color:var(--tx);font-weight:500}
 .cit{color:var(--tx3);font-size:12px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-weight:400}
-.ci-wrap{position:relative;overflow:hidden}
-.ci-actions{position:absolute;right:0;top:0;bottom:0;display:flex;opacity:0;transition:opacity .2s}
-.ci-act{border:none;color:#fff;font-size:12px;font-weight:500;padding:0 16px;cursor:pointer;font-family:'Roboto',sans-serif}
-.ci-act-pin{background:#667eea}
-.ci-act-arch{background:#f39c12}
-.ci-act-del{background:#e74c3c}
 .badge{background:var(--acc);color:#fff;font-size:12px;font-weight:500;padding:2px 7px;border-radius:12px;min-width:22px;text-align:center}
 .nb{position:absolute;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,.5);display:flex;align-items:center;justify-content:center;z-index:5}
 .scroll-bottom{position:absolute;bottom:70px;right:16px;width:40px;height:40px;border-radius:50%;background:var(--bg2);border:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:4;box-shadow:0 2px 10px rgba(0,0,0,.3);transition:opacity .2s;opacity:.85}
@@ -500,7 +494,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.17.0';
+var APP_VERSION='2.17.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -698,7 +692,7 @@ var msgs=rMsgs[it.id]||[];var lastTs=msgs.length?msgs[msgs.length-1].ts:0;
 var myReadTs=readTs[it.id]||0;var unread=0;
 msgs.forEach(function(m){if(m.sender!==U&&m.ts>myReadTs)unread++});
 var isMuted=mutedChats[it.id],isPinned=pinnedChats[it.id];
-h+='<div class="ci-wrap" data-r="'+it.id+'"><div class="ci'+(archivedChats[it.id]?' archived':'')+'" data-r="'+it.id+'">';
+h+='<div class="ci'+(archivedChats[it.id]?' archived':'')+'" data-r="'+it.id+'">';
 if(it.ig)h+='<div class="avatar" style="width:52px;height:52px;font-size:20px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>';
 else if(it.isChan)h+='<div class="avatar" style="width:52px;height:52px;font-size:18px;background:linear-gradient(135deg,#0984E3,#00B894)">📢</div>';
 else if(it.isGroup)h+='<div class="avatar" style="width:52px;height:52px;font-size:18px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
@@ -708,50 +702,24 @@ var _pvText=it.pv;if((it.isGroup||it.ig)&&msgs.length){var _last=msgs[msgs.lengt
 var _ck='';if(msgs.length){var _lm=msgs[msgs.length-1];if(_lm.sender===U)_ck='<span class="ck'+(_lm._read===2?' read':'')+' cip-ck">'+(_lm._read>=1?'✓✓':'✓')+'</span> '}
 h+='<div class="cii"><div class="cin">'+es(it.ig?'Общий чат':it.name)+(isMuted?' <span class="muted-icon">🔇</span>':'')+(isPinned?' <span style="opacity:.4;font-size:12px">📌</span>':'')+'</div><div class="cip'+(unread?' unread':'')+'">'+_ck+es(_pvText)+'</div></div>';
 h+='<div class="cit">'+(it.t?ftSmart(it.t):'')+(unread?'<div class="badge">'+unread+'</div>':'')+'</div></div>';
-h+='<div class="ci-actions" data-r="'+it.id+'"><button class="ci-act ci-act-pin" data-a="pin">'+(pinnedChats[it.id]?'Откр.':'Закр.')+'</button><button class="ci-act ci-act-arch" data-a="arch">'+(archivedChats[it.id]?'Разарх.':'Архив')+'</button><button class="ci-act ci-act-del" data-a="del">Удал.</button></div>';
-h+='</div>'});
+});
 a.innerHTML=h||'<div style="padding:30px;text-align:center;color:var(--tx3);font-size:13px">Нет чатов</div>';
 // REQ-30: показать кнопку «прочитать все» если есть непрочитанные
 var _hasUnread=false;Object.keys(rMsgs).forEach(function(rid){var ms=rMsgs[rid]||[];var rt=readTs[rid]||0;ms.forEach(function(m){if(m.sender!==U&&m.ts>rt)_hasUnread=true})});
 $('readAllBtn').classList.toggle('hidden',!_hasUnread);
-a.querySelectorAll('.ci-wrap .ci').forEach(function(el){
-  el.addEventListener('click',function(){if(!el._swiped)oC(el.getAttribute('data-r'))});
+a.querySelectorAll('.ci').forEach(function(el){
+  el.addEventListener('click',function(){oC(el.getAttribute('data-r'))});
   var rid=el.getAttribute('data-r');
-  // Long press
   var tm;el.addEventListener('touchstart',function(e){tm=setTimeout(function(){showChatCtx(e,rid)},600)},{passive:true});
-  // REQ-31: Swipe left on chat item
-  var sx=0,sy=0,swiping=false;
-  el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;swiping=false;el._swiped=false},{passive:true});
-  el.addEventListener('touchmove',function(e){
-    clearTimeout(tm);
-    var dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
-    if(Math.abs(dy)>30&&!swiping)return;
-    if(dx<-15){swiping=true;var shift=Math.max(dx,-160);el.style.transform='translateX('+shift+'px)';el.style.transition='none';
-      // Show action buttons
-      var acts=el.parentElement.querySelector('.ci-actions');if(acts)acts.style.opacity='1';
-    }
-  },{passive:true});
-  el.addEventListener('touchend',function(){
-    clearTimeout(tm);
-    if(swiping){
-      var cur=parseFloat(el.style.transform.replace(/[^0-9\-\.]/g,''))||0;
-      if(cur<-60){el.style.transition='transform .2s';el.style.transform='translateX(-150px)';el._swiped=true}
-      else{el.style.transition='transform .2s';el.style.transform='';var acts=el.parentElement.querySelector('.ci-actions');if(acts)acts.style.opacity='0'}
-    }
-  });
-});
-// REQ-31: action button clicks
-a.querySelectorAll('.ci-act').forEach(function(btn){btn.addEventListener('click',function(e){
-  e.stopPropagation();var wrap=btn.closest('.ci-wrap');var rid=wrap?wrap.getAttribute('data-r'):'';var act=btn.getAttribute('data-a');
-  if(act==='pin'){if(pinnedChats[rid])delete pinnedChats[rid];else pinnedChats[rid]=true;saveLocal();rCL()}
-  else if(act==='arch'){if(archivedChats[rid])delete archivedChats[rid];else archivedChats[rid]=true;saveLocal();rCL()}
-  else if(act==='del'){if(confirm('Удалить чат?')){db.ref('chats/'+rid).remove();db.ref('messages/'+rid).remove();rCL()}}
-})})}
+  el.addEventListener('touchend',function(){clearTimeout(tm)});
+  el.addEventListener('touchmove',function(){clearTimeout(tm)});
+})}
 
 function showChatCtx(e,rid){rmC();var ov=document.createElement('div');ov.className='cto';var mn=document.createElement('div');mn.className='ctx';
 var m0=document.createElement('div');m0.className='cti';m0.innerHTML=(pinnedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Открепить</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span>Закрепить</span>');m0.addEventListener('click',function(){if(pinnedChats[rid])delete pinnedChats[rid];else pinnedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m0);
 var m1=document.createElement('div');m1.className='cti';m1.innerHTML=mutedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M23 9l-6 6"/><path d="M17 9l6 6"/></svg><span>Включить звук</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><line x1="23" y1="9" x2="17" y2="15"/></svg><span>Без звука</span>';m1.addEventListener('click',function(){if(mutedChats[rid])delete mutedChats[rid];else mutedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m1);
 var m2=document.createElement('div');m2.className='cti';m2.innerHTML=archivedChats[rid]?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 11 12 6 7 11"/><line x1="12" y1="6" x2="12" y2="18"/></svg><span>Из архива</span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="18" x2="12" y2="6"/></svg><span>В архив</span>';m2.addEventListener('click',function(){if(archivedChats[rid])delete archivedChats[rid];else archivedChats[rid]=true;saveLocal();rCL();rmC()});mn.appendChild(m2);
+var m3=document.createElement('div');m3.className='cti';m3.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span style="color:#e74c3c">Удалить чат</span>';m3.addEventListener('click',function(){if(confirm('Удалить чат и все сообщения?')){db.ref('chats/'+rid).remove();db.ref('messages/'+rid).remove();rmC();rCL()}});mn.appendChild(m3);
 var tx=e.touches?e.touches[0].clientX:e.clientX,ty=e.touches?e.touches[0].clientY:e.clientY;
 mn.style.left=Math.min(tx,innerWidth-180)+'px';mn.style.top=Math.min(ty,innerHeight-120)+'px';
 ov.addEventListener('click',rmC);document.body.appendChild(ov);document.body.appendChild(mn)}
