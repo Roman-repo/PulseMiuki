@@ -289,12 +289,15 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cs.cs-inc{background:linear-gradient(180deg,#2c2541 0%,#3d3557 40%,#2c2541 100%)}
 .cs.cs-act{background:linear-gradient(160deg,#56b4f9 0%,#667eea 35%,#764ba2 100%)}
 .call-av-wrap{position:relative;display:flex;align-items:center;justify-content:center}
-.call-av-ring{width:170px;height:170px;border-radius:50%;border:4px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,255,255,.08);animation:cpulse 2.5s ease-in-out infinite}
-.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.06);position:relative}
-.call-av-ring-inc::before,.call-av-ring-inc::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.08);animation:ringPulse 3s ease-out infinite}
+.call-av-ring{width:170px;height:170px;border-radius:50%;border:4px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(255,255,255,.08);position:relative}
+.call-av-ring::before,.call-av-ring::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.15);animation:ringPulse 3s ease-out infinite}
+.call-av-ring::before{width:220px;height:220px;animation-delay:0s}
+.call-av-ring::after{width:270px;height:270px;animation-delay:1s}
+.call-av-ring-inc{width:170px;height:170px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,255,255,.08);position:relative}
+.call-av-ring-inc::before,.call-av-ring-inc::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.15);animation:ringPulse 3s ease-out infinite}
 .call-av-ring-inc::before{width:220px;height:220px;animation-delay:0s}
 .call-av-ring-inc::after{width:270px;height:270px;animation-delay:1s}
-@keyframes ringPulse{0%{transform:scale(.85);opacity:.4}100%{transform:scale(1.1);opacity:0}}
+@keyframes ringPulse{0%{transform:scale(.85);opacity:.6}100%{transform:scale(1.15);opacity:0}}
 @keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.12)}50%{box-shadow:0 0 0 24px rgba(255,255,255,0)}}
 .call-name{color:#fff;font-size:26px;font-weight:500;text-align:center}
 .call-name-inc{color:#fff;font-size:30px;font-weight:500;text-align:center;margin-top:8px}
@@ -498,7 +501,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.18.3';
+var APP_VERSION='2.18.4';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1527,7 +1530,7 @@ function showUI(name,isInc){
   }else{
     $('callScr').className='cs cs-out';$('callOutWrap').classList.remove('hidden');$('callOutWrap').style.display='flex';
     $('callNmOut').textContent=name;$('callStOut').innerHTML='Запрос <span class="call-status-dot"></span>';
-    $('callAvOut').innerHTML=av(name,120);$('callOutBtns').classList.remove('hidden');
+    $('callAvOut').innerHTML=av(name,170);$('callOutBtns').classList.remove('hidden');
     $('callVO').classList.toggle('a',video);$('callSO').classList.toggle('a',speaker);
     updateVideoUI();
   }
