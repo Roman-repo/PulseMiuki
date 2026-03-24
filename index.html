@@ -86,6 +86,13 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sys-call{color:var(--tx2);font-size:12px}
 .sys-missed{color:var(--red);font-size:12px;font-weight:500}
 .sys-unread{background:var(--acc);color:#fff;font-size:12px;font-weight:500;padding:4px 14px;border-radius:16px}
+.call-bubble{padding:12px 14px!important}
+.call-bubble-row{display:flex;align-items:center;gap:12px}
+.call-bubble-info{flex:1;min-width:0}
+.call-bubble-title{font-size:15px;font-weight:500}
+.call-bubble-meta{display:flex;align-items:center;gap:4px;font-size:12px;margin-top:2px;opacity:.7}
+.call-bubble-icon{flex-shrink:0;opacity:.6}
+.call-missed .call-bubble-title{color:#fff}
 .m-sticker{font-size:56px;line-height:1.1;padding:4px 0}
 .ec-tabs{display:flex;gap:4px;width:100%;margin-bottom:4px}
 .ect{background:none;border:none;color:var(--tx2);font-size:13px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Roboto',sans-serif;font-weight:400}
@@ -501,7 +508,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.18.6';
+var APP_VERSION='2.19.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -789,7 +796,11 @@ for(var _i=0;_i<ms.length;_i++){var m=ms[_i];
 if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){h+='<div class="dd" id="unreadDiv"><span class="sys-unread">Непрочитанные сообщения</span></div>';_unreadShown=true}
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 // REQ-5+6: системные сообщения (звонки, пропущенные)
-if(m.system){h+='<div class="dd"><span class="'+(m.missed?'sys-missed':'sys-call')+'">'+es(m.text)+'</span></div>';ls='';continue}
+if(m.system){
+  var _callIcon=m.callVideo?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  var _dirIcon=m.callDir==='out'?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00b894" stroke-width="3"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>':'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+(m.missed?'#e74c3c':'#00b894')+'" stroke-width="3"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>';
+  h+='<div class="mr me"><div class="mac"></div><div class="mc"><div class="mb mn call-bubble'+(m.missed?' call-missed':'')+'"><div class="call-bubble-row"><div class="call-bubble-info"><div class="call-bubble-title">'+es(m.text)+'</div><div class="call-bubble-meta">'+_dirIcon+' '+ft(m.ts)+'</div></div><div class="call-bubble-icon">'+_callIcon+'</div></div></div></div></div>';
+  ls='';continue}
 // REQ-8: sticker — крупный эмодзи без пузыря
 if(m.sticker){
   var me=m.sender===U,sa=m.sender!==ls;
@@ -1662,23 +1673,18 @@ function end(){
   if(peer&&U){
     var cid=gci(U,peer);
     var isVideo=video||incomingVideo;
-    var callType=isVideo?'Видеозвонок':'Звонок';
     if(sec>0){
-      // REQ-6: успешный звонок — записать длительность
       var m=Math.floor(sec/60),s=sec%60;var dur=(m>0?m+':'+(s<10?'0':'')+s:'0:'+(s<10?'0':'')+s);
-      var icon=role==='caller'?'📞↗':'📞↙';
-      var txt=icon+' '+(role==='caller'?'Исходящий':'Входящий')+' '+callType.toLowerCase()+' '+dur;
-      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP});
+      var txt=(role==='caller'?'Исходящий':'Входящий')+' '+(isVideo?'видеозвонок':'звонок')+' '+dur;
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP,callVideo:isVideo,callDir:role==='caller'?'out':'in',callDur:dur});
       db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
     }else if(role==='callee'){
-      // REQ-5: отклонённый входящий — пропущенный
-      var txt='📞 Пропущенный '+(isVideo?'видеовызов':'вызов');
-      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP,missed:true});
+      var txt='Пропущенный '+(isVideo?'видеовызов':'вызов');
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP,missed:true,callVideo:isVideo,callDir:'in'});
       db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
     }else if(role==='caller'){
-      // Отменённый исходящий
-      var txt='📞↗ Отменённый '+(isVideo?'видеовызов':'вызов');
-      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP});
+      var txt='Отменённый '+(isVideo?'видеовызов':'вызов');
+      db.ref('messages/'+cid).push({system:true,text:txt,ts:firebase.database.ServerValue.TIMESTAMP,callVideo:isVideo,callDir:'out'});
       db.ref('chats/'+cid).update({lastText:txt,lastTs:firebase.database.ServerValue.TIMESTAMP});
     }
   }
