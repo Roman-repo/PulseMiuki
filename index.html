@@ -81,7 +81,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .scroll-bottom:active{opacity:1}
 
 /* Messages */
-.ma{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch}
+.ma{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'%3E%3Ccircle cx='10' cy='10' r='4'/%3E%3Crect x='35' y='5' width='8' height='8' rx='1'/%3E%3Cpath d='M5 35l5 8h-10z'/%3E%3Ccircle cx='45' cy='40' r='3'/%3E%3Crect x='15' y='42' width='6' height='6' rx='3'/%3E%3Cpath d='M50 15l-4 4 4 4'/%3E%3Ccircle cx='30' cy='28' r='2'/%3E%3C/g%3E%3C/svg%3E");background-size:60px 60px}
 .dd{text-align:center;margin:10px 0 6px;color:var(--tx3);font-size:13px;font-weight:500}
 .sys-call{color:var(--tx2);font-size:12px}
 .sys-missed{color:var(--red);font-size:12px;font-weight:500}
@@ -104,7 +104,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mr{display:flex;align-items:flex-end;gap:6px}
 .mr.me{flex-direction:row-reverse}
 .mr.gt{margin-top:6px}
-.mac{width:32px;flex-shrink:0}
+.mac{width:0;flex-shrink:0}
 .mc{max-width:78%;display:flex;flex-direction:column}
 .mr.me .mc{align-items:flex-end}
 .ms{font-size:13px;font-weight:500;margin-bottom:2px;margin-left:10px}
@@ -508,7 +508,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.19.1';
+var APP_VERSION='2.20.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -805,7 +805,7 @@ if(m.system){
 if(m.sticker){
   var me=m.sender===U,sa=m.sender!==ls;
   h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
-  if(!me&&sa)h+='<div class="mac">'+av(m.sender,28)+'</div>';else h+='<div class="mac"></div>';
+  h+='<div class="mac"></div>';
   h+='<div class="mc">';if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="m-sticker">'+m.sticker+'</div>';
   h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
@@ -813,7 +813,7 @@ var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
 var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
 if(SelectManager.isActive())h+='<div class="sel-cb'+(SelectManager.isSelected(m._key)?' checked':'')+'" data-k="'+(m._key||'')+'"></div>';
-h+='<div class="mac">';if(!me&&sa)h+=av(m.sender,28);
+h+='<div class="mac">';
 h+='</div><div class="mc">';
 if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
 if(m.forwarded)h+='<div class="m-fwd">↪ Переслано от '+es(m.forwarded)+'</div>';
