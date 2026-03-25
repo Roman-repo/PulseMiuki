@@ -91,7 +91,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .call-bubble-info{flex:1;min-width:0}
 .call-bubble-title{font-size:15px;font-weight:500}
 .call-bubble-meta{display:flex;align-items:center;gap:4px;font-size:12px;margin-top:2px;opacity:.7}
-.call-bubble-icon{flex-shrink:0;opacity:.6}
+.call-bubble-icon{flex-shrink:0;color:#fff;opacity:1}
 .call-missed .call-bubble-title{color:#fff}
 .m-sticker{font-size:56px;line-height:1.1;padding:4px 0}
 .ec-tabs{display:flex;gap:4px;width:100%;margin-bottom:4px}
@@ -220,8 +220,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sri::placeholder{color:var(--tx3)}
 
 /* Emoji panel */
-.ep{background:var(--bg2);border-top:1px solid var(--brd);padding:6px;max-height:0;overflow:hidden;transition:max-height .3s ease-out;flex-shrink:0}
-.ep.open{max-height:260px;overflow-y:auto}
+.ep{background:var(--bg2);border-top:1px solid var(--brd);padding:0 6px;height:0;overflow:hidden;transition:height .3s ease,padding .3s ease;flex-shrink:0}
+.ep.open{height:260px;padding:6px;overflow-y:auto}
 .ec{display:flex;gap:2px;padding:2px 2px 6px;border-bottom:1px solid var(--brd);margin-bottom:6px;overflow-x:auto;flex-shrink:0}
 .ecb{background:none;border:none;cursor:pointer;font-size:18px;padding:4px 6px;border-radius:6px;opacity:.5;flex-shrink:0}
 .ecb.act{opacity:1;background:var(--bg3)}
@@ -520,7 +520,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.21.0';
+var APP_VERSION='2.21.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -810,7 +810,7 @@ if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){h+='<div class="d
 var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
 // REQ-5+6: системные сообщения (звонки, пропущенные)
 if(m.system){
-  var _callIcon=m.callVideo?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  var _callIcon=m.callVideo?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
   var _dirIcon=m.callDir==='out'?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00b894" stroke-width="3"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>':'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+(m.missed?'#e74c3c':'#00b894')+'" stroke-width="3"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>';
   h+='<div class="mr me"><div class="mac"></div><div class="mc"><div class="mb mn call-bubble'+(m.missed?' call-missed':'')+'"><div class="call-bubble-row"><div class="call-bubble-info"><div class="call-bubble-title">'+es(m.text)+'</div><div class="call-bubble-meta">'+_dirIcon+' '+ft(m.ts)+'</div></div><div class="call-bubble-icon">'+_callIcon+'</div></div></div></div></div>';
   ls='';continue}
@@ -1351,7 +1351,7 @@ if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='f
 // Emoji
 var STICKERS=["😀","😎","🥳","😍","🤔","😱","😭","🤣","💪","🔥","❤️","👍","👎","🎉","💯","⭐","🙏","🫶","👀","💀","🦊","🐱","🐶","🌈","☀️","🌙","⚡","🍕","☕","🎮","🚀","💎"];
 function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});bEC()}
-function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').focus()})})}
+function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').dispatchEvent(new Event('input'));uSB()})})}
 function tEm(){emO=!emO;$('epp').classList.toggle('open',emO);$('ebSmile').classList.toggle('hidden',emO);$('ebKb').classList.toggle('hidden',!emO)}
 function cEm(){emO=false;$('epp').classList.remove('open');$('ebSmile').classList.remove('hidden');$('ebKb').classList.add('hidden')}
 bEP();$('eb').addEventListener('click',tEm);
