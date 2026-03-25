@@ -108,13 +108,13 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mc{max-width:78%;display:flex;flex-direction:column}
 .mr.me .mc{align-items:flex-end}
 .ms{font-size:13px;font-weight:500;margin-bottom:2px;margin-left:10px}
-.mb{padding:8px 12px;color:var(--tx);font-size:15px;line-height:1.45;word-break:break-word;animation:ma .2s ease-out;position:relative;font-weight:400}
+.mb{padding:8px 12px;color:var(--tx);font-size:16px;line-height:1.3;word-break:break-word;animation:ma .2s ease-out;position:relative;font-weight:400}
 @keyframes ma{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .mb.ot{background:var(--bg3);border-radius:16px 16px 16px 4px}
 .mb.mn{background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px 16px 4px 16px;box-shadow:0 2px 10px rgba(102,126,234,.2);color:#fff}
-.mt{font-size:11px;margin-top:3px;display:flex;align-items:center;justify-content:flex-end;gap:4px;font-weight:400}
-.mt.ot{color:var(--tx3)}.mt.mn{color:rgba(255,255,255,.6)}
-.ck{font-size:13px;letter-spacing:-3px;margin-left:2px}
+.mt{font-size:12px;display:inline;float:right;margin-left:8px;margin-top:4px;font-weight:400}
+.mt.ot{color:var(--tx3)}.mt.mn{color:rgba(255,255,255,.5)}
+.ck{font-size:13px;letter-spacing:-3px;margin-left:2px;color:#fff}
 .ck.read{color:#55EFC4}
 .cip-ck{font-size:12px;margin-right:2px}
 .mi{max-width:100%;border-radius:10px;margin-bottom:3px;cursor:pointer}
@@ -510,7 +510,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.20.3';
+var APP_VERSION='2.20.5';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
