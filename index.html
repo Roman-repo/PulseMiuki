@@ -113,16 +113,17 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .mb.ot{background:var(--bg3);border-radius:16px 16px 16px 4px}
 .mb.mn{background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:16px 16px 4px 16px;box-shadow:0 2px 10px rgba(102,126,234,.2);color:#fff}
 .mt{font-size:12px;display:inline;float:right;margin-left:8px;margin-top:4px;font-weight:400}
-.mt.ot{color:var(--tx3)}.mt.mn{color:rgba(255,255,255,.5)}
+.mt.ot{color:var(--tx2)}.mt.mn{color:rgba(255,255,255,.85)}
 .ck{font-size:13px;letter-spacing:-3px;margin-left:2px;color:#fff}
 .ck.read{color:#55EFC4}
 .cip-ck{font-size:12px;margin-right:2px}
 .mi{max-width:100%;border-radius:10px;margin-bottom:3px;cursor:pointer}
-.mq{background:rgba(255,255,255,.08);border-left:3px solid var(--acc);border-radius:8px;padding:6px 10px;margin-bottom:6px;font-size:13px;max-width:100%}
-.mb.mn .mq{background:rgba(255,255,255,.12)}
-.mqn{font-weight:600;font-size:13px;margin-bottom:1px;color:var(--acc)}
-.mb.mn .mqn{color:rgba(255,255,255,.9)}
-.mqt{opacity:.7;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:13px}
+.mq{background:rgba(255,255,255,.1);border-left:3px solid rgba(255,255,255,.4);border-radius:8px;padding:6px 10px;margin-bottom:6px;max-width:100%}
+.mb.ot .mq{background:rgba(255,255,255,.05);border-left-color:var(--acc)}
+.mqn{font-weight:600;font-size:14px;margin-bottom:1px;color:#fff}
+.mb.ot .mqn{color:var(--tx)}
+.mqt{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-weight:400;font-size:14px;color:rgba(255,255,255,.85)}
+.mb.ot .mqt{color:var(--tx)}
 .m-readmore,.m-readless{color:var(--acc);cursor:pointer;font-weight:500;font-size:14px}
 .med{color:var(--tx2);font-size:11px;font-style:italic;font-weight:400}
 .mrc{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
@@ -510,7 +511,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.20.5';
+var APP_VERSION='2.20.6';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -792,6 +793,7 @@ var a=$('mArea'),wb=a.scrollHeight-a.scrollTop-a.clientHeight<60;
 if(ms.length===0){a.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:40px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:13px">'+(searchMode?'Не найдено':'Начните разговор!')+'</div></div>';return}
 // Get read receipts for this room
 var readData={};
+var _cr=cRooms[cRoom];var _isPrivChat=cRoom!=='general'&&_cr&&_cr.members&&_cr.members.length===2;
 var h='',ld='',ls='',_unreadShown=false,_myRdTs=readTs[cRoom]||0;
 for(var _i=0;_i<ms.length;_i++){var m=ms[_i];
 // REQ-23: разделитель непрочитанных
@@ -808,7 +810,7 @@ if(m.sticker){
   var me=m.sender===U,sa=m.sender!==ls;
   h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
   h+='<div class="mac"></div>';
-  h+='<div class="mc">';if(!me&&sa)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+  h+='<div class="mc">';if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="m-sticker">'+m.sticker+'</div>';
   h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
