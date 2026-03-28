@@ -79,7 +79,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cit{color:var(--tx3);font-size:12px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-weight:400}
 .badge{background:var(--acc);color:#fff;font-size:12px;font-weight:500;padding:2px 7px;border-radius:12px;min-width:22px;text-align:center}
 .nb{position:absolute;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,.5);display:flex;align-items:center;justify-content:center;z-index:5}
-.scroll-bottom{position:absolute;bottom:70px;right:16px;width:40px;height:40px;border-radius:50%;background:var(--bg2);border:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:4;box-shadow:0 2px 10px rgba(0,0,0,.3);transition:opacity .2s;opacity:.85}
+.scroll-bottom{position:absolute;bottom:70px;right:16px;width:40px;height:40px;border-radius:50%;background:var(--bg2);border:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:4;box-shadow:0 2px 10px rgba(0,0,0,.3);transition:opacity .2s,transform .2s;opacity:.85;animation:scaleIn .15s ease-out}
+@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:.85}}
 .scroll-bottom:active{opacity:1}
 
 /* Messages */
@@ -138,7 +139,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .att-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--tx2);font-weight:400}
 .att-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .att-icon:active{opacity:.7}
-.med{color:var(--tx2);font-size:11px;font-style:italic;font-weight:400}
+.med{font-size:11px;font-style:italic;font-weight:400}
 .mrc{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
 .mrc-i{background:var(--bg3);border-radius:12px;padding:2px 8px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:3px;border:1px solid transparent;transition:all .15s}
 .mrc-i:active{border-color:var(--acc)}
@@ -217,9 +218,41 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .rbc{flex:1;min-width:0;border-left:3px solid var(--acc);padding-left:8px}.rbn{color:var(--acc);font-size:13px;font-weight:500}.rbt{color:var(--tx2);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
 .rbx{background:none;border:none;cursor:pointer;padding:4px}
 
+/* Edit panel overlay */
+.edit-panel{position:absolute;left:0;right:0;bottom:0;background:var(--bg2);border-top:1px solid var(--brd);z-index:15;display:flex;flex-direction:column;animation:editSlideUp .25s ease-out;backdrop-filter:blur(20px)}
+@keyframes editSlideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.edit-panel-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--brd)}
+.edit-panel-icon{flex-shrink:0;color:var(--acc)}
+.edit-panel-info{flex:1;min-width:0}
+.edit-panel-title{color:var(--acc);font-size:14px;font-weight:500}
+.edit-panel-sub{color:var(--tx3);font-size:12px;cursor:pointer}
+.edit-panel-sub:active{color:var(--tx2)}
+.edit-panel-close{background:none;border:none;cursor:pointer;padding:6px;flex-shrink:0}
+.edit-panel-body{display:flex;align-items:flex-end;gap:6px;padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.edit-panel-textarea{flex:1;background:none;border:none;outline:none;color:var(--tx);font-size:16px;line-height:1.4;resize:none;font-family:'Roboto',sans-serif;font-weight:400;min-height:24px;max-height:40vh;overflow-y:auto}
+.edit-panel-textarea::placeholder{color:var(--tx3)}
+.edit-panel-confirm{width:46px;height:46px;border-radius:50%;border:none;background:var(--acc);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 2px 10px rgba(102,126,234,.3);transition:transform .15s}
+.edit-panel-confirm:active{transform:scale(.9)}
+
 /* Pinned bar */
-.pnb{padding:6px 12px;background:rgba(102,126,234,.06);border-bottom:1px solid rgba(102,126,234,.1);display:flex;align-items:center;gap:6px}
-.pnb-t{flex:1;color:var(--acc);font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnb{padding:8px 12px;background:rgba(102,126,234,.06);border-bottom:1px solid rgba(102,126,234,.1);display:flex;align-items:center;gap:10px;animation:slideDown .2s ease-out}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pnb-indicator{width:3px;border-radius:2px;align-self:stretch;background:var(--brd);position:relative;overflow:hidden;flex-shrink:0}
+.pnb-indicator-seg{position:absolute;left:0;width:100%;background:var(--acc);border-radius:2px;transition:top .25s ease-out,height .25s ease-out}
+.pnb-title{color:var(--acc);font-size:13px;font-weight:600}
+.pnb-preview{color:var(--tx2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnb-content{transition:opacity .2s ease-out,transform .2s ease-out}
+.pnb-content.switching{opacity:0;transform:translateY(-8px)}
+.pnb-content.switched{opacity:0;transform:translateY(8px)}
+.pin-list-item{padding:6px 10px;display:flex;gap:8px;align-items:flex-end;animation:ma .2s ease-out}
+.pin-goto{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+.pin-goto:active{background:var(--bg2)}
+.pin-goto svg{color:var(--tx)}
+.pin-list-item .pin-cb{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s;animation:selSlideIn .25s ease-out}
+.pin-list-item .pin-cb.checked{background:var(--grn);border-color:var(--grn)}
+.pin-list-item .pin-cb.checked::after{content:'✓';color:#fff;font-size:14px;font-weight:700}
+.pin-unpin-all{margin:12px 16px;padding:14px;border-radius:24px;border:none;background:var(--bg3);color:var(--tx);font-size:15px;font-weight:500;cursor:pointer;text-align:center;font-family:'Roboto',sans-serif}
 
 /* Search */
 .srb{padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;gap:6px;align-items:center}
@@ -290,7 +323,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sdbk{flex:1}
 
 /* Overlays */
-.ov{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column}
+.ov{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column;animation:ovFadeIn .2s ease-out}
+@keyframes ovFadeIn{from{opacity:0}to{opacity:1}}
 .ov-h{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--brd)}
 .ov-t{color:var(--tx);font-weight:500;font-size:18px;flex:1}
 .ov-list{flex:1;overflow-y:auto;padding:8px 0}
@@ -423,13 +457,27 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <button type="button" class="ib hidden" id="phb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
 <button type="button" class="ib hidden" id="vidBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
 </div>
-<div class="pnb hidden" id="pnBar"><div class="pnb-t" id="pnTxt"></div></div>
+<div class="pnb hidden" id="pnBar"><div class="pnb-indicator" id="pnIndicator"></div><div class="pnb-body" id="pnBody" style="flex:1;min-width:0;cursor:pointer;overflow:hidden"><div class="pnb-content" id="pnContent"><div class="pnb-title" id="pnTitle"></div><div class="pnb-preview" id="pnPreview"></div></div></div><button type="button" class="ib" id="pnListBtn" style="flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button></div>
+<div class="ov hidden" id="ovPinned"></div>
 <div class="srb hidden" id="srBar"><input class="sri" id="srIn" placeholder="Поиск..."><button type="button" class="ib" id="srCl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <!-- Thread header -->
 <div class="rb hidden" id="threadBar"><div class="rbc"><div class="rbn">Тред</div><div class="rbt" id="threadTxt"></div></div><button type="button" class="rbx" id="threadCl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <div class="ma" id="mArea"></div>
 <button type="button" class="scroll-bottom hidden" id="scrollBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
 <div class="rb hidden" id="rpb"><div class="rb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div><div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div><button type="button" class="rbx" id="rpc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+<!-- Edit panel overlay -->
+<div class="edit-panel hidden" id="editPanel">
+<div class="edit-panel-hdr">
+<div class="edit-panel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+<div class="edit-panel-info"><div class="edit-panel-title">Редактирование</div><div class="edit-panel-sub" id="editAddMedia">Нажмите, чтобы добавить медиа</div></div>
+<button type="button" class="edit-panel-close" id="editClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+<div class="edit-panel-body">
+<button type="button" class="ini" id="editEmoji" style="align-self:flex-end;margin-bottom:4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+<textarea class="edit-panel-textarea" id="editTa" placeholder="Текст сообщения..."></textarea>
+<button type="button" class="edit-panel-confirm" id="editConfirm" style="align-self:flex-end;margin-bottom:4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>
+</div>
+</div>
 <div class="inb" id="inputBar">
 <!-- Состояние 1: Обычный ввод -->
 <div class="inw" id="inwNormal">
@@ -468,9 +516,10 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 <!-- Image viewer -->
 <div class="iv hidden" id="ivw"><img id="ivi"></div>
-<input type="file" accept="image/*" id="fi" multiple style="display:none">
+<input type="file" id="fi" multiple style="display:none">
 <input type="file" id="fileFi" style="display:none">
 <input type="file" accept="image/*" id="avFi" style="display:none">
+<input type="file" accept="image/*" id="editMediaFi" style="display:none">
 
 <!-- Call screen -->
 <div class="cs hidden" id="callScr">
@@ -531,7 +580,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.25.1';
+var APP_VERSION='2.30.2';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -653,6 +702,7 @@ function logout(){
   Object.keys(tpList).forEach(function(r){if(tpList[r])db.ref('typing/'+r).off()});
   Object.keys(rrList).forEach(function(r){if(rrList[r])db.ref('readReceipts/'+r).off()});
   db.ref('online').off();db.ref('chats').off();db.ref('profiles').off();
+  cleanupPinListener();
   // Cleanup intervals
   if(typeof _presInt!=='undefined')clearInterval(_presInt);
   if(typeof _schedInt!=='undefined')clearInterval(_schedInt);
@@ -776,7 +826,7 @@ if(isPriv&&onU[others[0]])$('chs2').textContent='онлайн';
 else if(isPriv)getLastSeen(others[0],function(t){if(cRoom===rid)$('chs2').textContent=t?'был(а) '+t:''})}
 $('schBtn').classList.remove('hidden');
 if(rid==='general')$('chs2').textContent=Object.keys(onU).length+' онлайн';
-cRp();cEm();$('attMenu').classList.remove('open');lR(rid);lTp(rid);updatePin(rid);markRead(rid);
+cRp();cEm();cancelEdit();$('attMenu').classList.remove('open');lR(rid);lTp(rid);updatePin(rid);markRead(rid);
 // Listen for read receipt changes (prevent duplicates)
 if(!rrList[rid]){rrList[rid]=true;db.ref('readReceipts/'+rid).on('value',function(){if(rMsgs[rid]&&cRoom===rid)checkReadReceipts(rid,rMsgs[rid])})};
 if(rMsgs[rid]){rMs(threadMode?[]:rMsgs[rid]);$('mArea').scrollTop=$('mArea').scrollHeight}
@@ -786,10 +836,137 @@ $('mi').focus()}
 function goB(){
 // Cleanup typing listener for current chat
 if(cRoom&&tpList[cRoom]){db.ref('typing/'+cRoom).off();tpList[cRoom]=false}
-cRoom="general";$('S2').classList.add('hidden');$('S1').classList.remove('hidden');cEm();cRp();rCL()}
+cRoom="general";$('S2').classList.add('hidden');$('S1').classList.remove('hidden');cEm();cRp();cancelEdit();cleanupPinListener();rCL()}
 
-// Pinned
-function updatePin(rid){var r=cRooms[rid];if(r&&r.pinned){$('pnTxt').textContent='📌 '+r.pinned;$('pnBar').classList.remove('hidden')}else $('pnBar').classList.add('hidden')}
+// Pinned messages (multiple)
+var _pinIdx=0,_pinKeys=[],_pinMsgsCache=[],_pinListener=null,_pinListenRid=null;
+
+function updatePinUI(){
+  var count=_pinMsgsCache.length;
+  if(count===0){$('pnBar').classList.add('hidden');return}
+  if(_pinIdx>=count)_pinIdx=count-1;
+  if(_pinIdx<0)_pinIdx=0;
+  var cur=_pinMsgsCache[_pinIdx];
+  $('pnTitle').textContent='Закреплённое сообщение'+(count>1?' #'+(count-_pinIdx):'');
+  $('pnPreview').textContent=cur?(cur.text||'📷').substr(0,60):'';
+  showSmooth('pnBar','slideDown .2s ease-out');
+  // Индикатор сегментов
+  var ind=$('pnIndicator');
+  var segH=Math.max(6,Math.floor(ind.offsetHeight/count));
+  ind.innerHTML='';
+  var seg=document.createElement('div');seg.className='pnb-indicator-seg';
+  seg.style.height=segH+'px';seg.style.top=(_pinIdx*segH)+'px';
+  ind.appendChild(seg);
+}
+
+function updatePin(rid){
+  // Живой listener — подписываемся один раз на комнату
+  if(_pinListenRid!==rid){
+    if(_pinListener&&_pinListenRid)db.ref('chats/'+_pinListenRid+'/pinnedMsgs').off('value',_pinListener);
+    _pinListenRid=rid;
+    _pinListener=db.ref('chats/'+rid+'/pinnedMsgs').on('value',function(s){
+      var pins=s.val();
+      if(pins&&Object.keys(pins).length>0){
+        _pinKeys=Object.keys(pins);
+        var msgs=rMsgs[rid]||[];
+        _pinMsgsCache=msgs.filter(function(m){return pins[m._key]});
+      }else{_pinKeys=[];_pinMsgsCache=[]}
+      updatePinUI();
+      // Re-render messages to update pin icons
+      if(cRoom===rid&&rMsgs[rid])rMs(rMsgs[rid]);
+    });
+  } else {
+    // Обновляем кеш из текущих rMsgs
+    if(_pinKeys.length){
+      var msgs=rMsgs[rid]||[];
+      var pinsSet={};_pinKeys.forEach(function(k){pinsSet[k]=true});
+      _pinMsgsCache=msgs.filter(function(m){return pinsSet[m._key]});
+    }
+    updatePinUI();
+  }
+}
+
+function cleanupPinListener(){
+  if(_pinListener&&_pinListenRid){db.ref('chats/'+_pinListenRid+'/pinnedMsgs').off('value',_pinListener);_pinListener=null;_pinListenRid=null}
+  _pinKeys=[];_pinMsgsCache=[];_pinIdx=0;
+}
+
+function cyclePinAndScroll(){
+  if(!_pinMsgsCache.length)return;
+  var cur=_pinMsgsCache[_pinIdx];
+  if(cur)scrollToMsgByKey(cur._key);
+  // Анимация переключения
+  var content=$('pnContent');
+  content.classList.add('switching');
+  _pinIdx=(_pinIdx+1)%_pinMsgsCache.length;
+  setTimeout(function(){
+    updatePinUI();
+    content.classList.remove('switching');
+    content.classList.add('switched');
+    requestAnimationFrame(function(){content.classList.remove('switched')});
+  },200);
+}
+function togglePinMsg(rid,msgKey){
+  var ref=db.ref('chats/'+rid+'/pinnedMsgs/'+msgKey);
+  ref.once('value',function(s){if(s.val())ref.remove();else ref.set(true);setTimeout(function(){updatePin(rid)},300)});
+}
+function scrollToMsgByKey(key){
+  setTimeout(function(){var el=document.querySelector('.mr[data-k="'+key+'"]');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.background='rgba(102,126,234,.25)';setTimeout(function(){el.style.background=''},1500)}},100);
+}
+// Pinned list overlay — full bubbles like chat
+function showPinnedList(){
+  var rid=cRoom;
+  db.ref('chats/'+rid+'/pinnedMsgs').once('value',function(s){
+    var pins=s.val()||{};var keys=Object.keys(pins);
+    if(!keys.length){$('ovPinned').classList.add('hidden');return}
+    var msgs=rMsgs[rid]||[];var pinMsgs=msgs.filter(function(m){return pins[m._key]});
+    var _cr=cRooms[rid];var _isPriv=rid!=='general'&&_cr&&_cr.members&&_cr.members.length===2;
+    var selMode=false,selected={};
+    function render(){
+      var h='<div class="ov-h"><button type="button" class="bb" id="pinListBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">'+(selMode?Object.keys(selected).length+' выбрано':pinMsgs.length+' закреплённых сообщений')+'</div>'+(selMode?'<button type="button" class="ib" id="pinUnpinSel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>':'')+'</div>';
+      h+='<div class="ov-list ma" id="pinListBody" style="padding:8px 12px;display:flex;flex-direction:column;gap:4px">';
+      pinMsgs.forEach(function(m){
+        var me=m.sender===U;
+        h+='<div class="pin-list-item" data-k="'+m._key+'">';
+        if(selMode)h+='<div class="pin-cb'+(selected[m._key]?' checked':'')+'" data-k="'+m._key+'"></div>';
+        if(!me)h+='<button type="button" class="pin-goto" data-k="'+m._key+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg></button>';
+        h+='<div style="flex:1;min-width:0"><div class="mr'+(me?' me':'')+'" style="animation:none;pointer-events:none"><div class="mac"></div><div class="mc">';
+        if(!me&&!_isPriv)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+        h+='<div class="mb '+(me?'mn':'ot')+'">';
+        if(m.image)h+='<img class="mi" src="'+m.image+'" style="max-height:150px">';
+        if(m.text)h+='<span>'+linkify(m.text)+'</span>';
+        h+='<div class="mt '+(me?'mn':'ot')+'">'+(m.edited?'<span class="med">изменено</span> ':'')+ft(m.ts||0);
+        if(me)h+=' <span class="ck'+(m._read===2?' read':'')+'">'+(m._read>=1?'✓✓':'✓')+'</span>';
+        h+='</div></div></div></div></div>';
+        if(me)h+='<button type="button" class="pin-goto" data-k="'+m._key+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg></button>';
+        h+='</div>';
+      });
+      h+='</div>';
+      h+='<button type="button" class="pin-unpin-all" id="pinUnpinAll">Открепить все сообщения</button>';
+      $('ovPinned').innerHTML=h;$('ovPinned').classList.remove('hidden');
+      $('pinListBack').addEventListener('click',function(){if(selMode){selMode=false;selected={};render()}else{$('ovPinned').classList.add('hidden')}});
+      // Goto buttons
+      $('pinListBody').querySelectorAll('.pin-goto').forEach(function(btn){
+        btn.addEventListener('click',function(e){e.stopPropagation();var k=btn.getAttribute('data-k');$('ovPinned').classList.add('hidden');scrollToMsgByKey(k)});
+      });
+      // Long press + tap on items
+      $('pinListBody').querySelectorAll('.pin-list-item').forEach(function(el){
+        var tm,moved=false;
+        el.addEventListener('touchstart',function(){moved=false;tm=setTimeout(function(){tm=null;if(!selMode){selMode=true;selected={};selected[el.getAttribute('data-k')]=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(ex){}render()}},500)},{passive:true});
+        el.addEventListener('touchmove',function(){moved=true;clearTimeout(tm)});
+        el.addEventListener('touchend',function(){
+          if(tm){clearTimeout(tm);if(!moved){if(selMode){var k=el.getAttribute('data-k');if(selected[k])delete selected[k];else selected[k]=true;render()}}}
+        });
+      });
+      if(selMode&&$('pinUnpinSel')){$('pinUnpinSel').addEventListener('click',function(){var ks=Object.keys(selected);if(!ks.length)return;ks.forEach(function(k){db.ref('chats/'+rid+'/pinnedMsgs/'+k).remove()});selMode=false;selected={};setTimeout(function(){updatePin(rid);showPinnedList()},300)})}
+      $('pinUnpinAll').addEventListener('click',function(){if(confirm('Открепить все сообщения?')){db.ref('chats/'+rid+'/pinnedMsgs').remove();$('ovPinned').classList.add('hidden');updatePin(rid)}});
+    }
+    render();
+  });
+}
+function scrollToMsg(sender,text){
+  setTimeout(function(){var msgs=document.querySelectorAll('.mr');for(var i=0;i<msgs.length;i++){var mr=msgs[i];if(mr.getAttribute('data-s')===sender&&mr.getAttribute('data-t')===text){mr.scrollIntoView({behavior:'smooth',block:'center'});mr.style.background='rgba(102,126,234,.25)';setTimeout(function(){mr.style.background=''},1500);break}}},200);
+}
 
 // Room messages
 function lR(rid){if(rList[rid])return;rList[rid]=true;
@@ -798,7 +975,7 @@ var d=s.val(),ms=d?Object.keys(d).map(function(k){var m=d[k];m._key=k;return m})
 // Filter disappearing
 var now=Date.now();ms=ms.filter(function(m){if(m.disappear&&m.ts&&(now-m.ts>m.disappear*1000)){db.ref('messages/'+rid+'/'+m._key).remove();return false}return true});
 var prev=rMsgs[rid]?rMsgs[rid].length:0;rMsgs[rid]=ms;
-if(cRoom===rid){rMs(searchMode?filterMs(ms):ms);markRead(rid);checkReadReceipts(rid,ms)}
+if(cRoom===rid){rMs(searchMode?filterMs(ms):ms);markRead(rid);checkReadReceipts(rid,ms);updatePin(rid)}
 if(ms.length>prev&&ms.length>0){var l=ms[ms.length-1];if(l.sender!==U&&l.ts>(Date.now()-3000)){if(!mutedChats[rid])snd();var nb=l.text||( l.image?'📷 Фото':l.audio?'🎤 Голосовое':l.vidMsg?'🎥 Видео':l.file?'📄 Файл':l.poll?'📊 Опрос':l.location?'📍 Геолокация':'Новое сообщение');showNotif(l.sender,nb)}}
 rCL()})}
 
@@ -854,13 +1031,12 @@ if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"
 if(m.poll)h+=renderPoll(m);
 if(m.location)h+='<div class="m-loc" data-action="openMap" data-lat="'+m.location.lat+'" data-lng="'+m.location.lng+'" style="background:var(--bg3);padding:12px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="color:var(--acc)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div style="font-weight:600;font-size:13px;color:var(--tx)">Геолокация</div><div style="font-size:11px;color:var(--tx3)">'+m.location.lat.toFixed(5)+', '+m.location.lng.toFixed(5)+'</div><div style="font-size:11px;color:var(--acc)">Открыть в Google Maps</div></div></div>';
 if(m.text){var _txt=m.text;if(_txt.length>300){h+='<span class="m-text-short">'+linkify(_txt.substr(0,300))+'<span class="m-readmore" data-action="readmore">... Читать далее</span></span><span class="m-text-full hidden">'+linkify(_txt)+'<span class="m-readless" data-action="readless"> Свернуть</span></span>'}else{h+='<span>'+linkify(_txt)+'</span>'}}
-if(m.edited)h+='<div class="med">изм.</div>';
 // REQ-16: время только на последнем в серии (тот же sender, <60с)
 var _imgOnly=m.image&&!m.text&&!m.audio&&!m.file&&!m.poll&&!m.location&&!m.vidMsg;
 var _nextM=ms[_i+1];var _showTime=true;
 if(_nextM&&_nextM.sender===m.sender&&!_nextM.system&&!_nextM.sticker&&_nextM.ts&&m.ts&&(_nextM.ts-m.ts)<60000)_showTime=false;
 if(_imgOnly)_showTime=false; // время уже на картинке
-if(_showTime){h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now());
+if(_showTime){var _msgPinned=_pinKeys.indexOf(m._key)!==-1;h+='<div class="mt '+(me?'mn':'ot')+'">'+(m.edited?'<span class="med">изменено</span> ':'')+(_msgPinned?'<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="opacity:.6;margin-right:2px;vertical-align:middle"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z"/></svg>':'')+ft(m.ts||Date.now());
 if(me)h+=' <span class="ck'+(m._read===2?' read':'')+'">'+(m._read>=1?'✓✓':'✓')+'</span>';
 h+='</div>';}else if(me&&!_imgOnly){h+='<div class="mt mn" style="font-size:0"><span class="ck'+(m._read===2?' read':'')+'" style="font-size:12px">'+(m._read>=1?'✓✓':'✓')+'</span></div>';}
 if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forEach(function(r){if(!rc[r.emoji])rc[r.emoji]={c:0};rc[r.emoji].c++});
@@ -1092,10 +1268,11 @@ addBtn.addEventListener('click',function(){
 });qr.appendChild(addBtn);
 mn.appendChild(qr);
 // Items
+var _isPinned=_pinKeys.indexOf(k)!==-1;
 var items=[{icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>',t:'Ответить',fn:function(){sRp(s,t);rmC()}},
 {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',t:'Копировать',fn:function(){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t||'').catch(function(){})}else{var ta=document.createElement('textarea');ta.value=t||'';ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}}catch(ex){};rmC()}},
 {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>',t:'Переслать',fn:function(){rmC();forwardMsg(s,t,k)}},
-{icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',t:'Закрепить',fn:function(){db.ref('chats/'+cRoom).update({pinned:t||'📷'});updatePin(cRoom);rmC()}}];
+{icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',t:_isPinned?'Открепить':'Закрепить',fn:function(){togglePinMsg(cRoom,k);rmC()}}];
 if(me&&t)items.push({icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',t:'Редактировать',fn:function(){startEdit(k,t);rmC()}});
 if(me)items.push({icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',t:'Удалить',fn:function(){db.ref('messages/'+cRoom+'/'+k).remove();rmC()}});
 if(s!==U&&cRoom==='general')items.push({icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>',t:'Написать лично',fn:function(){rmC();sPC(s)}});
@@ -1138,14 +1315,37 @@ rMs(msgs)};
 $('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
 
 // Reply/Edit
-function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent=s;$('rpt').textContent=t||'📷';$('rpb').classList.remove('hidden');$('mi').focus()}
+function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent=s;$('rpt').textContent=t||'📷';showSmooth('rpb','slideUp .2s ease-out');$('mi').focus()}
 function cRp(){rTo=null;editMsg=null;$('rpb').classList.add('hidden');$('mi').value='';uSB();autoResizeMi()}
-function startEdit(k,t){editMsg=k;rTo=null;$('rpn').textContent='Редактирование';$('rpt').textContent=t;$('rpb').classList.remove('hidden');$('mi').value=t;$('mi').focus();autoResizeMi()}
+function startEdit(k,t){
+  editMsg=k;rTo=null;
+  // Скрыть обычную панель ввода, reply bar
+  $('inputBar').style.display='none';
+  $('rpb').classList.add('hidden');
+  // Показать edit panel
+  $('editTa').value=t||'';
+  $('editPanel').classList.remove('hidden');
+  $('editTa').focus();
+  // Auto-resize edit textarea
+  setTimeout(function(){$('editTa').style.height='auto';$('editTa').style.height=$('editTa').scrollHeight+'px'},50);
+}
+function confirmEdit(){
+  if(!editMsg)return;
+  var t=$('editTa').value.trim();
+  if(t)db.ref('messages/'+cRoom+'/'+editMsg).update({text:t,edited:true});
+  cancelEdit();
+}
+function cancelEdit(){
+  editMsg=null;
+  $('editPanel').classList.add('hidden');
+  $('editTa').value='';
+  $('inputBar').style.display='';
+}
 
 // Send message
 function sM(img,audio,audioDur,file,fileName,fileSize,poll,loc,disappear){
 var inp=$('mi'),t=inp.value.trim();
-if(editMsg){if(t){db.ref('messages/'+cRoom+'/'+editMsg).update({text:t,edited:true})}cRp();return}
+if(editMsg){var et=$('editTa').value.trim();if(et){db.ref('messages/'+cRoom+'/'+editMsg).update({text:et,edited:true})}cancelEdit();return}
 if(!t&&!img&&!audio&&!file&&!poll&&!loc)return;inp.value='';uSB();autoResizeMi();
 var m={sender:U,ts:firebase.database.ServerValue.TIMESTAMP};
 if(t)m.text=t;if(img)m.image=img;if(audio){m.audio=audio;m.audioDur=audioDur}
@@ -1214,9 +1414,10 @@ $('attPoll').addEventListener('click',function(){attOpen=false;$('attMenu').clas
 $('attLoc').addEventListener('click',function(){attOpen=false;$('attMenu').classList.remove('open');sendLocation()});
 $('attSched').addEventListener('click',function(){attOpen=false;$('attMenu').classList.remove('open');scheduleMsg()});
 
-// Photo (multiple)
+// Photo (multiple) — фильтрация изображений в JS
 $('fi').addEventListener('change',function(){var files=$('fi').files;if(!files.length)return;
-Array.from(files).forEach(function(f){var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),mx=600,w=img.width,h=img.height;if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);sM(cv.toDataURL('image/jpeg',.6))};img.src=e.target.result};rd.readAsDataURL(f)});
+Array.from(files).forEach(function(f){if(!f.type.startsWith('image/')){alert('Файл '+f.name+' не является изображением');return}
+var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),mx=600,w=img.width,h=img.height;if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);sM(cv.toDataURL('image/jpeg',.6))};img.src=e.target.result};rd.readAsDataURL(f)});
 $('fi').value=''});
 
 // File upload
@@ -1437,6 +1638,8 @@ bEP();$('eb').addEventListener('click',tEm);
 // REQ-12: Scroll-to-bottom button
 $('mArea').addEventListener('scroll',function(){var a=$('mArea'),sb=$('scrollBtn');if(a.scrollHeight-a.scrollTop-a.clientHeight>300)sb.classList.remove('hidden');else sb.classList.add('hidden')});
 $('scrollBtn').addEventListener('click',function(){$('mArea').scrollTo({top:$('mArea').scrollHeight,behavior:'smooth'})});
+$('pnListBtn').addEventListener('click',function(){showPinnedList()});
+$('pnBody').addEventListener('click',function(){cyclePinAndScroll()});
 
 // Chat header — delegated click handler (survives innerHTML replacement)
 $('chatHdr').addEventListener('click',function(e){
@@ -1645,7 +1848,26 @@ $('ovSettings').innerHTML=h;$('ovSettings').classList.remove('hidden')};
 function uSB(){Recorder.updateSendBtn()}
 function isRecording(){return Recorder.active()}
 function autoResizeMi(){var el=$('mi');el.style.height='auto';el.style.height=el.scrollHeight+'px'}
+function showSmooth(id,anim){var el=$(id);el.classList.remove('hidden');el.style.animation='none';el.offsetHeight;el.style.animation=anim||'slideUp .2s ease-out'}
 Recorder.init();
+
+// Edit panel events
+$('editClose').addEventListener('click',cancelEdit);
+$('editConfirm').addEventListener('click',confirmEdit);
+$('editAddMedia').addEventListener('click',function(){$('editMediaFi').click()});
+$('editMediaFi').addEventListener('change',function(){var f=$('editMediaFi').files[0];if(!f||!f.type.startsWith('image/'))return;
+  var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),mx=600,w=img.width,h=img.height;if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+    if(editMsg)db.ref('messages/'+cRoom+'/'+editMsg).update({image:cv.toDataURL('image/jpeg',.6)});
+  };img.src=e.target.result};rd.readAsDataURL(f);$('editMediaFi').value=''});
+$('editEmoji').addEventListener('click',function(){
+  // Toggle simple emoji picker for edit
+  var ex=$('editEmojiPicker');if(ex){ex.remove();return}
+  var pk=document.createElement('div');pk.id='editEmojiPicker';pk.style.cssText='display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:6px;max-height:150px;overflow-y:auto;border-top:1px solid var(--brd)';
+  var emojis=EMOJIS[Object.keys(EMOJIS)[0]];
+  emojis.forEach(function(em){var s=document.createElement('span');s.textContent=em;s.style.cssText='font-size:22px;text-align:center;cursor:pointer;padding:4px;border-radius:6px';s.addEventListener('click',function(){$('editTa').value+=em;$('editTa').focus()});pk.appendChild(s)});
+  $('editPanel').querySelector('.edit-panel-body').appendChild(pk);
+});
+$('editTa').addEventListener('input',function(){$('editTa').style.height='auto';$('editTa').style.height=$('editTa').scrollHeight+'px'});
 
 
 // ============ CallManager — isolated WebRTC module ============
@@ -1881,7 +2103,7 @@ $('mArea').addEventListener('touchend',function(){
   mr.style.transition='transform .2s';mr.style.transform='';
   if(_swipeActive&&_swipeVibrated){
     var s=mr.getAttribute('data-s'),t=mr.getAttribute('data-t');
-    if(s){rTo={sender:s,text:t||'📷'};$('rpn').textContent=s;$('rpt').textContent=t||'📷';$('rpb').classList.remove('hidden');$('mi').focus()}
+    if(s){rTo={sender:s,text:t||'📷'};$('rpn').textContent=s;$('rpt').textContent=t||'📷';showSmooth('rpb','slideUp .2s ease-out');$('mi').focus()}
   }
   _swipeActive=false;_swipeVibrated=false;
 },{passive:true});
