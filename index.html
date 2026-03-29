@@ -384,10 +384,35 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .call-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:39}
 .call-video-local{position:absolute;bottom:140px;right:16px;width:120px;height:160px;border-radius:12px;object-fit:cover;z-index:42;border:2px solid rgba(255,255,255,.3)}
 
-/* Animations */
+/* Animations — Chat Effects */
+.fx-container{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
 .confetti-container{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
 .confetti{position:absolute;width:8px;height:8px;border-radius:2px;animation:confettiDrop 2s forwards}
 @keyframes confettiDrop{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.fx-heart{position:absolute;font-size:20px;animation:fxHeartRise 2.5s forwards}
+@keyframes fxHeartRise{0%{transform:translateY(0) scale(.6) rotate(0deg);opacity:1}50%{opacity:1}100%{transform:translateY(-100vh) scale(1.4) rotate(25deg);opacity:0}}
+.fx-balloon{position:absolute;bottom:-40px;font-size:28px;animation:fxBalloonRise 3s forwards}
+@keyframes fxBalloonRise{0%{transform:translateY(0) scale(.7);opacity:1}60%{opacity:1}100%{transform:translateY(-110vh) scale(1.2);opacity:0}}
+.fx-snow{position:absolute;color:#fff;font-size:16px;opacity:.9;animation:fxSnowFall 3s forwards}
+@keyframes fxSnowFall{0%{transform:translateY(-10px) rotate(0deg);opacity:.9}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+
+/* Animated Stickers */
+.anim-sticker{width:96px;height:96px;display:block;margin:4px auto}
+.sg-anim{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 4px}
+.si-anim{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:8px;border-radius:12px;transition:background .15s}
+.si-anim:active{background:var(--bg3)}
+
+/* Micro-animations */
+.ripple-host{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.15);transform:scale(0);animation:rippleGrow .4s ease-out forwards;pointer-events:none}
+@keyframes rippleGrow{to{transform:scale(4);opacity:0}}
+.mb{transition:transform .1s ease}
+.mb.tap-bounce{transform:scale(.97)}
+.mr.msg-arrive{animation:msgArrive .35s ease-out}
+@keyframes msgArrive{0%{transform:translateY(12px) scale(.97);opacity:.5}100%{transform:translateY(0) scale(1);opacity:1}}
+.rb-main{transition:all .15s,transform .15s}
+.rb-main.send-pulse{animation:sendPulse .3s ease}
+@keyframes sendPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
 /* QR */
 .qr-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px}
@@ -579,12 +604,14 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 <!-- Confetti container -->
 <div class="confetti-container hidden" id="confettiC"></div>
+<!-- Chat effects container -->
+<div class="fx-container hidden" id="fxC"></div>
 </div>
 
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.32.0';
+var APP_VERSION='2.33.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -622,8 +649,23 @@ var notifOk=false;
 function reqNotif(){if('Notification' in window){if(Notification.permission==='granted')notifOk=true;else if(Notification.permission!=='denied')Notification.requestPermission().then(function(p){notifOk=p==='granted'})}}
 function showNotif(t,b){if(!notifOk||document.hasFocus())return;try{var n=new Notification(t,{body:b,tag:'p-'+Date.now()});n.onclick=function(){window.focus();n.close()};setTimeout(function(){n.close()},4000)}catch(e){}}
 
-// Confetti animation
+// Chat Effects system
+var _fxSeen={}; // {msgKey: true} — не повторять эффект при перерисовке
 function fireConfetti(){var c=$('confettiC');c.classList.remove('hidden');c.innerHTML='';var cols=['#E85D75','#6C5CE7','#00B894','#FDCB6E','#0984E3','#A29BFE','#55EFC4'];for(var i=0;i<40;i++){var p=document.createElement('div');p.className='confetti';p.style.left=Math.random()*100+'%';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDelay=Math.random()*1+'s';p.style.animationDuration=(1.5+Math.random())+'s';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},3000)}
+function fireHearts(){var c=$('fxC');c.classList.remove('hidden');c.innerHTML='';var hearts=['❤️','💕','💗','💖','💝','🩷','🩵'];for(var i=0;i<30;i++){var p=document.createElement('div');p.className='fx-heart';p.textContent=hearts[Math.floor(Math.random()*hearts.length)];p.style.left=Math.random()*100+'%';p.style.bottom='-20px';p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1)+'s';p.style.fontSize=(16+Math.random()*14)+'px';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},3500)}
+function fireBalloons(){var c=$('fxC');c.classList.remove('hidden');c.innerHTML='';var balls=['🎈','🎈','🎈','🎊','🎁','🎂'];for(var i=0;i<20;i++){var p=document.createElement('div');p.className='fx-balloon';p.textContent=balls[Math.floor(Math.random()*balls.length)];p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*1.5+'s';p.style.animationDuration=(2.5+Math.random()*1)+'s';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},4000)}
+function fireSnow(){var c=$('fxC');c.classList.remove('hidden');c.innerHTML='';var flakes=['❄️','❄','✻','✼','❅','❆'];for(var i=0;i<35;i++){var p=document.createElement('div');p.className='fx-snow';p.textContent=flakes[Math.floor(Math.random()*flakes.length)];p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*1.5+'s';p.style.animationDuration=(2.5+Math.random()*1.5)+'s';p.style.fontSize=(12+Math.random()*10)+'px';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},4500)}
+var _FX_RULES=[
+  {test:function(t){return t.indexOf('🎉')!==-1||t.indexOf('поздравл')!==-1||t.indexOf('поздравля')!==-1||t.indexOf('congrat')!==-1},fn:fireConfetti},
+  {test:function(t){return t.indexOf('❤️')!==-1||t.indexOf('люблю')!==-1||t.indexOf('love')!==-1||t.indexOf('целую')!==-1},fn:fireHearts},
+  {test:function(t){return t.indexOf('🎂')!==-1||t.indexOf('с днём рождения')!==-1||t.indexOf('с днем рождения')!==-1||t.indexOf('happy birthday')!==-1},fn:fireBalloons},
+  {test:function(t){return t.indexOf('🎄')!==-1||t.indexOf('с новым годом')!==-1||t.indexOf('happy new year')!==-1||t.indexOf('❄️')!==-1},fn:fireSnow}
+];
+function checkChatEffect(key,text){
+  if(!text||!key||_fxSeen[key])return;
+  var tl=text.toLowerCase();
+  for(var i=0;i<_FX_RULES.length;i++){if(_FX_RULES[i].test(tl)){_fxSeen[key]=true;_FX_RULES[i].fn();return}}
+}
 
 // Theme
 var theme=localStorage.getItem('pc_theme')||'dark';
@@ -1049,6 +1091,15 @@ if(m.sticker){
   h+='<div class="mc">';if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="m-sticker">'+m.sticker+'</div>';
   h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
+// REQ-46: animated SVG sticker
+if(m.animSticker){
+  var me=m.sender===U,sa=m.sender!==ls;
+  var _as=null;for(var _ai=0;_ai<ANIM_STICKERS.length;_ai++){if(ANIM_STICKERS[_ai].id===m.animSticker){_as=ANIM_STICKERS[_ai];break}}
+  h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
+  h+='<div class="mac"></div>';
+  h+='<div class="mc">';if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+  h+='<div class="anim-sticker">'+(_as?_as.svg:'❓')+'</div>';
+  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
 var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
 var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
 h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
@@ -1082,6 +1133,10 @@ Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" data-action="react" d
 if(m.threadCount)h+='<div class="m-thread" data-action="thread" data-key="'+m._key+'" data-text="'+es(m.text||'')+'">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
 h+='</div></div></div>';ls=m.sender}
 a.innerHTML=h;
+// REQ-46: chat effects — trigger on new messages
+if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.text&&_lastM.ts&&(Date.now()-_lastM.ts<5000)){checkChatEffect(_lastM._key,_lastM.text)}}
+// REQ-48: msg-arrive animation on last message
+if(wb&&ms.length>0){var _lastEl=a.querySelector('.mr:last-child');if(_lastEl)_lastEl.classList.add('msg-arrive')}
 // REQ-23: scroll to first unread, otherwise scroll to bottom
 var _ud=$('unreadDiv');if(_ud&&!wb){_ud.scrollIntoView({behavior:'smooth',block:'center'})}
 else if(wb)a.scrollTop=a.scrollHeight;
@@ -1395,10 +1450,10 @@ if(threadMode&&threadParent){m.threadParent=threadParent;
 // Increment thread count on parent
 db.ref('messages/'+cRoom+'/'+threadParent+'/threadCount').transaction(function(c){return(c||0)+1})}
 cRp();
-// Check for animation triggers
-if(t&&(t.indexOf('🎉')!==-1||t.toLowerCase().indexOf('congrat')!==-1||t.toLowerCase().indexOf('поздравл')!==-1))setTimeout(fireConfetti,300);
 db.ref('messages/'+cRoom).push(m);
 try{if(navigator.vibrate)navigator.vibrate(15)}catch(e){} // REQ-19
+// Send button pulse
+var _sb=$('sendBtn');if(_sb){_sb.classList.add('send-pulse');setTimeout(function(){_sb.classList.remove('send-pulse')},300)}
 var mt={lastText:t||(img?'📷':audio?'🎤':file?'📄':poll?'📊':loc?'📍':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
 if(cRoom!=='general'){var r=cRooms[cRoom];if(r&&r.members)mt.members=r.members;if(r&&r.groupName)mt.groupName=r.groupName;if(r&&r.channel)mt.channel=true}
 db.ref('chats/'+cRoom).update(mt);
@@ -1689,11 +1744,37 @@ if(v.paused){v.play();pb.style.display='none'}else{v.pause();pb.style.display='f
 
 // Emoji
 var STICKERS=["😀","😎","🥳","😍","🤔","😱","😭","🤣","💪","🔥","❤️","👍","👎","🎉","💯","⭐","🙏","🫶","👀","💀","🦊","🐱","🐶","🌈","☀️","🌙","⚡","🍕","☕","🎮","🚀","💎"];
-function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});bEC()}
+// REQ-46: Animated SVG stickers
+var ANIM_STICKERS=[
+{id:'heart-pulse',name:'Сердце',svg:'<svg viewBox="0 0 80 80"><path d="M40 70S10 50 10 30a15 15 0 0 1 30 0 15 15 0 0 1 30 0C70 50 40 70 40 70z" fill="#E85D75"><animate attributeName="d" dur="0.6s" repeatCount="indefinite" values="M40 70S10 50 10 30a15 15 0 0 1 30 0 15 15 0 0 1 30 0C70 50 40 70 40 70z;M40 68S14 48 14 30a13 13 0 0 1 26 0 13 13 0 0 1 26 0C66 48 40 68 40 68z;M40 70S10 50 10 30a15 15 0 0 1 30 0 15 15 0 0 1 30 0C70 50 40 70 40 70z"/></path></svg>'},
+{id:'thumbs-up',name:'Класс',svg:'<svg viewBox="0 0 80 80"><g transform="translate(40,44)"><animateTransform attributeName="transform" type="translate" values="40,44;40,38;40,44" dur="0.8s" repeatCount="indefinite"/><path d="M-12 4h-8v22h8zm4-10c0-3 2-6 6-6l14 2c2 0 4 2 4 5l-2 10 2 8c0 2-1 4-3 4H-4c-2 0-4-2-4-4V0z" fill="#FDCB6E"/></g></svg>'},
+{id:'fire',name:'Огонь',svg:'<svg viewBox="0 0 80 80"><path d="M40 10c0 0-20 20-20 40s10 22 20 22 20-2 20-22S40 10 40 10z" fill="#E17055"><animate attributeName="d" dur="0.5s" repeatCount="indefinite" values="M40 10c0 0-20 20-20 40s10 22 20 22 20-2 20-22S40 10 40 10z;M40 14c0 0-18 18-18 36s8 22 18 22 18-2 18-22S40 14 40 14z;M40 10c0 0-20 20-20 40s10 22 20 22 20-2 20-22S40 10 40 10z"/></path><path d="M40 30c0 0-10 12-10 24s5 14 10 14 10-2 10-14S40 30 40 30z" fill="#FDCB6E"><animate attributeName="d" dur="0.4s" repeatCount="indefinite" values="M40 30c0 0-10 12-10 24s5 14 10 14 10-2 10-14S40 30 40 30z;M40 34c0 0-8 10-8 20s4 14 8 14 8-2 8-14S40 34 40 34z;M40 30c0 0-10 12-10 24s5 14 10 14 10-2 10-14S40 30 40 30z"/></path></svg>'},
+{id:'star-spin',name:'Звезда',svg:'<svg viewBox="0 0 80 80"><g transform-origin="40 40"><animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="3s" repeatCount="indefinite"/><polygon points="40,10 47,30 68,30 51,42 56,62 40,50 24,62 29,42 12,30 33,30" fill="#FDCB6E"><animate attributeName="fill" values="#FDCB6E;#FF7675;#A29BFE;#FDCB6E" dur="2s" repeatCount="indefinite"/></polygon></g></svg>'},
+{id:'cat-wave',name:'Котик',svg:'<svg viewBox="0 0 80 80"><ellipse cx="40" cy="52" rx="18" ry="20" fill="#A29BFE"/><circle cx="33" cy="46" r="2.5" fill="#fff"/><circle cx="47" cy="46" r="2.5" fill="#fff"/><circle cx="33" cy="46" r="1.2" fill="#2d3436"/><circle cx="47" cy="46" r="1.2" fill="#2d3436"/><ellipse cx="40" cy="52" rx="3" ry="1.5" fill="#E85D75"/><path d="M23 34L28 18L36 32z" fill="#A29BFE"/><path d="M57 34L52 18L44 32z" fill="#A29BFE"/><g><path d="M58 38c6-4 14-2 16 2" stroke="#A29BFE" stroke-width="2.5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="0 58 38;-20 58 38;0 58 38" dur="0.8s" repeatCount="indefinite"/></path></g></svg>'},
+{id:'laugh',name:'Хаха',svg:'<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#FDCB6E"/><path d="M24 38c4-6 12-6 16 0" stroke="#2d3436" stroke-width="2.5" fill="none"/><path d="M40 38c4-6 12-6 16 0" stroke="#2d3436" stroke-width="2.5" fill="none"/><path d="M26 48c0 0 6 12 14 12s14-12 14-12z" fill="#E85D75"><animate attributeName="d" dur="0.6s" repeatCount="indefinite" values="M26 48c0 0 6 12 14 12s14-12 14-12z;M28 46c0 0 5 14 12 14s12-14 12-14z;M26 48c0 0 6 12 14 12s14-12 14-12z"/></path></svg>'},
+{id:'cry',name:'Плач',svg:'<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#74B9FF"/><circle cx="32" cy="36" r="3" fill="#2d3436"/><circle cx="48" cy="36" r="3" fill="#2d3436"/><path d="M30 52q10 8 20 0" stroke="#2d3436" stroke-width="2" fill="none"/><g><circle cx="28" cy="44" r="2" fill="#0984E3"><animate attributeName="cy" values="44;62;44" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></circle><circle cx="52" cy="44" r="2" fill="#0984E3"><animate attributeName="cy" values="44;62;44" dur="1s" repeatCount="indefinite" begin="0.5s"/><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" begin="0.5s"/></circle></g></svg>'},
+{id:'rocket',name:'Ракета',svg:'<svg viewBox="0 0 80 80"><g><animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="0.7s" repeatCount="indefinite"/><path d="M40 12c-6 10-10 24-10 36h20c0-12-4-26-10-36z" fill="#dfe6e9"/><path d="M30 48l-6 12h12z" fill="#E85D75"/><path d="M50 48l6 12h-12z" fill="#E85D75"/><circle cx="40" cy="34" r="5" fill="#0984E3"/><path d="M36 50c0 0 2 12 4 16 2-4 4-16 4-16z" fill="#E17055"><animate attributeName="d" dur="0.3s" repeatCount="indefinite" values="M36 50c0 0 2 12 4 16 2-4 4-16 4-16z;M37 50c0 0 1 14 3 18 2-4 3-18 3-18z;M36 50c0 0 2 12 4 16 2-4 4-16 4-16z"/></path></g></svg>'},
+{id:'clap',name:'Хлопок',svg:'<svg viewBox="0 0 80 80"><g transform="translate(20,30)"><path d="M10 20L18 4c1-2 4-2 5 0l2 8z" fill="#FDCB6E"><animateTransform attributeName="transform" type="rotate" values="0 16 20;-8 16 20;0 16 20" dur="0.4s" repeatCount="indefinite"/></path></g><g transform="translate(30,30)"><path d="M30 20L22 4c-1-2-4-2-5 0l-2 8z" fill="#FDCB6E"><animateTransform attributeName="transform" type="rotate" values="0 24 20;8 24 20;0 24 20" dur="0.4s" repeatCount="indefinite"/></path></g><g><circle r="2" fill="#FF7675" cx="22" cy="24"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/></circle><circle r="2" fill="#A29BFE" cx="58" cy="24"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.2s"/></circle><circle r="1.5" fill="#00B894" cx="40" cy="18"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.4s"/></circle></g></svg>'},
+{id:'zzz',name:'Сон',svg:'<svg viewBox="0 0 80 80"><circle cx="40" cy="48" r="22" fill="#636e72"/><circle cx="34" cy="44" r="2" fill="#2d3436"/><circle cx="46" cy="44" r="2" fill="#2d3436"/><path d="M34 44h-4" stroke="#2d3436" stroke-width="1.5"/><path d="M46 44h4" stroke="#2d3436" stroke-width="1.5"/><ellipse cx="40" cy="54" rx="4" ry="2.5" fill="#dfe6e9"/><text x="52" y="28" font-size="14" font-weight="700" fill="#A29BFE"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>Z</text><text x="58" y="20" font-size="10" font-weight="700" fill="#A29BFE"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="0.6s"/>Z</text><text x="62" y="14" font-size="7" font-weight="700" fill="#A29BFE"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="1.2s"/>Z</text></svg>'},
+{id:'party',name:'Праздник',svg:'<svg viewBox="0 0 80 80"><path d="M20 70L34 24l20 16z" fill="#6C5CE7"/><path d="M20 70L34 24l8 6z" fill="#A29BFE"/><circle cx="50" cy="18" r="3" fill="#E85D75"><animate attributeName="r" values="3;4;3" dur="0.5s" repeatCount="indefinite"/></circle><circle cx="60" cy="28" r="2.5" fill="#00B894"><animate attributeName="r" values="2.5;3.5;2.5" dur="0.6s" repeatCount="indefinite"/></circle><circle cx="44" cy="12" r="2" fill="#FDCB6E"><animate attributeName="r" values="2;3;2" dur="0.4s" repeatCount="indefinite"/></circle><rect x="56" y="14" width="4" height="4" rx="1" fill="#FF7675"><animateTransform attributeName="transform" type="rotate" from="0 58 16" to="360 58 16" dur="2s" repeatCount="indefinite"/></rect><rect x="46" y="26" width="3" height="3" rx="1" fill="#74B9FF"><animateTransform attributeName="transform" type="rotate" from="0 47 27" to="360 47 27" dur="1.5s" repeatCount="indefinite"/></rect></svg>'},
+{id:'rainbow',name:'Радуга',svg:'<svg viewBox="0 0 80 80"><path d="M10 60a30 30 0 0 1 60 0" stroke="#E85D75" stroke-width="4" fill="none"><animate attributeName="stroke" values="#E85D75;#E17055;#FDCB6E;#00B894;#0984E3;#6C5CE7;#E85D75" dur="3s" repeatCount="indefinite"/></path><path d="M16 60a24 24 0 0 1 48 0" stroke="#FDCB6E" stroke-width="4" fill="none"><animate attributeName="stroke" values="#FDCB6E;#00B894;#0984E3;#6C5CE7;#E85D75;#E17055;#FDCB6E" dur="3s" repeatCount="indefinite"/></path><path d="M22 60a18 18 0 0 1 36 0" stroke="#00B894" stroke-width="4" fill="none"><animate attributeName="stroke" values="#00B894;#0984E3;#6C5CE7;#E85D75;#E17055;#FDCB6E;#00B894" dur="3s" repeatCount="indefinite"/></path><path d="M28 60a12 12 0 0 1 24 0" stroke="#0984E3" stroke-width="4" fill="none"><animate attributeName="stroke" values="#0984E3;#6C5CE7;#E85D75;#E17055;#FDCB6E;#00B894;#0984E3" dur="3s" repeatCount="indefinite"/></path></svg>'},
+{id:'peace',name:'Мир',svg:'<svg viewBox="0 0 80 80"><g transform-origin="40 40"><animateTransform attributeName="transform" type="rotate" values="-5;5;-5" dur="1s" repeatCount="indefinite"/><path d="M30 50V28c0-3 2-5 5-5s5 2 5 5v14" fill="#FDCB6E" stroke="#E17055" stroke-width="1"/><path d="M40 42V26c0-3 2-5 5-5s5 2 5 5v16" fill="#FDCB6E" stroke="#E17055" stroke-width="1"/><path d="M50 44V30c0-3 2-5 5-5s5 2 5 5v14" fill="#FDCB6E" stroke="#E17055" stroke-width="1"/><path d="M30 50c0 0-4 4-4 10s4 8 14 8 14-2 14-8-4-10-4-10z" fill="#FDCB6E" stroke="#E17055" stroke-width="1"/></g></svg>'},
+{id:'ghost',name:'Призрак',svg:'<svg viewBox="0 0 80 80"><g><animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="1.5s" repeatCount="indefinite"/><path d="M20 40c0-12 9-22 20-22s20 10 20 22v24l-7-6-6 6-7-6-7 6-6-6-7 6z" fill="#dfe6e9"/><circle cx="34" cy="38" r="4" fill="#2d3436"/><circle cx="46" cy="38" r="4" fill="#2d3436"/><circle cx="35" cy="37" r="1.5" fill="#fff"/><circle cx="47" cy="37" r="1.5" fill="#fff"/><ellipse cx="40" cy="48" rx="4" ry="2" fill="#636e72"/></g></svg>'},
+{id:'diamond',name:'Алмаз',svg:'<svg viewBox="0 0 80 80"><g><animateTransform attributeName="transform" type="scale" values="1;1.08;1" dur="1s" repeatCount="indefinite" additive="sum"/><polygon points="40,12 56,30 40,68 24,30" fill="#74B9FF"><animate attributeName="fill" values="#74B9FF;#A29BFE;#55EFC4;#74B9FF" dur="2s" repeatCount="indefinite"/></polygon><polygon points="40,12 24,30 14,30" fill="#0984E3"/><polygon points="40,12 56,30 66,30" fill="#0984E3"/><polygon points="24,30 40,68 14,30" fill="#0984E3" opacity=".5"/><polygon points="56,30 40,68 66,30" fill="#0984E3" opacity=".5"/><line x1="24" y1="30" x2="56" y2="30" stroke="#fff" stroke-width="1" opacity=".4"/></g></svg>'},
+{id:'sun',name:'Солнце',svg:'<svg viewBox="0 0 80 80"><g transform-origin="40 40"><animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="8s" repeatCount="indefinite"/><line x1="40" y1="6" x2="40" y2="16" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="64" x2="40" y2="74" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="6" y1="40" x2="16" y2="40" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="64" y1="40" x2="74" y2="40" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="16" y1="16" x2="22" y2="22" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="58" y1="58" x2="64" y2="64" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="64" y1="16" x2="58" y2="22" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="22" y1="58" x2="16" y2="64" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/></g><circle cx="40" cy="40" r="14" fill="#FDCB6E"/><circle cx="35" cy="37" r="2" fill="#E17055"/><circle cx="45" cy="37" r="2" fill="#E17055"/><path d="M34 45c3 4 9 4 12 0" stroke="#E17055" stroke-width="2" fill="none"/></svg>'}
+];
+function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button><button type="button" class="ect" data-tab="anim">✨ Живые</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';h+='<div id="animTab" class="hidden"><div class="sg-anim">';ANIM_STICKERS.forEach(function(s,i){h+='<div class="si-anim" data-anim-idx="'+i+'" title="'+es(s.name)+'"><div class="anim-sticker">'+s.svg+'</div></div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker');$('animTab').classList.toggle('hidden',tab!=='anim')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});p.querySelectorAll('.si-anim').forEach(function(el){el.addEventListener('click',function(){var idx=parseInt(el.getAttribute('data-anim-idx'));var s=ANIM_STICKERS[idx];if(!s)return;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,animSticker:s.id});db.ref('chats/'+cRoom).update({lastText:'✨ Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});try{navigator.vibrate&&navigator.vibrate(15)}catch(ex){}cEm()})});bEC()}
 function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').dispatchEvent(new Event('input'));uSB()})})}
 function tEm(){emO=!emO;var ep=$('epp');ep.classList.toggle('open',emO);$('ebSmile').classList.toggle('hidden',emO);$('ebKb').classList.toggle('hidden',!emO);if(emO){setTimeout(function(){ep.style.overflowY='auto'},350)}else{ep.style.overflowY='hidden'}}
 function cEm(){emO=false;var ep=$('epp');ep.classList.remove('open');ep.style.overflowY='hidden';$('ebSmile').classList.remove('hidden');$('ebKb').classList.add('hidden')}
 bEP();$('eb').addEventListener('click',tEm);
+
+// REQ-48: Micro-animations — ripple on buttons, tap-bounce on bubbles
+function addRipple(e){var btn=e.currentTarget;var rect=btn.getBoundingClientRect();var r=document.createElement('div');r.className='ripple';var x=e.clientX||((e.touches&&e.touches[0])?e.touches[0].clientX:rect.left+rect.width/2);var y=e.clientY||((e.touches&&e.touches[0])?e.touches[0].clientY:rect.top+rect.height/2);r.style.left=(x-rect.left)+'px';r.style.top=(y-rect.top)+'px';r.style.width=r.style.height=Math.max(rect.width,rect.height)+'px';btn.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},500)}
+document.querySelectorAll('.ib,.cb,.cb-sm,.rb-main,.ini,.lb,.att-icon').forEach(function(btn){btn.classList.add('ripple-host');btn.addEventListener('click',addRipple)});
+// Tap bounce on message bubbles — delegated on mArea
+$('mArea').addEventListener('touchstart',function(e){var mb=e.target.closest('.mb');if(mb)mb.classList.add('tap-bounce')},{passive:true});
+$('mArea').addEventListener('touchend',function(e){var mb=e.target.closest('.mb');if(mb)setTimeout(function(){mb.classList.remove('tap-bounce')},100)});
 
 // REQ-12: Scroll-to-bottom button
 $('mArea').addEventListener('scroll',function(){var a=$('mArea'),sb=$('scrollBtn');if(a.scrollHeight-a.scrollTop-a.clientHeight>300)sb.classList.remove('hidden');else sb.classList.add('hidden')});
