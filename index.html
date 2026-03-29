@@ -213,7 +213,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .rec-wave-bar{width:3px;background:#E85D75;border-radius:2px;min-height:4px;transition:height .1s ease-out}
 .rb-main{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:#5b7cfa;box-shadow:0 2px 10px rgba(91,124,250,.4);transition:all .15s;touch-action:none;-webkit-user-select:none;user-select:none}
 .rb-main:active{transform:scale(.9)}
-.sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);transition:all .15s}
+.sb{width:46px;height:46px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 2px 10px rgba(102,126,234,.3);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.sb:active{transform:scale(.85);opacity:.8}
 .sb:active{transform:scale(.9)}
 .rec-tooltip{position:absolute;bottom:60px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;z-index:16;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:ca .15s ease-out}
 .rec-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
@@ -637,7 +638,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.34.0';
+var APP_VERSION='2.35.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -687,11 +688,8 @@ var _FX_RULES=[
   {test:function(t){return t.indexOf('🎂')!==-1||t.indexOf('с днём рождения')!==-1||t.indexOf('с днем рождения')!==-1||t.indexOf('happy birthday')!==-1},fn:fireBalloons},
   {test:function(t){return t.indexOf('🎄')!==-1||t.indexOf('с новым годом')!==-1||t.indexOf('happy new year')!==-1||t.indexOf('❄️')!==-1},fn:fireSnow}
 ];
-function checkChatEffect(key,text,effectIdx){
-  if(!key||_fxSeen[key])return;
-  // Explicit effect from sender (effect picker)
-  if(typeof effectIdx==='number'&&effectIdx>=0&&effectIdx<_FX_PICK_LIST.length){_fxSeen[key]=true;_FX_PICK_LIST[effectIdx].fn();return}
-  if(!text)return;
+function checkChatEffect(key,text){
+  if(!key||!text||_fxSeen[key])return;
   var tl=text.toLowerCase();
   for(var i=0;i<_FX_RULES.length;i++){if(_FX_RULES[i].test(tl)){_fxSeen[key]=true;_FX_RULES[i].fn();return}}
 }
@@ -963,8 +961,8 @@ function updatePin(rid){
         _pinMsgsCache=msgs.filter(function(m){return pins[m._key]});
       }else{_pinKeys=[];_pinMsgsCache=[]}
       updatePinUI();
-      // Re-render messages to update pin icons
-      if(cRoom===rid&&rMsgs[rid])rMs(rMsgs[rid]);
+      // Точечное обновление пин-иконок в DOM без полной перерисовки
+      if(cRoom===rid){document.querySelectorAll('.mr').forEach(function(mr){var k=mr.getAttribute('data-k');if(!k)return;var mt=mr.querySelector('.mt');if(!mt)return;var hasPinSvg=mt.querySelector('svg');var isPinned=_pinKeys.indexOf(k)!==-1;if(isPinned&&!hasPinSvg){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('width','10');s.setAttribute('height','10');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('fill','currentColor');s.setAttribute('stroke','none');s.style.cssText='opacity:.6;margin-right:2px;vertical-align:middle';var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z');s.appendChild(p);mt.insertBefore(s,mt.firstChild)}else if(!isPinned&&hasPinSvg){hasPinSvg.remove()}})}
     });
   } else {
     // Обновляем кеш из текущих rMsgs
@@ -1149,10 +1147,9 @@ if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"
 if(m.poll)h+=renderPoll(m);
 if(m.location)h+='<div class="m-loc" data-action="openMap" data-lat="'+m.location.lat+'" data-lng="'+m.location.lng+'" style="background:var(--bg3);padding:12px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="color:var(--acc)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div style="font-weight:600;font-size:13px;color:var(--tx)">Геолокация</div><div style="font-size:11px;color:var(--tx3)">'+m.location.lat.toFixed(5)+', '+m.location.lng.toFixed(5)+'</div><div style="font-size:11px;color:var(--acc)">Открыть в Google Maps</div></div></div>';
 if(m.text){var _txt=m.text;if(_txt.length>300){h+='<span class="m-text-short">'+linkify(_txt.substr(0,300))+'<span class="m-readmore" data-action="readmore">... Читать далее</span></span><span class="m-text-full hidden">'+linkify(_txt)+'<span class="m-readless" data-action="readless"> Свернуть</span></span>'}else{h+='<span>'+linkify(_txt)+'</span>'}}
-// REQ-16: время только на последнем в серии (тот же sender, <60с)
+// REQ-16: ОТМЕНЕНО — время на каждом сообщении
 var _imgOnly=m.image&&!m.text&&!m.audio&&!m.file&&!m.poll&&!m.location&&!m.vidMsg;
-var _nextM=ms[_i+1];var _showTime=true;
-if(_nextM&&_nextM.sender===m.sender&&!_nextM.system&&!_nextM.sticker&&_nextM.ts&&m.ts&&(_nextM.ts-m.ts)<60000)_showTime=false;
+var _showTime=true;
 if(_imgOnly)_showTime=false; // время уже на картинке
 if(_showTime){var _msgPinned=_pinKeys.indexOf(m._key)!==-1;var _isGrp=!_isPrivChat;h+='<div class="mt '+(me?'mn':'ot')+'">'+(m.edited?'<span class="med">изменено</span> ':'')+(_msgPinned?'<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="opacity:.6;margin-right:2px;vertical-align:middle"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z"/></svg>':'')+ft(m.ts||Date.now());
 if(me)h+=' <span class="ck'+(m._read===2?' read':'')+'"'+(_isGrp?' data-action="showReaders" data-key="'+m._key+'" data-ts="'+m.ts+'" style="cursor:pointer"':'')+'>'+(m._read>=1?'✓✓':'✓')+'</span>';
@@ -1161,9 +1158,9 @@ if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forE
 Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" data-action="react" data-key="'+m._key+'" data-emoji="'+e+'">'+e+'<span class="cnt">'+rc[e].c+'</span></div>'});h+='</div>'}
 if(m.threadCount)h+='<div class="m-thread" data-action="thread" data-key="'+m._key+'" data-text="'+es(m.text||'')+'">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
 h+='</div></div></div>';ls=m.sender}
-a.innerHTML=h;
+var _tmp=document.createElement('div');_tmp.innerHTML=h;a.replaceChildren.apply(a,Array.from(_tmp.childNodes));
 // REQ-46: chat effects — trigger on new messages
-if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.ts&&(Date.now()-_lastM.ts<5000)&&(_lastM.text||typeof _lastM.effect==='number')){checkChatEffect(_lastM._key,_lastM.text,_lastM.effect)}}
+if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.text&&_lastM.ts&&(Date.now()-_lastM.ts<5000)){checkChatEffect(_lastM._key,_lastM.text)}}
 // REQ-48: msg-arrive animation on last message
 if(wb&&ms.length>0){var _lastEl=a.querySelector('.mr:last-child');if(_lastEl)_lastEl.classList.add('msg-arrive')}
 // REQ-23: scroll to first unread, otherwise scroll to bottom
@@ -1215,18 +1212,18 @@ a.addEventListener('touchmove',function(){clearTimeout(bgTm)});
 }
 // Read receipts - check
 function checkReadReceipts(rid,msgs){
-if(rid==='general'){msgs.forEach(function(m){if(m.sender===U&&m.ts)m._read=1});if(cRoom===rid)rMs(msgs);return}
+if(rid==='general'){msgs.forEach(function(m){if(m.sender===U&&m.ts)m._read=1});return}
 db.ref('readReceipts/'+rid).once('value',function(s){var d=s.val()||{};
 var r=cRooms[rid];if(!r||!r.members)return;
 var others=r.members.filter(function(m){return m!==U});
 if(others.length===0)return;
-var changed=false;
 msgs.forEach(function(m){if(m.sender===U&&m.ts){
   var anyRead=others.some(function(o){return d[o]&&d[o]>=m.ts});
   var newVal=anyRead?2:1;
-  if(m._read!==newVal){m._read=newVal;changed=true}
-}});
-if(changed&&cRoom===rid)rMs(msgs)})}
+  if(m._read!==newVal){m._read=newVal;
+    // Точечное обновление галочки в DOM без перерисовки
+    if(cRoom===rid&&m._key){var el=document.querySelector('.mr[data-k="'+m._key+'"] .ck');if(el){el.textContent=newVal>=1?'✓✓':'✓';el.classList.toggle('read',newVal===2)}}}
+}})})}
 
 // Poll render
 function renderPoll(m){var p=m.poll,votes=m.pollVotes||{};var total=Object.keys(votes).length;
@@ -1475,20 +1472,18 @@ if(t)m.text=t;if(img)m.image=img;if(audio){m.audio=audio;m.audioDur=audioDur}
 if(file){m.file=file;m.fileName=fileName;m.fileSize=fileSize}
 if(poll)m.poll=poll;if(loc)m.location=loc;if(disappear)m.disappear=disappear;
 if(rTo)m.replyTo={sender:rTo.sender,text:rTo.text||''};
-if(_pendingEffect){m.effect=_FX_PICK_LIST.indexOf(_pendingEffect);var _eff=_pendingEffect;_pendingEffect=null;setTimeout(function(){_eff.fn()},200)}
 if(threadMode&&threadParent){m.threadParent=threadParent;
 // Increment thread count on parent
 db.ref('messages/'+cRoom+'/'+threadParent+'/threadCount').transaction(function(c){return(c||0)+1})}
 cRp();
 db.ref('messages/'+cRoom).push(m);
-try{if(navigator.vibrate)navigator.vibrate(15)}catch(e){} // REQ-19
 // Send button pulse
 var _sb=$('sendBtn');if(_sb){_sb.classList.add('send-pulse');setTimeout(function(){_sb.classList.remove('send-pulse')},300)}
 var mt={lastText:t||(img?'📷':audio?'🎤':file?'📄':poll?'📊':loc?'📍':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
 if(cRoom!=='general'){var r=cRooms[cRoom];if(r&&r.members)mt.members=r.members;if(r&&r.groupName)mt.groupName=r.groupName;if(r&&r.channel)mt.channel=true}
 db.ref('chats/'+cRoom).update(mt);
 db.ref('typing/'+cRoom+'/'+U).remove();cEm();$('attMenu').classList.remove('open');localStorage.removeItem('draft_'+cRoom);
-setTimeout(function(){$('mi').focus()},50)}
+setTimeout(function(){$('mArea').scrollTop=$('mArea').scrollHeight;$('mi').focus()},50)}
 
 // Typing
 function lTp(rid){if(tpList[rid])return;tpList[rid]=true;db.ref('typing/'+rid).on('value',function(s){if(cRoom!==rid)return;var d=s.val()||{},tp=[];Object.keys(d).forEach(function(k){if(k!==U&&Date.now()-d[k]<5000)tp.push(k)});var sub=$('chs2');if(tp.length>0){sub.innerHTML=tp.join(', ')+' печатает<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';sub.classList.add('tp')}else{sub.classList.remove('tp');if(cRoom==='general'){sub.textContent=Object.keys(onU).length+' онлайн'}else{var r=cRooms[rid];var isPriv=r&&r.members&&r.members.length===2;if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(onU[oth]){var _di=onU[oth].device==='desktop'?'💻':'📱';sub.textContent='онлайн '+_di}else getLastSeen(oth,function(t){if(cRoom===rid)sub.textContent=t?'был(а) '+t:''})}else sub.textContent=''}}})}
@@ -1721,7 +1716,6 @@ function end(){
   clearTimeout(holdTimer);
   var dur=Date.now()-pressStart;
   if(!isHolding&&dur<500&&dur>0){
-    vibrate(30);
     if(mode==='audio'){mode='video';updateIcon();showTooltip('Удерживайте для записи видео. Нажмите для переключения в голосовой режим.')}
     else{mode='audio';updateIcon();showTooltip('Удерживайте для записи звука. Нажмите для переключения на видео.')}
   }
@@ -1737,7 +1731,8 @@ function cancel(){
 // --- Init: bind events ---
 function init(){
   $('mi').addEventListener('input',function(){updateSendBtn();sTp();autoResizeMi()});
-  $('sbb').addEventListener('click',function(){sM()});
+  $('sbb').addEventListener('touchend',function(e){e.preventDefault();sM()});
+  $('sbb').addEventListener('click',function(e){e.preventDefault()});
   $('recCancelText').addEventListener('click',function(){cancel()});
 
   // Touch
@@ -1793,7 +1788,7 @@ var ANIM_STICKERS=[
 {id:'diamond',name:'Алмаз',svg:'<svg viewBox="0 0 80 80"><g><animateTransform attributeName="transform" type="scale" values="1;1.08;1" dur="1s" repeatCount="indefinite" additive="sum"/><polygon points="40,12 56,30 40,68 24,30" fill="#74B9FF"><animate attributeName="fill" values="#74B9FF;#A29BFE;#55EFC4;#74B9FF" dur="2s" repeatCount="indefinite"/></polygon><polygon points="40,12 24,30 14,30" fill="#0984E3"/><polygon points="40,12 56,30 66,30" fill="#0984E3"/><polygon points="24,30 40,68 14,30" fill="#0984E3" opacity=".5"/><polygon points="56,30 40,68 66,30" fill="#0984E3" opacity=".5"/><line x1="24" y1="30" x2="56" y2="30" stroke="#fff" stroke-width="1" opacity=".4"/></g></svg>'},
 {id:'sun',name:'Солнце',svg:'<svg viewBox="0 0 80 80"><g transform-origin="40 40"><animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="8s" repeatCount="indefinite"/><line x1="40" y1="6" x2="40" y2="16" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="64" x2="40" y2="74" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="6" y1="40" x2="16" y2="40" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="64" y1="40" x2="74" y2="40" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="16" y1="16" x2="22" y2="22" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="58" y1="58" x2="64" y2="64" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="64" y1="16" x2="58" y2="22" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/><line x1="22" y1="58" x2="16" y2="64" stroke="#FDCB6E" stroke-width="3" stroke-linecap="round"/></g><circle cx="40" cy="40" r="14" fill="#FDCB6E"/><circle cx="35" cy="37" r="2" fill="#E17055"/><circle cx="45" cy="37" r="2" fill="#E17055"/><path d="M34 45c3 4 9 4 12 0" stroke="#E17055" stroke-width="2" fill="none"/></svg>'}
 ];
-function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button><button type="button" class="ect" data-tab="anim">✨ Живые</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';h+='<div id="animTab" class="hidden"><div class="sg-anim">';ANIM_STICKERS.forEach(function(s,i){h+='<div class="si-anim" data-anim-idx="'+i+'" title="'+es(s.name)+'"><div class="anim-sticker">'+s.svg+'</div></div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker');$('animTab').classList.toggle('hidden',tab!=='anim')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});p.querySelectorAll('.si-anim').forEach(function(el){el.addEventListener('click',function(){var idx=parseInt(el.getAttribute('data-anim-idx'));var s=ANIM_STICKERS[idx];if(!s)return;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,animSticker:s.id});db.ref('chats/'+cRoom).update({lastText:'✨ Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});try{navigator.vibrate&&navigator.vibrate(15)}catch(ex){}cEm()})});bEC()}
+function bEP(){var p=$('epp'),cats=Object.keys(EMOJIS);var h='<div class="ec"><div class="ec-tabs"><button type="button" class="ect act" data-tab="emoji">😊 Эмодзи</button><button type="button" class="ect" data-tab="sticker">🎨 Стикеры</button><button type="button" class="ect" data-tab="anim">✨ Живые</button></div></div>';h+='<div id="emojiTab"><div class="ec">';cats.forEach(function(c,i){h+='<button type="button" class="ecb'+(i===0?' act':'')+'" data-c="'+i+'">'+c+'</button>'});h+='</div><div class="eg" id="egr">';EMOJIS[cats[0]].forEach(function(e){h+='<div class="ei">'+e+'</div>'});h+='</div></div>';h+='<div id="stickerTab" class="hidden"><div class="sg">';STICKERS.forEach(function(s){h+='<div class="si">'+s+'</div>'});h+='</div></div>';h+='<div id="animTab" class="hidden"><div class="sg-anim">';ANIM_STICKERS.forEach(function(s,i){h+='<div class="si-anim" data-anim-idx="'+i+'" title="'+es(s.name)+'"><div class="anim-sticker">'+s.svg+'</div></div>'});h+='</div></div>';p.innerHTML=h;p.querySelectorAll('.ect').forEach(function(tb){tb.addEventListener('click',function(){p.querySelectorAll('.ect').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');var tab=tb.getAttribute('data-tab');$('emojiTab').classList.toggle('hidden',tab!=='emoji');$('stickerTab').classList.toggle('hidden',tab!=='sticker');$('animTab').classList.toggle('hidden',tab!=='anim')})});p.querySelectorAll('.ecb').forEach(function(b){b.addEventListener('click',function(){p.querySelectorAll('.ecb').forEach(function(x){x.classList.remove('act')});b.classList.add('act');var idx=parseInt(b.getAttribute('data-c')),gr=$('egr'),x='';EMOJIS[cats[idx]].forEach(function(e){x+='<div class="ei">'+e+'</div>'});gr.innerHTML=x;bEC()})});p.querySelectorAll('.si').forEach(function(el){el.addEventListener('click',function(){var stk=el.textContent;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,sticker:stk});db.ref('chats/'+cRoom).update({lastText:'🎨 Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});p.querySelectorAll('.si-anim').forEach(function(el){el.addEventListener('click',function(){var idx=parseInt(el.getAttribute('data-anim-idx'));var s=ANIM_STICKERS[idx];if(!s)return;db.ref('messages/'+cRoom).push({sender:U,ts:firebase.database.ServerValue.TIMESTAMP,animSticker:s.id});db.ref('chats/'+cRoom).update({lastText:'✨ Стикер',lastTs:firebase.database.ServerValue.TIMESTAMP});cEm()})});bEC()}
 function bEC(){document.querySelectorAll('.ei').forEach(function(el){el.addEventListener('click',function(){$('mi').value+=el.textContent;$('mi').dispatchEvent(new Event('input'));uSB()})})}
 function tEm(){emO=!emO;var ep=$('epp');ep.classList.toggle('open',emO);$('ebSmile').classList.toggle('hidden',emO);$('ebKb').classList.toggle('hidden',!emO);if(emO){setTimeout(function(){ep.style.overflowY='auto'},350)}else{ep.style.overflowY='hidden'}}
 function cEm(){emO=false;var ep=$('epp');ep.classList.remove('open');ep.style.overflowY='hidden';$('ebSmile').classList.remove('hidden');$('ebKb').classList.add('hidden')}
@@ -1806,13 +1801,8 @@ document.querySelectorAll('.ib,.cb,.cb-sm,.rb-main,.ini,.lb,.att-icon').forEach(
 $('mArea').addEventListener('touchstart',function(e){var mb=e.target.closest('.mb');if(mb)mb.classList.add('tap-bounce')},{passive:true});
 $('mArea').addEventListener('touchend',function(e){var mb=e.target.closest('.mb');if(mb)setTimeout(function(){mb.classList.remove('tap-bounce')},100)});
 
-// REQ-49: Effect picker — long press on send button
-var _fxPickOpen=false,_fxPickTm=null,_pendingEffect=null;
+// fireStars effect (used by auto-trigger rules)
 function fireStars(){var c=$('fxC');c.classList.remove('hidden');c.innerHTML='';var stars=['✨','⭐','🌟','💫','✧','★'];for(var i=0;i<30;i++){var p=document.createElement('div');p.className='fx-heart';p.textContent=stars[Math.floor(Math.random()*stars.length)];p.style.left=Math.random()*100+'%';p.style.bottom='40%';p.style.animationDelay=Math.random()*1+'s';p.style.animationDuration=(1.5+Math.random()*1)+'s';p.style.fontSize=(14+Math.random()*12)+'px';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},3500)}
-var _FX_PICK_LIST=[{emoji:'🎉',fn:fireConfetti},{emoji:'❤️',fn:fireHearts},{emoji:'🎈',fn:fireBalloons},{emoji:'❄️',fn:fireSnow},{emoji:'✨',fn:fireStars}];
-function showFxPicker(){if(_fxPickOpen)return;_fxPickOpen=true;var exist=document.getElementById('fxPicker');if(exist)exist.remove();var pk=document.createElement('div');pk.className='fx-picker';pk.id='fxPicker';_FX_PICK_LIST.forEach(function(fx,i){var b=document.createElement('button');b.type='button';b.className='fx-pick-item';b.textContent=fx.emoji;b.addEventListener('click',function(e){e.stopPropagation();_pendingEffect=fx;closeFxPicker();sM()});pk.appendChild(b)});$('inb').appendChild(pk);setTimeout(function(){document.addEventListener('click',closeFxPicker,{once:true})},50)}
-function closeFxPicker(){_fxPickOpen=false;var pk=document.getElementById('fxPicker');if(pk)pk.remove()}
-(function(){var sb=$('sbb');if(!sb)return;var tm=null,moved=false;sb.addEventListener('touchstart',function(e){moved=false;tm=setTimeout(function(){tm=null;showFxPicker()},400)},{passive:true});sb.addEventListener('touchmove',function(){moved=true;if(tm)clearTimeout(tm)});sb.addEventListener('touchend',function(){if(tm){clearTimeout(tm);if(!moved){sM()}}})})();
 
 // REQ-50: Animated big reaction on double-tap
 function showBigReaction(mrEl,emoji){var mb=mrEl.querySelector('.mb');if(!mb)mb=mrEl;mb.style.position='relative';var big=document.createElement('div');big.className='react-big';big.textContent=emoji;mb.appendChild(big);if(emoji==='🔥')mb.classList.add('react-flash');else if(emoji==='😂')mb.classList.add('react-shake');setTimeout(function(){if(big.parentNode)big.parentNode.removeChild(big);mb.classList.remove('react-flash','react-shake')},700)}
