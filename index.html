@@ -10,10 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>eruda.init();</script>
 <style>
-:root{--bg:#0a0a1a;--bg2:rgba(15,12,41,.95);--bg3:rgba(255,255,255,.08);--tx:#fff;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.3);--acc:#667eea;--acc2:#764ba2;--brd:rgba(255,255,255,.06);--grn:#00b894;--red:#E85D75}
-[data-theme="light"]{--bg:#f0f2f5;--bg2:rgba(255,255,255,.95);--bg3:rgba(0,0,0,.06);--tx:#1a1a2e;--tx2:rgba(0,0,0,.5);--tx3:rgba(0,0,0,.3);--brd:rgba(0,0,0,.08);--acc:#667eea;--acc2:#764ba2;--grn:#00b894;--red:#E85D75}
-[data-theme="madmax"]{--bg:#1a1008;--bg2:rgba(40,25,10,.95);--bg3:rgba(255,150,50,.1);--tx:#f0d0a0;--tx2:rgba(240,180,100,.5);--tx3:rgba(240,180,100,.3);--brd:rgba(255,120,30,.12);--acc:#e8600a;--acc2:#b8340a;--grn:#c4a035;--red:#c43030}
-[data-theme="space"]{--bg:#06050f;--bg2:rgba(10,8,30,.95);--bg3:rgba(0,220,255,.08);--tx:#c8e0ff;--tx2:rgba(150,200,255,.5);--tx3:rgba(150,200,255,.3);--brd:rgba(0,180,255,.1);--acc:#00d4ff;--acc2:#7b2fff;--grn:#00ffa3;--red:#ff3075}
+:root{--bg:#0a0a1a;--bg2:rgba(15,12,41,.78);--bg3:rgba(255,255,255,.08);--tx:#fff;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.3);--acc:#667eea;--acc2:#764ba2;--brd:rgba(255,255,255,.08);--grn:#00b894;--red:#E85D75}
+[data-theme="light"]{--bg:#f0f2f5;--bg2:rgba(255,255,255,.78);--bg3:rgba(0,0,0,.06);--tx:#1a1a2e;--tx2:rgba(0,0,0,.5);--tx3:rgba(0,0,0,.3);--brd:rgba(0,0,0,.10);--acc:#667eea;--acc2:#764ba2;--grn:#00b894;--red:#E85D75}
+[data-theme="madmax"]{--bg:#1a1008;--bg2:rgba(40,25,10,.78);--bg3:rgba(255,150,50,.1);--tx:#f0d0a0;--tx2:rgba(240,180,100,.5);--tx3:rgba(240,180,100,.3);--brd:rgba(255,120,30,.14);--acc:#e8600a;--acc2:#b8340a;--grn:#c4a035;--red:#c43030}
+[data-theme="space"]{--bg:#06050f;--bg2:rgba(10,8,30,.78);--bg3:rgba(0,220,255,.08);--tx:#c8e0ff;--tx2:rgba(150,200,255,.5);--tx3:rgba(150,200,255,.3);--brd:rgba(0,180,255,.12);--acc:#00d4ff;--acc2:#7b2fff;--grn:#00ffa3;--red:#ff3075}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:'Roboto',sans-serif;background:#000;height:100dvh;display:flex;justify-content:center}
@@ -25,6 +25,20 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Screens */
 .scr{height:100%;display:flex;flex-direction:column;position:relative}
+/* Screen transitions */
+.scr-enter{animation:scrSlideIn .25s ease-out}
+.scr-leave{animation:scrSlideOut .2s ease-out forwards}
+@keyframes scrSlideIn{from{transform:translateX(30%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes scrSlideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(30%);opacity:0}}
+.scr-fade-in{animation:scrFadeIn .2s ease-out}
+@keyframes scrFadeIn{from{opacity:0}to{opacity:1}}
+/* Skeleton loading */
+.skel-wrap{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px}
+.skel-msg{display:flex;gap:10px;align-items:flex-end}
+.skel-msg.me{flex-direction:row-reverse}
+.skel-bubble{border-radius:14px;background:var(--bg3);height:42px;animation:skelPulse 1.2s ease-in-out infinite}
+.skel-w1{width:65%}.skel-w2{width:45%}.skel-w3{width:75%}.skel-w4{width:55%}
+@keyframes skelPulse{0%,100%{opacity:.3}50%{opacity:.6}}
 .ls{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0f0c29,#302b63,#24243e);padding:24px}
 [data-theme="madmax"] .ls{background:linear-gradient(160deg,#1a0e00,#3d1f00,#2a1200)}
 [data-theme="space"] .ls{background:linear-gradient(160deg,#03010a,#0d0630,#060218)}
@@ -414,6 +428,18 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .rb-main.send-pulse{animation:sendPulse .3s ease}
 @keyframes sendPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
+/* Effect picker popup */
+.fx-picker{position:absolute;bottom:56px;right:8px;background:var(--bg2);border:1px solid var(--brd);border-radius:14px;padding:6px;display:flex;gap:4px;z-index:25;backdrop-filter:blur(20px);animation:ca .18s ease-out}
+.fx-pick-item{width:40px;height:40px;border-radius:10px;border:none;background:none;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.fx-pick-item:active{background:var(--bg3)}
+/* Animated reaction — big emoji in center of bubble */
+.react-big{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:48px;pointer-events:none;z-index:10;animation:reactBig .6s ease-out forwards}
+@keyframes reactBig{0%{transform:translate(-50%,-50%) scale(0)}30%{transform:translate(-50%,-50%) scale(1.3)}60%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(0);opacity:0}}
+.react-shake{animation:reactShake .4s ease}
+@keyframes reactShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.react-flash{animation:reactFlash .4s ease}
+@keyframes reactFlash{0%{filter:brightness(1)}50%{filter:brightness(1.8)}100%{filter:brightness(1)}}
+
 /* QR */
 .qr-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px}
 .qr-canvas{background:#fff;border-radius:12px;padding:12px}
@@ -611,7 +637,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.33.0';
+var APP_VERSION='2.34.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -661,8 +687,11 @@ var _FX_RULES=[
   {test:function(t){return t.indexOf('🎂')!==-1||t.indexOf('с днём рождения')!==-1||t.indexOf('с днем рождения')!==-1||t.indexOf('happy birthday')!==-1},fn:fireBalloons},
   {test:function(t){return t.indexOf('🎄')!==-1||t.indexOf('с новым годом')!==-1||t.indexOf('happy new year')!==-1||t.indexOf('❄️')!==-1},fn:fireSnow}
 ];
-function checkChatEffect(key,text){
-  if(!text||!key||_fxSeen[key])return;
+function checkChatEffect(key,text,effectIdx){
+  if(!key||_fxSeen[key])return;
+  // Explicit effect from sender (effect picker)
+  if(typeof effectIdx==='number'&&effectIdx>=0&&effectIdx<_FX_PICK_LIST.length){_fxSeen[key]=true;_FX_PICK_LIST[effectIdx].fn();return}
+  if(!text)return;
   var tl=text.toLowerCase();
   for(var i=0;i<_FX_RULES.length;i++){if(_FX_RULES[i].test(tl)){_fxSeen[key]=true;_FX_RULES[i].fn();return}}
 }
@@ -871,7 +900,7 @@ function markRead(rid){readTs[rid]=Date.now();saveLocal();
 db.ref('readReceipts/'+rid+'/'+U).set(firebase.database.ServerValue.TIMESTAMP)}
 
 // Open chat
-function oC(rid){cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');searchMode=false;$('srBar').classList.add('hidden');searchQ='';threadMode=false;$('threadBar').classList.add('hidden');
+function oC(rid){cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');$('S2').classList.remove('scr-enter');void $('S2').offsetHeight;$('S2').classList.add('scr-enter');searchMode=false;$('srBar').classList.add('hidden');searchQ='';threadMode=false;$('threadBar').classList.add('hidden');
 var r=cRooms[rid];var isPriv=rid!=='general'&&r&&r.members&&r.members.length===2;
 if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden');$('vidBtn').classList.add('hidden');$('chatHdrAv').innerHTML='<div class="avatar" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>'}
 else{var others=r&&r.members?r.members.filter(function(m){return m!==U}):[];$('cht').textContent=r&&r.groupName?r.groupName:others.join(', ');$('phb').classList.toggle('hidden',!isPriv);$('vidBtn').classList.toggle('hidden',!isPriv);
@@ -884,7 +913,7 @@ cRp();cEm();cancelEdit();$('attMenu').classList.remove('open');lR(rid);lTp(rid);
 // Listen for read receipt changes (prevent duplicates)
 if(!rrList[rid]){rrList[rid]=true;db.ref('readReceipts/'+rid).on('value',function(){if(rMsgs[rid]&&cRoom===rid)checkReadReceipts(rid,rMsgs[rid])})};
 if(rMsgs[rid]){rMs(threadMode?[]:rMsgs[rid]);$('mArea').scrollTop=$('mArea').scrollHeight}
-else $('mArea').innerHTML='<div style="color:var(--tx3);font-size:13px;text-align:center;padding:20px">Загрузка...</div>';
+else $('mArea').innerHTML='<div class="skel-wrap"><div class="skel-msg"><div class="skel-bubble skel-w1"></div></div><div class="skel-msg me"><div class="skel-bubble skel-w2"></div></div><div class="skel-msg"><div class="skel-bubble skel-w3"></div></div><div class="skel-msg me"><div class="skel-bubble skel-w4"></div></div></div>';
 $('mi').focus();
 // REQ-38: восстановить черновик
 var _draft=localStorage.getItem('draft_'+rid);
@@ -898,7 +927,7 @@ if(_draftText&&cRoom)localStorage.setItem('draft_'+cRoom,_draftText);
 else if(cRoom)localStorage.removeItem('draft_'+cRoom);
 // Cleanup typing listener for current chat
 if(cRoom&&tpList[cRoom]){db.ref('typing/'+cRoom).off();tpList[cRoom]=false}
-cRoom="general";$('S2').classList.add('hidden');$('S1').classList.remove('hidden');cEm();cRp();cancelEdit();cleanupPinListener();rCL()}
+cRoom="general";$('S2').classList.add('hidden');$('S1').classList.remove('hidden');$('S1').classList.remove('scr-fade-in');void $('S1').offsetHeight;$('S1').classList.add('scr-fade-in');cEm();cRp();cancelEdit();cleanupPinListener();rCL()}
 
 // Pinned messages (multiple)
 var _pinIdx=0,_pinKeys=[],_pinMsgsCache=[],_pinListener=null,_pinListenRid=null;
@@ -1134,7 +1163,7 @@ if(m.threadCount)h+='<div class="m-thread" data-action="thread" data-key="'+m._k
 h+='</div></div></div>';ls=m.sender}
 a.innerHTML=h;
 // REQ-46: chat effects — trigger on new messages
-if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.text&&_lastM.ts&&(Date.now()-_lastM.ts<5000)){checkChatEffect(_lastM._key,_lastM.text)}}
+if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.ts&&(Date.now()-_lastM.ts<5000)&&(_lastM.text||typeof _lastM.effect==='number')){checkChatEffect(_lastM._key,_lastM.text,_lastM.effect)}}
 // REQ-48: msg-arrive animation on last message
 if(wb&&ms.length>0){var _lastEl=a.querySelector('.mr:last-child');if(_lastEl)_lastEl.classList.add('msg-arrive')}
 // REQ-23: scroll to first unread, otherwise scroll to bottom
@@ -1446,6 +1475,7 @@ if(t)m.text=t;if(img)m.image=img;if(audio){m.audio=audio;m.audioDur=audioDur}
 if(file){m.file=file;m.fileName=fileName;m.fileSize=fileSize}
 if(poll)m.poll=poll;if(loc)m.location=loc;if(disappear)m.disappear=disappear;
 if(rTo)m.replyTo={sender:rTo.sender,text:rTo.text||''};
+if(_pendingEffect){m.effect=_FX_PICK_LIST.indexOf(_pendingEffect);var _eff=_pendingEffect;_pendingEffect=null;setTimeout(function(){_eff.fn()},200)}
 if(threadMode&&threadParent){m.threadParent=threadParent;
 // Increment thread count on parent
 db.ref('messages/'+cRoom+'/'+threadParent+'/threadCount').transaction(function(c){return(c||0)+1})}
@@ -1775,6 +1805,17 @@ document.querySelectorAll('.ib,.cb,.cb-sm,.rb-main,.ini,.lb,.att-icon').forEach(
 // Tap bounce on message bubbles — delegated on mArea
 $('mArea').addEventListener('touchstart',function(e){var mb=e.target.closest('.mb');if(mb)mb.classList.add('tap-bounce')},{passive:true});
 $('mArea').addEventListener('touchend',function(e){var mb=e.target.closest('.mb');if(mb)setTimeout(function(){mb.classList.remove('tap-bounce')},100)});
+
+// REQ-49: Effect picker — long press on send button
+var _fxPickOpen=false,_fxPickTm=null,_pendingEffect=null;
+function fireStars(){var c=$('fxC');c.classList.remove('hidden');c.innerHTML='';var stars=['✨','⭐','🌟','💫','✧','★'];for(var i=0;i<30;i++){var p=document.createElement('div');p.className='fx-heart';p.textContent=stars[Math.floor(Math.random()*stars.length)];p.style.left=Math.random()*100+'%';p.style.bottom='40%';p.style.animationDelay=Math.random()*1+'s';p.style.animationDuration=(1.5+Math.random()*1)+'s';p.style.fontSize=(14+Math.random()*12)+'px';c.appendChild(p)}setTimeout(function(){c.classList.add('hidden')},3500)}
+var _FX_PICK_LIST=[{emoji:'🎉',fn:fireConfetti},{emoji:'❤️',fn:fireHearts},{emoji:'🎈',fn:fireBalloons},{emoji:'❄️',fn:fireSnow},{emoji:'✨',fn:fireStars}];
+function showFxPicker(){if(_fxPickOpen)return;_fxPickOpen=true;var exist=document.getElementById('fxPicker');if(exist)exist.remove();var pk=document.createElement('div');pk.className='fx-picker';pk.id='fxPicker';_FX_PICK_LIST.forEach(function(fx,i){var b=document.createElement('button');b.type='button';b.className='fx-pick-item';b.textContent=fx.emoji;b.addEventListener('click',function(e){e.stopPropagation();_pendingEffect=fx;closeFxPicker();sM()});pk.appendChild(b)});$('inb').appendChild(pk);setTimeout(function(){document.addEventListener('click',closeFxPicker,{once:true})},50)}
+function closeFxPicker(){_fxPickOpen=false;var pk=document.getElementById('fxPicker');if(pk)pk.remove()}
+(function(){var sb=$('sbb');if(!sb)return;var tm=null,moved=false;sb.addEventListener('touchstart',function(e){moved=false;tm=setTimeout(function(){tm=null;showFxPicker()},400)},{passive:true});sb.addEventListener('touchmove',function(){moved=true;if(tm)clearTimeout(tm)});sb.addEventListener('touchend',function(){if(tm){clearTimeout(tm);if(!moved){sM()}}})})();
+
+// REQ-50: Animated big reaction on double-tap
+function showBigReaction(mrEl,emoji){var mb=mrEl.querySelector('.mb');if(!mb)mb=mrEl;mb.style.position='relative';var big=document.createElement('div');big.className='react-big';big.textContent=emoji;mb.appendChild(big);if(emoji==='🔥')mb.classList.add('react-flash');else if(emoji==='😂')mb.classList.add('react-shake');setTimeout(function(){if(big.parentNode)big.parentNode.removeChild(big);mb.classList.remove('react-flash','react-shake')},700)}
 
 // REQ-12: Scroll-to-bottom button
 $('mArea').addEventListener('scroll',function(){var a=$('mArea'),sb=$('scrollBtn');if(a.scrollHeight-a.scrollTop-a.clientHeight>300)sb.classList.remove('hidden');else sb.classList.add('hidden')});
@@ -2268,7 +2309,7 @@ $('mArea').addEventListener('click',function(e){
   var el=e.target.closest('[data-action]');if(el)return; // skip data-action clicks
   var mb=e.target.closest('.mb');if(!mb)return;
   var k=mr.getAttribute('data-k');if(!k)return;
-  if(_dblTapKey===k&&_dblTapTimer){clearTimeout(_dblTapTimer);_dblTapTimer=null;_dblTapKey=null;tgReact(k,'❤️');return}
+  if(_dblTapKey===k&&_dblTapTimer){clearTimeout(_dblTapTimer);_dblTapTimer=null;_dblTapKey=null;tgReact(k,'❤️');showBigReaction(mr,'❤️');return}
   _dblTapKey=k;_dblTapTimer=setTimeout(function(){_dblTapTimer=null;_dblTapKey=null},300);
 });
 
@@ -2282,7 +2323,7 @@ else if(action==='transcribe'){alert('Транскрипция недоступ�
 else if(action==='playVid'){var vm=el.closest('.m-vidmsg')||el;playVidMsg(vm)}
 else if(action==='openFile'){var f=el.getAttribute('data-f');if(f&&f.startsWith('data:'))window.open(f)}
 else if(action==='openMap'){var lat=el.getAttribute('data-lat'),lng=el.getAttribute('data-lng');if(lat&&lng)window.open('https://www.google.com/maps?q='+lat+','+lng)}
-else if(action==='react'){var key=el.getAttribute('data-key'),emoji=el.getAttribute('data-emoji');if(key&&emoji)tgReact(key,emoji)}
+else if(action==='react'){var key=el.getAttribute('data-key'),emoji=el.getAttribute('data-emoji');if(key&&emoji){tgReact(key,emoji);var _mr=el.closest('.mr');if(_mr)showBigReaction(_mr,emoji)}}
 else if(action==='thread'){var key=el.getAttribute('data-key'),text=el.getAttribute('data-text');if(key)openThread(key,text)}
 else if(action==='vote'){var key=el.getAttribute('data-key'),opt=el.getAttribute('data-opt');if(key&&opt!==null)votePoll(key,parseInt(opt))}
 else if(action==='audioSpeed'){var s=AudioPlayer.cycleSpeed();el.textContent=s+'x'}
