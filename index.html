@@ -634,7 +634,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.37.3';
+var APP_VERSION='2.37.4';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -935,7 +935,8 @@ function updatePinUI(){
   var cur=_pinMsgsCache[_pinIdx];
   $('pnTitle').textContent='Закреплённое сообщение'+(count>1?' #'+(count-_pinIdx):'');
   $('pnPreview').textContent=cur?(cur.text||'📷').substr(0,60):'';
-  showSmooth('pnBar','slideDown .2s ease-out');
+  if($('pnBar').classList.contains('hidden'))showSmooth('pnBar','slideDown .2s ease-out');
+  else $('pnBar').classList.remove('hidden');
   // Индикатор сегментов
   var ind=$('pnIndicator');
   var segH=Math.max(6,Math.floor(ind.offsetHeight/count));
@@ -1585,11 +1586,13 @@ if(m.text)_oh+='<span>'+linkify(m.text)+'</span>';
 _oh+='<div class="mt mn">'+ft(Date.now())+' <span class="ck">✓</span></div>';
 _oh+='</div></div></div>';
 var _otmp=document.createElement('div');_otmp.innerHTML=_oh;var _onode=_otmp.firstChild;
-// Все DOM-мутации в одном блоке — один layout reflow
-_oa.appendChild(_onode);
+// 1) Очистить input и reply ПЕРВЫМ — layout shift ДО вставки сообщения
 rTo=null;editMsg=null;$('rpb').classList.add('hidden');
 inp.value='';uSB();autoResizeMi();
-_oa.scrollTop=_oa.scrollHeight;
+// 2) appendChild — сообщение появляется внизу (уже после resize)
+_oa.appendChild(_onode);
+// 3) Плавный скролл вниз
+_oa.scrollTo({top:_oa.scrollHeight,behavior:'smooth'});
 // Send button pulse
 var _sb=$('sendBtn');if(_sb){_sb.classList.add('send-pulse');setTimeout(function(){_sb.classList.remove('send-pulse')},300)}
 // Firebase operations — async, no DOM impact
