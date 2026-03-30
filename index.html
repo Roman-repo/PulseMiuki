@@ -634,7 +634,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.35.8';
+var APP_VERSION='2.36.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1090,7 +1090,28 @@ var _schedInt=setInterval(function(){var now=Date.now();var sent=false;var remai
 // Periodic cleanup of disappearing messages across all loaded rooms
 var _disInt=setInterval(function(){var now=Date.now();Object.keys(rMsgs).forEach(function(rid){var ms=rMsgs[rid];if(!ms)return;ms.forEach(function(m){if(m.disappear&&m.ts&&(now-m.ts>m.disappear*1000)&&m._key){db.ref('messages/'+rid+'/'+m._key).remove()}})})},10000);
 
+var _rMsLastKey='',_rMsLastLen=0;
 function rMs(ms){
+// Дедупликация: пропустить если массив не изменился
+var _newKey=ms.length>0?(ms[ms.length-1]._key||''):'';
+var _newLen=ms.length;
+if(_newKey===_rMsLastKey&&_newLen===_rMsLastLen&&_newLen>0)return;
+// Fast-path: если есть оптимистичный элемент и добавлено 1 сообщение — заменить его
+var a=$('mArea');
+var _optEl=a.querySelector('[data-opt="1"]');
+if(_optEl&&_newLen===_rMsLastLen+1&&ms.length>0){
+  var _lastMsg=ms[ms.length-1];
+  if(_lastMsg.sender===U&&_lastMsg.text){
+    _optEl.setAttribute('data-k',_lastMsg._key||'');_optEl.setAttribute('data-opt','');
+    _optEl.setAttribute('data-s',es(_lastMsg.sender));_optEl.setAttribute('data-t',es(_lastMsg.text||''));
+    var _ck=_optEl.querySelector('.ck');if(_ck)_ck.textContent='✓';
+    var _mt=_optEl.querySelector('.mt');if(_mt){var _timeHtml=ft(_lastMsg.ts||Date.now())+' <span class="ck">✓</span>';_mt.innerHTML=_timeHtml}
+    _rMsLastKey=_newKey;_rMsLastLen=_newLen;
+    if(_lastMsg.text)checkChatEffect(_lastMsg._key,_lastMsg.text);
+    return}}
+// Удалить оптимистичный элемент если есть (перед полным рендером)
+if(_optEl)_optEl.remove();
+_rMsLastKey=_newKey;_rMsLastLen=_newLen;
 var a=$('mArea'),wb=a.scrollHeight-a.scrollTop-a.clientHeight<60;
 if(ms.length===0){a.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:40px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:13px">'+(searchMode?'Не найдено':'Начните разговор!')+'</div></div>';return}
 // Get read receipts for this room
@@ -1279,7 +1300,7 @@ function enter(){
   $('selForward').addEventListener('click',doForward);
   $('selDelete').addEventListener('click',doDelete);
   $('inputBar').style.display='none';
-  rMs(rMsgs[cRoom]||[]);
+  _rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[]);
 }
 
 function exit(){
@@ -1287,7 +1308,7 @@ function exit(){
   log('exit');
   var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
   $('inputBar').style.display='';
-  rMs(rMsgs[cRoom]||[]);
+  _rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[]);
   // No need to re-bind header buttons — delegated handler on chatHdr survives innerHTML
 }
 
@@ -1429,7 +1450,7 @@ $('threadBar').classList.remove('hidden');$('threadTxt').textContent=text||'📷
 // Show only thread messages
 var msgs=(rMsgs[cRoom]||[]).filter(function(m){return m.threadParent===parentKey});
 rMs(msgs)};
-$('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
+$('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])});
 
 // Reply/Edit
 function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent=s;$('rpt').textContent=t||'📷';showSmooth('rpb','slideUp .2s ease-out');$('mi').focus()}
@@ -1474,6 +1495,17 @@ if(threadMode&&threadParent){m.threadParent=threadParent;
 db.ref('messages/'+cRoom+'/'+threadParent+'/threadCount').transaction(function(c){return(c||0)+1})}
 cRp();
 db.ref('messages/'+cRoom).push(m);
+// Оптимистичный рендер — мгновенно показываем сообщение без ожидания Firebase
+var _oa=$('mArea');
+var _oh='<div class="mr me gt msg-arrive" data-opt="1"><div class="mac"></div><div class="mc">';
+if(m.replyTo)_oh+='<div class="mq"><div class="mqn">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
+_oh+='<div class="mb mn">';
+if(m.image)_oh+='<div class="m-img-wrap"><img class="mi" src="'+m.image+'"></div>';
+if(m.text)_oh+='<span>'+linkify(m.text)+'</span>';
+_oh+='<div class="mt mn">'+ft(Date.now())+' <span class="ck">✓</span></div>';
+_oh+='</div></div></div>';
+var _otmp=document.createElement('div');_otmp.innerHTML=_oh;var _onode=_otmp.firstChild;
+_oa.appendChild(_onode);_oa.scrollTop=_oa.scrollHeight;
 // Send button pulse
 var _sb=$('sendBtn');if(_sb){_sb.classList.add('send-pulse');setTimeout(function(){_sb.classList.remove('send-pulse')},300)}
 var mt={lastText:t||(img?'📷':audio?'🎤':file?'📄':poll?'📊':loc?'📍':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
@@ -1816,7 +1848,7 @@ var btn=e.target.closest('#cbb,#schBtn,#phb,#vidBtn');
 if(btn){
   var id=btn.id;
   if(id==='cbb')goB();
-  else if(id==='schBtn'){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';rMs(rMsgs[cRoom]||[])}}
+  else if(id==='schBtn'){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])}}
   else if(id==='phb'){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,false)}
   else if(id==='vidBtn'){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,true)}
   return;
@@ -1828,8 +1860,8 @@ if(e.target.closest('#cht,#chs2,.hdr-t,.hdr-s')){
   if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(oth)showUserProfile(oth)}
 }
 });
-$('srIn').addEventListener('input',function(){searchQ=$('srIn').value;rMs(filterMs(rMsgs[cRoom]||[]))});
-$('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');rMs(rMsgs[cRoom]||[])});
+$('srIn').addEventListener('input',function(){searchQ=$('srIn').value;_rMsLastKey='';_rMsLastLen=0;rMs(filterMs(rMsgs[cRoom]||[]))});
+$('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])});
 // REQ-42: Поиск по дате
 $('srDateBtn').addEventListener('click',function(){$('srDatePick').showPicker?$('srDatePick').showPicker():$('srDatePick').click()});
 $('srDatePick').addEventListener('change',function(){
