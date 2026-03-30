@@ -634,7 +634,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.37.5';
+var APP_VERSION='2.38.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1156,6 +1156,7 @@ el.addEventListener('touchend',function(e){
   if(tm){clearTimeout(tm);if(!moved){
     if(startTgt&&startTgt.closest('[data-action]'))return;
     if(startTgt&&(startTgt.closest('a')||startTgt.tagName==='A'))return;
+    if(startTgt&&startTgt.closest('.m-audio-play,.m-audio-speed,.m-audio-trans,.m-vidmsg'))return;
     if(SelectManager.isActive()){var k=el.getAttribute('data-k');if(k)SelectManager.toggle(k)}
     else{sRC({touches:[{clientX:startX,clientY:startY}]},el)}
   }}startTgt=null;
@@ -1295,12 +1296,13 @@ var _newKey=ms.length>0?(ms[ms.length-1]._key||''):'';
 var _newLen=ms.length;
 if(_newKey===_rMsLastKey&&_newLen===_rMsLastLen&&_newLen>0&&!ms._forceRender)return;
 if(ms._forceRender)delete ms._forceRender;
-// Fast-path: оптимистичный элемент есть и ключ изменился (наше сообщение пришло)
+// Fast-path: оптимистичный элемент есть и ключ изменился (наше текстовое сообщение пришло)
 var a=$('mArea');
 var _optEl=a.querySelector('[data-opt="1"]');
 if(_optEl&&_newKey!==_rMsLastKey&&ms.length>0){
   var _lastMsg=ms[ms.length-1];
-  if(_lastMsg.sender===U){
+  // Fast-path только для текстовых — аудио/файлы/стикеры нуждаются в полном рендере
+  if(_lastMsg.sender===U&&_lastMsg.text&&!_lastMsg.audio&&!_lastMsg.image&&!_lastMsg.file&&!_lastMsg.vidMsg&&!_lastMsg.sticker&&!_lastMsg.animSticker&&!_lastMsg.poll&&!_lastMsg.location){
     _optEl.setAttribute('data-k',_lastMsg._key||'');_optEl.setAttribute('data-opt','');
     _optEl.setAttribute('data-s',es(_lastMsg.sender));_optEl.setAttribute('data-t',es(_lastMsg.text||''));
     var _ck=_optEl.querySelector('.ck');if(_ck)_ck.textContent='✓';
@@ -1308,7 +1310,9 @@ if(_optEl&&_newKey!==_rMsLastKey&&ms.length>0){
     _rMsLastKey=_newKey;_rMsLastLen=_newLen;
     RenderManager.bindEl(_optEl);
     if(_lastMsg.text)checkChatEffect(_lastMsg._key,_lastMsg.text);
-    return}}
+    return}
+  // Не текстовое — убрать оптимистичный элемент, полный рендер
+  _optEl.remove();}
 _rMsLastKey=_newKey;_rMsLastLen=_newLen;
 RenderManager.render(ms);
 }
@@ -1840,7 +1844,6 @@ function end(){
   pressStart=0;isHolding=false;
 }
 function send(){
-  log('send() called, active='+active()+' mode='+mode+' audioIsRec='+audioIsRec+' audioRec.state='+(audioRec?audioRec.state:'null'));
   if(active()){if(mode==='audio')stopAudio();else stopVideo()}
 }
 function cancel(){
@@ -1857,7 +1860,6 @@ function init(){
   // Touch
   $('recMainBtn').addEventListener('touchstart',function(e){
     e.preventDefault();
-    log('recMainBtn touchstart, active='+active()+' isHolding='+isHolding);
     if(active()){send();return}
     begin();
   },{passive:false});
