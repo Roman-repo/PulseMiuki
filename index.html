@@ -634,7 +634,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.36.1';
+var APP_VERSION='2.37.3';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -1090,143 +1090,226 @@ var _schedInt=setInterval(function(){var now=Date.now();var sent=false;var remai
 // Periodic cleanup of disappearing messages across all loaded rooms
 var _disInt=setInterval(function(){var now=Date.now();Object.keys(rMsgs).forEach(function(rid){var ms=rMsgs[rid];if(!ms)return;ms.forEach(function(m){if(m.disappear&&m.ts&&(now-m.ts>m.disappear*1000)&&m._key){db.ref('messages/'+rid+'/'+m._key).remove()}})})},10000);
 
-var _rMsLastKey='',_rMsLastLen=0;
-function rMs(ms){
-// Дедупликация: пропустить если массив не изменился
-var _newKey=ms.length>0?(ms[ms.length-1]._key||''):'';
-var _newLen=ms.length;
-if(_newKey===_rMsLastKey&&_newLen===_rMsLastLen&&_newLen>0)return;
-// Fast-path: если есть оптимистичный элемент и добавлено 1 сообщение — заменить его
-var a=$('mArea');
-var _optEl=a.querySelector('[data-opt="1"]');
-if(_optEl&&_newLen===_rMsLastLen+1&&ms.length>0){
-  var _lastMsg=ms[ms.length-1];
-  if(_lastMsg.sender===U&&_lastMsg.text){
-    _optEl.setAttribute('data-k',_lastMsg._key||'');_optEl.setAttribute('data-opt','');
-    _optEl.setAttribute('data-s',es(_lastMsg.sender));_optEl.setAttribute('data-t',es(_lastMsg.text||''));
-    var _ck=_optEl.querySelector('.ck');if(_ck)_ck.textContent='✓';
-    var _mt=_optEl.querySelector('.mt');if(_mt){var _timeHtml=ft(_lastMsg.ts||Date.now())+' <span class="ck">✓</span>';_mt.innerHTML=_timeHtml}
-    _rMsLastKey=_newKey;_rMsLastLen=_newLen;
-    if(_lastMsg.text)checkChatEffect(_lastMsg._key,_lastMsg.text);
-    return}}
-// Удалить оптимистичный элемент если есть (перед полным рендером)
-if(_optEl)_optEl.remove();
-_rMsLastKey=_newKey;_rMsLastLen=_newLen;
-var a=$('mArea'),wb=a.scrollHeight-a.scrollTop-a.clientHeight<60;
-if(ms.length===0){a.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:40px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:13px">'+(searchMode?'Не найдено':'Начните разговор!')+'</div></div>';return}
-// Get read receipts for this room
-var readData={};
-var _cr=cRooms[cRoom];var _isPrivChat=cRoom!=='general'&&_cr&&_cr.members&&_cr.members.length===2;
-var h='',ld='',ls='',_unreadShown=false,_myRdTs=readTs[cRoom]||0;
-for(var _i=0;_i<ms.length;_i++){var m=ms[_i];
-// REQ-23: разделитель непрочитанных
-if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){h+='<div class="dd" id="unreadDiv"><span class="sys-unread">Непрочитанные сообщения</span></div>';_unreadShown=true}
-var d=fd(m.ts);if(d!==ld){h+='<div class="dd"><span>'+d+'</span></div>';ld=d;ls=''}
-// REQ-5+6: системные сообщения (звонки, пропущенные)
+// ============ RenderManager — DOM-diff message rendering ============
+var RenderManager=(function(){
+var _lastKeys=[]; // ordered array of data-k in current DOM
+var _bgBound=false; // background long press bound once
+
+function log(msg){console.log('[RenderManager] '+msg)}
+
+// Build HTML for one message row (date dividers handled separately)
+function buildMsgHTML(m,ls,isPrivChat){
+var me=m.sender===U,sa=m.sender!==ls;
 if(m.system){
-  var _callIcon=m.callVideo?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
-  var _dirIcon=m.callDir==='out'?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00b894" stroke-width="3"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>':'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+(m.missed?'#e74c3c':'#00b894')+'" stroke-width="3"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>';
-  h+='<div class="mr me"><div class="mac"></div><div class="mc"><div class="mb mn call-bubble'+(m.missed?' call-missed':'')+'"><div class="call-bubble-row"><div class="call-bubble-info"><div class="call-bubble-title">'+es(m.text)+'</div><div class="call-bubble-meta">'+_dirIcon+' '+ft(m.ts)+'</div></div><div class="call-bubble-icon">'+_callIcon+'</div></div></div></div></div>';
-  ls='';continue}
-// REQ-8: sticker — крупный эмодзи без пузыря
+  var ci=m.callVideo?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.11 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  var di=m.callDir==='out'?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00b894" stroke-width="3"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>':'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+(m.missed?'#e74c3c':'#00b894')+'" stroke-width="3"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>';
+  return '<div class="mr me" data-k="'+(m._key||'')+'"><div class="mac"></div><div class="mc"><div class="mb mn call-bubble'+(m.missed?' call-missed':'')+'"><div class="call-bubble-row"><div class="call-bubble-info"><div class="call-bubble-title">'+es(m.text)+'</div><div class="call-bubble-meta">'+di+' '+ft(m.ts)+'</div></div><div class="call-bubble-icon">'+ci+'</div></div></div></div></div>'}
 if(m.sticker){
-  var me=m.sender===U,sa=m.sender!==ls;
-  h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
-  h+='<div class="mac"></div>';
-  h+='<div class="mc">';if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+  var h='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
+  h+='<div class="mac"></div><div class="mc">';if(!me&&sa&&!isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="m-sticker">'+m.sticker+'</div>';
-  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
-// REQ-46: animated SVG sticker
+  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';return h}
 if(m.animSticker){
-  var me=m.sender===U,sa=m.sender!==ls;
   var _as=null;for(var _ai=0;_ai<ANIM_STICKERS.length;_ai++){if(ANIM_STICKERS[_ai].id===m.animSticker){_as=ANIM_STICKERS[_ai];break}}
-  h+='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
-  h+='<div class="mac"></div>';
-  h+='<div class="mc">';if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+  var h='<div class="mr'+(me?' me':'')+(sa?' gt':'')+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="">';
+  h+='<div class="mac"></div><div class="mc">';if(!me&&sa&&!isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
   h+='<div class="anim-sticker">'+(_as?_as.svg:'❓')+'</div>';
-  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';ls=m.sender;continue}
-var me=m.sender===U,sa=m.sender!==ls,g=sa?' gt':'';
+  h+='<div class="mt '+(me?'mn':'ot')+'">'+ft(m.ts||Date.now())+'</div></div></div>';return h}
+var g=sa?' gt':'';
 var cls='mr'+(me?' me':'')+g+(m.disappear?' m-disappear':'')+(m.scheduled?' m-sched':'')+(SelectManager.isActive()?' selectable':'');
-h+='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
+var h='<div class="'+cls+'" data-k="'+(m._key||'')+'" data-s="'+es(m.sender)+'" data-t="'+es(m.text||'')+'">';
 if(SelectManager.isActive())h+='<div class="sel-cb'+(SelectManager.isSelected(m._key)?' checked':'')+'" data-k="'+(m._key||'')+'"></div>';
-h+='<div class="mac">';
-h+='</div><div class="mc">';
-if(!me&&sa&&!_isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
+h+='<div class="mac"></div><div class="mc">';
+if(!me&&sa&&!isPrivChat)h+='<div class="ms" style="color:'+hc(m.sender)+'">'+es(m.sender)+'</div>';
 if(m.forwarded)h+='<div class="m-fwd">↪ Переслано от '+es(m.forwarded)+'</div>';
 h+='<div class="mb '+(me?'mn':'ot')+(m.audio?' voice-msg':'')+(m.image&&!m.text&&!m.audio&&!m.file?' img-only':'')+'">';
 if(m.replyTo)h+='<div class="mq" data-action="scrollToReply" data-rs="'+es(m.replyTo.sender)+'" data-rt="'+es(m.replyTo.text||'')+'"><div class="mqn">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
-if(m.image){var _imgOnly=!m.text&&!m.audio&&!m.file&&!m.poll&&!m.location&&!m.vidMsg;h+='<div class="m-img-wrap" data-action="viewImg"><img class="mi" src="'+m.image+'">'+(_imgOnly?'<div class="m-img-time">'+ft(m.ts||Date.now())+(me?' <span class="ck'+(m._read===2?' read':'')+'">'+(m._read>=1?'✓✓':'✓')+'</span>':'')+'</div>':'')+'</div>';}
-if(m.audio){
-var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));
-var waveBars='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);waveBars+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}
-h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+waveBars+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-speed" data-action="audioSpeed">1x</button><button class="m-audio-trans" data-action="transcribe">→A</button></div>';}
+if(m.image){var io=!m.text&&!m.audio&&!m.file&&!m.poll&&!m.location&&!m.vidMsg;h+='<div class="m-img-wrap" data-action="viewImg"><img class="mi" src="'+m.image+'">'+(io?'<div class="m-img-time">'+ft(m.ts||Date.now())+(me?' <span class="ck'+(m._read===2?' read':'')+'">'+(m._read>=1?'✓✓':'✓')+'</span>':'')+'</div>':'')+'</div>';}
+if(m.audio){var aId='aud_'+(m._key||Math.random().toString(36).substr(2,6));var wb2='';for(var wi=0;wi<28;wi++){var wh=4+Math.floor(Math.random()*18);wb2+='<div class="m-audio-wave-bar" style="height:'+wh+'px"></div>'}h+='<div class="m-audio" id="'+aId+'" data-src="'+m.audio+'"><button class="m-audio-play" data-aid="'+aId+'"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21"/></svg></button><div class="m-audio-body"><div class="m-audio-wave">'+wb2+'</div><div class="m-audio-dur">'+(m.audioDur||'0:00')+'<span class="m-audio-unread"></span></div></div><button class="m-audio-speed" data-action="audioSpeed">1x</button><button class="m-audio-trans" data-action="transcribe">→A</button></div>';}
 if(m.vidMsg)h+='<div class="m-vidmsg" data-action="playVid"><video src="'+m.vidMsg+'" playsinline loop></video><div class="m-vidmsg-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21"/></svg></div>'+(m.vidDur?'<div class="m-vidmsg-dur">'+m.vidDur+'</div>':'')+'</div>';
 if(m.file)h+='<div class="m-file" data-action="openFile" data-f="'+es(m.file)+'"><div class="m-file-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="m-file-name">'+es(m.fileName||'Файл')+'</div><div class="m-file-size">'+(m.fileSize||'')+'</div></div></div>';
 if(m.poll)h+=renderPoll(m);
 if(m.location)h+='<div class="m-loc" data-action="openMap" data-lat="'+m.location.lat+'" data-lng="'+m.location.lng+'" style="background:var(--bg3);padding:12px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="color:var(--acc)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div style="font-weight:600;font-size:13px;color:var(--tx)">Геолокация</div><div style="font-size:11px;color:var(--tx3)">'+m.location.lat.toFixed(5)+', '+m.location.lng.toFixed(5)+'</div><div style="font-size:11px;color:var(--acc)">Открыть в Google Maps</div></div></div>';
 if(m.text){var _txt=m.text;if(_txt.length>300){h+='<span class="m-text-short">'+linkify(_txt.substr(0,300))+'<span class="m-readmore" data-action="readmore">... Читать далее</span></span><span class="m-text-full hidden">'+linkify(_txt)+'<span class="m-readless" data-action="readless"> Свернуть</span></span>'}else{h+='<span>'+linkify(_txt)+'</span>'}}
-// REQ-16: ОТМЕНЕНО — время на каждом сообщении
 var _imgOnly=m.image&&!m.text&&!m.audio&&!m.file&&!m.poll&&!m.location&&!m.vidMsg;
-var _showTime=true;
-if(_imgOnly)_showTime=false; // время уже на картинке
-if(_showTime){var _msgPinned=_pinKeys.indexOf(m._key)!==-1;var _isGrp=!_isPrivChat;h+='<div class="mt '+(me?'mn':'ot')+'">'+(m.edited?'<span class="med">изменено</span> ':'')+(_msgPinned?'<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="opacity:.6;margin-right:2px;vertical-align:middle"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z"/></svg>':'')+ft(m.ts||Date.now());
+var _showTime=!_imgOnly;
+if(_showTime){var _msgPinned=_pinKeys.indexOf(m._key)!==-1;var _isGrp=!isPrivChat;h+='<div class="mt '+(me?'mn':'ot')+'">'+(m.edited?'<span class="med">изменено</span> ':'')+(_msgPinned?'<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="opacity:.6;margin-right:2px;vertical-align:middle"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z"/></svg>':'')+ft(m.ts||Date.now());
 if(me)h+=' <span class="ck'+(m._read===2?' read':'')+'"'+(_isGrp?' data-action="showReaders" data-key="'+m._key+'" data-ts="'+m.ts+'" style="cursor:pointer"':'')+'>'+(m._read>=1?'✓✓':'✓')+'</span>';
 h+='</div>';}else if(me&&!_imgOnly){h+='<div class="mt mn" style="font-size:0"><span class="ck'+(m._read===2?' read':'')+'" style="font-size:12px">'+(m._read>=1?'✓✓':'✓')+'</span></div>';}
-if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forEach(function(r){if(!rc[r.emoji])rc[r.emoji]={c:0};rc[r.emoji].c++});
-Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" data-action="react" data-key="'+m._key+'" data-emoji="'+e+'">'+e+'<span class="cnt">'+rc[e].c+'</span></div>'});h+='</div>'}
+if(m.reactions){h+='<div class="mrc">';var rc={};Object.values(m.reactions).forEach(function(r){if(!rc[r.emoji])rc[r.emoji]={c:0};rc[r.emoji].c++});Object.keys(rc).forEach(function(e){h+='<div class="mrc-i" data-action="react" data-key="'+m._key+'" data-emoji="'+e+'">'+e+'<span class="cnt">'+rc[e].c+'</span></div>'});h+='</div>'}
 if(m.threadCount)h+='<div class="m-thread" data-action="thread" data-key="'+m._key+'" data-text="'+es(m.text||'')+'">💬 '+m.threadCount+' '+plural(m.threadCount,'ответ','ответа','ответов')+'</div>';
-h+='</div></div></div>';ls=m.sender}
-var _tmp=document.createElement('div');_tmp.innerHTML=h;a.replaceChildren.apply(a,Array.from(_tmp.childNodes));
-// REQ-46: chat effects — trigger on new messages
-if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.text&&_lastM.ts&&(Date.now()-_lastM.ts<5000)){checkChatEffect(_lastM._key,_lastM.text)}}
-// REQ-48: msg-arrive animation on last message
-if(wb&&ms.length>0){var _lastEl=a.querySelector('.mr:last-child');if(_lastEl)_lastEl.classList.add('msg-arrive')}
-// REQ-23: scroll to first unread, otherwise scroll to bottom
-var _ud=$('unreadDiv');if(_ud&&!wb){_ud.scrollIntoView({behavior:'smooth',block:'center'})}
-else if(wb)a.scrollTop=a.scrollHeight;
-// Bind audio play/pause buttons
-a.querySelectorAll('.m-audio-play').forEach(function(btn){
-btn.addEventListener('click',function(e){e.stopPropagation();playA(btn)})
-});
-// REQ-36: short tap → context menu, long press → select mode
-a.querySelectorAll('.mr').forEach(function(el){var tm,moved=false,startX=0,startY=0,startTgt=null;
+h+='</div></div></div>';return h}
+
+// Bind touch/audio events on a single .mr element
+function bindEl(el){
+if(el.dataset._bound)return;el.dataset._bound='1';
+var tm,moved=false,startX=0,startY=0,startTgt=null;
 el.addEventListener('touchstart',function(e){
   moved=false;startTgt=e.target;
   startX=e.touches[0].clientX;startY=e.touches[0].clientY;
   var k=el.getAttribute('data-k');
-  tm=setTimeout(function(){
-    tm=null;
-    if(!SelectManager.isActive()){
-      try{navigator.vibrate&&navigator.vibrate(30)}catch(ex){}
-      SelectManager.enter();
-      if(k)SelectManager.toggle(k);
-    }
-  },500);
+  tm=setTimeout(function(){tm=null;if(!SelectManager.isActive()){try{navigator.vibrate&&navigator.vibrate(30)}catch(ex){}SelectManager.enter();if(k)SelectManager.toggle(k)}},500);
 },{passive:true});
 el.addEventListener('touchmove',function(){moved=true;clearTimeout(tm)});
 el.addEventListener('touchend',function(e){
-  if(tm){clearTimeout(tm);
-    if(!moved){
-      // Skip if tapped on data-action element (quote, readmore, audio, link etc)
-      if(startTgt&&startTgt.closest('[data-action]'))return;
-      if(startTgt&&(startTgt.closest('a')||startTgt.tagName==='A'))return;
-      if(SelectManager.isActive()){var k=el.getAttribute('data-k');if(k)SelectManager.toggle(k)}
-      else{sRC({touches:[{clientX:startX,clientY:startY}]},el)}
-    }
-  }
-  startTgt=null;
+  if(tm){clearTimeout(tm);if(!moved){
+    if(startTgt&&startTgt.closest('[data-action]'))return;
+    if(startTgt&&(startTgt.closest('a')||startTgt.tagName==='A'))return;
+    if(SelectManager.isActive()){var k=el.getAttribute('data-k');if(k)SelectManager.toggle(k)}
+    else{sRC({touches:[{clientX:startX,clientY:startY}]},el)}
+  }}startTgt=null;
 });
-el.addEventListener('contextmenu',function(e){e.preventDefault()})});
-// Long press on mArea background (empty space, no message)
+el.addEventListener('contextmenu',function(e){e.preventDefault()});
+// Audio buttons inside this element
+el.querySelectorAll('.m-audio-play').forEach(function(btn){
+  btn.addEventListener('click',function(e){e.stopPropagation();playA(btn)})});
+}
+
+// Bind background long press on mArea (once)
+function bindBg(a){
+if(_bgBound)return;_bgBound=true;
 var bgTm;
 a.addEventListener('touchstart',function(e){
-  // Only if touch is directly on mArea (not on a .mr child)
-  if(e.target===a||e.target.classList.contains('dd')){
-    bgTm=setTimeout(function(){if(!SelectManager.isActive())SelectManager.enter()},1000);
-  }
+  if(e.target===a||e.target.classList.contains('dd')){bgTm=setTimeout(function(){if(!SelectManager.isActive())SelectManager.enter()},1000)}
 },{passive:true});
 a.addEventListener('touchend',function(){clearTimeout(bgTm)});
 a.addEventListener('touchmove',function(){clearTimeout(bgTm)});
+}
+
+// Patch existing DOM node — update selectable state, checkmarks
+function patchEl(el,m){
+var me=m.sender===U;
+var k=m._key||'';
+// Selectable class
+var hasSel=el.classList.contains('selectable');
+var needSel=SelectManager.isActive();
+if(needSel&&!hasSel)el.classList.add('selectable');
+if(!needSel&&hasSel)el.classList.remove('selectable');
+// Checkbox
+var cb=el.querySelector('.sel-cb');
+if(needSel&&!cb){var nd=document.createElement('div');nd.className='sel-cb'+(SelectManager.isSelected(k)?' checked':'');nd.setAttribute('data-k',k);el.insertBefore(nd,el.firstChild)}
+else if(!needSel&&cb){cb.remove()}
+else if(needSel&&cb){cb.classList.toggle('checked',SelectManager.isSelected(k))}
+// Checkmarks (read receipts)
+if(me&&!m.system){var ck=el.querySelector('.ck');if(ck){var newV=m._read>=1?'✓✓':'✓';if(ck.textContent!==newV)ck.textContent=newV;ck.classList.toggle('read',m._read===2)}}
+// Pin icon
+var mt=el.querySelector('.mt');
+if(mt){var hasPinSvg=mt.querySelector('svg');var isPinned=_pinKeys.indexOf(k)!==-1;
+if(isPinned&&!hasPinSvg){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('width','10');s.setAttribute('height','10');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('fill','currentColor');s.setAttribute('stroke','none');s.style.cssText='opacity:.6;margin-right:2px;vertical-align:middle';var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2z');s.appendChild(p);mt.insertBefore(s,mt.firstChild)}
+else if(!isPinned&&hasPinSvg){hasPinSvg.remove()}}
+}
+
+// Create DOM element from HTML string
+function htmlToEl(html){var t=document.createElement('div');t.innerHTML=html;return t.firstChild}
+
+// Main render with DOM diff
+function render(ms){
+var a=$('mArea');
+bindBg(a);
+// Remove optimistic element if present
+var optEl=a.querySelector('[data-opt="1"]');if(optEl)optEl.remove();
+var wb=a.scrollHeight-a.scrollTop-a.clientHeight<60;
+if(ms.length===0){a.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:40px;opacity:.3">'+(searchMode?'🔍':'💬')+'</div><div style="color:var(--tx3);font-size:13px">'+(searchMode?'Не найдено':'Начните разговор!')+'</div></div>';_lastKeys=[];return}
+
+var _cr=cRooms[cRoom];var isPrivChat=cRoom!=='general'&&_cr&&_cr.members&&_cr.members.length===2;
+
+// Build target list: [{type:'dd',id:'dd_date',html:...},{type:'mr',key:...,msg:...,html:...}]
+var targets=[];var ld='',ls='',_unreadShown=false,_myRdTs=readTs[cRoom]||0;
+for(var i=0;i<ms.length;i++){var m=ms[i];
+  if(!_unreadShown&&m.sender!==U&&m.ts&&m.ts>_myRdTs&&_myRdTs>0){
+    targets.push({type:'dd',id:'unreadDiv',html:'<div class="dd" id="unreadDiv"><span class="sys-unread">Непрочитанные сообщения</span></div>'});_unreadShown=true}
+  var d=fd(m.ts);if(d!==ld){targets.push({type:'dd',id:'dd_'+d,html:'<div class="dd"><span>'+d+'</span></div>'});ld=d;ls=''}
+  var mhtml=buildMsgHTML(m,ls,isPrivChat);
+  targets.push({type:'mr',key:m._key||'',msg:m,html:mhtml});
+  ls=m.sender}
+
+// Build map of existing DOM elements by key
+var existMap={};
+var children=a.children;
+for(var c=0;c<children.length;c++){
+  var ch=children[c];
+  var ek=ch.getAttribute('data-k');
+  if(ek)existMap[ek]=ch;
+  else{var eid=ch.id;if(eid)existMap['__id_'+eid]=ch;
+  else{var dd=ch.classList.contains('dd');if(dd){var sp=ch.querySelector('span');if(sp)existMap['__dd_'+sp.textContent]=ch}}}}
+
+// Build new key list for tracking
+var newKeys=targets.map(function(t){return t.type==='mr'?t.key:(t.id||'')});
+var newKeySet={};targets.forEach(function(t){var tk=t.type==='mr'?t.key:('__id_'+(t.id||''));newKeySet[tk]=true});
+
+// Diff: walk targets in order, reuse or create
+var frag=document.createDocumentFragment();
+var reused=0,created=0;
+for(var ti=0;ti<targets.length;ti++){
+  var t=targets[ti];
+  if(t.type==='mr'&&t.key){
+    var existing=existMap[t.key];
+    if(existing){
+      // Reuse: patch in place
+      patchEl(existing,t.msg);
+      frag.appendChild(existing);
+      reused++;
+    }else{
+      // Create new
+      var nel=htmlToEl(t.html);
+      if(nel){bindEl(nel);frag.appendChild(nel);created++}
+    }
+  }else{
+    // Date divider or unread divider
+    var dk=t.id?('__id_'+t.id):null;
+    var dex=dk?existMap[dk]:null;
+    if(dex){frag.appendChild(dex)}
+    else{var del=htmlToEl(t.html);if(del)frag.appendChild(del)}
+  }
+}
+
+// Single atomic DOM swap — сохранить scroll, очистить orphans, вставить frag
+var savedST=a.scrollTop;
+while(a.firstChild)a.removeChild(a.firstChild);
+a.appendChild(frag);
+a.scrollTop=savedST;
+
+// Scroll logic
+var _ud=$('unreadDiv');if(_ud&&!wb){_ud.scrollIntoView({behavior:'smooth',block:'center'})}
+else if(wb)a.scrollTop=a.scrollHeight;
+
+// Chat effects
+if(ms.length>0){var _lastM=ms[ms.length-1];if(_lastM&&_lastM._key&&_lastM.text&&_lastM.ts&&(Date.now()-_lastM.ts<5000)){checkChatEffect(_lastM._key,_lastM.text)}}
+// Msg arrive animation
+if(wb&&ms.length>0){var _lastEl=a.querySelector('.mr:last-child');if(_lastEl&&created>0)_lastEl.classList.add('msg-arrive')}
+
+_lastKeys=newKeys;
+}
+
+// Reset (for room switch)
+function reset(){_lastKeys=[];_bgBound=false}
+
+return{render:render,reset:reset,bindEl:bindEl};
+})();
+
+// rMs wrapper — delegates to RenderManager
+var _rMsLastKey='',_rMsLastLen=0;
+function rMs(ms){
+var _newKey=ms.length>0?(ms[ms.length-1]._key||''):'';
+var _newLen=ms.length;
+if(_newKey===_rMsLastKey&&_newLen===_rMsLastLen&&_newLen>0&&!ms._forceRender)return;
+if(ms._forceRender)delete ms._forceRender;
+// Fast-path: оптимистичный элемент есть и ключ изменился (наше сообщение пришло)
+var a=$('mArea');
+var _optEl=a.querySelector('[data-opt="1"]');
+if(_optEl&&_newKey!==_rMsLastKey&&ms.length>0){
+  var _lastMsg=ms[ms.length-1];
+  if(_lastMsg.sender===U){
+    _optEl.setAttribute('data-k',_lastMsg._key||'');_optEl.setAttribute('data-opt','');
+    _optEl.setAttribute('data-s',es(_lastMsg.sender));_optEl.setAttribute('data-t',es(_lastMsg.text||''));
+    var _ck=_optEl.querySelector('.ck');if(_ck)_ck.textContent='✓';
+    var _mt=_optEl.querySelector('.mt');if(_mt){_mt.innerHTML=ft(_lastMsg.ts||Date.now())+' <span class="ck">✓</span>'}
+    _rMsLastKey=_newKey;_rMsLastLen=_newLen;
+    RenderManager.bindEl(_optEl);
+    if(_lastMsg.text)checkChatEffect(_lastMsg._key,_lastMsg.text);
+    return}}
+_rMsLastKey=_newKey;_rMsLastLen=_newLen;
+RenderManager.render(ms);
 }
 // Read receipts - check
 function checkReadReceipts(rid,msgs){
@@ -1300,7 +1383,7 @@ function enter(){
   $('selForward').addEventListener('click',doForward);
   $('selDelete').addEventListener('click',doDelete);
   $('inputBar').style.display='none';
-  _rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[]);
+  var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms);
 }
 
 function exit(){
@@ -1308,7 +1391,7 @@ function exit(){
   log('exit');
   var hdr=$('chatHdr');if(hdr._origHTML)hdr.innerHTML=hdr._origHTML;
   $('inputBar').style.display='';
-  _rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[]);
+  var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms);
   // No need to re-bind header buttons — delegated handler on chatHdr survives innerHTML
 }
 
@@ -1450,7 +1533,7 @@ $('threadBar').classList.remove('hidden');$('threadTxt').textContent=text||'📷
 // Show only thread messages
 var msgs=(rMsgs[cRoom]||[]).filter(function(m){return m.threadParent===parentKey});
 rMs(msgs)};
-$('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])});
+$('threadCl').addEventListener('click',function(){threadMode=false;threadParent=null;$('threadBar').classList.add('hidden');var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms)});
 
 // Reply/Edit
 function sRp(s,t){rTo={sender:s,text:t};editMsg=null;$('rpn').textContent=s;$('rpt').textContent=t||'📷';showSmooth('rpb','slideUp .2s ease-out');$('mi').focus()}
@@ -1484,18 +1567,15 @@ function cancelEdit(){
 function sM(img,audio,audioDur,file,fileName,fileSize,poll,loc,disappear){
 var inp=$('mi'),t=inp.value.trim();
 if(editMsg){var et=$('editTa').value.trim();if(et){db.ref('messages/'+cRoom+'/'+editMsg).update({text:et,edited:true})}cancelEdit();return}
-if(!t&&!img&&!audio&&!file&&!poll&&!loc)return;inp.value='';uSB();autoResizeMi();
+if(!t&&!img&&!audio&&!file&&!poll&&!loc)return;
 var m={sender:U,ts:firebase.database.ServerValue.TIMESTAMP};
 if(t)m.text=t;if(img)m.image=img;if(audio){m.audio=audio;m.audioDur=audioDur}
 if(file){m.file=file;m.fileName=fileName;m.fileSize=fileSize}
 if(poll)m.poll=poll;if(loc)m.location=loc;if(disappear)m.disappear=disappear;
 if(rTo)m.replyTo={sender:rTo.sender,text:rTo.text||''};
 if(threadMode&&threadParent){m.threadParent=threadParent;
-// Increment thread count on parent
 db.ref('messages/'+cRoom+'/'+threadParent+'/threadCount').transaction(function(c){return(c||0)+1})}
-cRp();
-db.ref('messages/'+cRoom).push(m);
-// Оптимистичный рендер — мгновенно показываем сообщение без ожидания Firebase
+// Построить оптимистичный элемент ДО DOM-мутаций
 var _oa=$('mArea');
 var _oh='<div class="mr me gt msg-arrive" data-opt="1"><div class="mac"></div><div class="mc">';
 if(m.replyTo)_oh+='<div class="mq"><div class="mqn">'+es(m.replyTo.sender)+'</div><div class="mqt">'+es(m.replyTo.text||'📷')+'</div></div>';
@@ -1505,14 +1585,20 @@ if(m.text)_oh+='<span>'+linkify(m.text)+'</span>';
 _oh+='<div class="mt mn">'+ft(Date.now())+' <span class="ck">✓</span></div>';
 _oh+='</div></div></div>';
 var _otmp=document.createElement('div');_otmp.innerHTML=_oh;var _onode=_otmp.firstChild;
-_oa.appendChild(_onode);_oa.scrollTop=_oa.scrollHeight;
+// Все DOM-мутации в одном блоке — один layout reflow
+_oa.appendChild(_onode);
+rTo=null;editMsg=null;$('rpb').classList.add('hidden');
+inp.value='';uSB();autoResizeMi();
+_oa.scrollTop=_oa.scrollHeight;
 // Send button pulse
 var _sb=$('sendBtn');if(_sb){_sb.classList.add('send-pulse');setTimeout(function(){_sb.classList.remove('send-pulse')},300)}
+// Firebase operations — async, no DOM impact
+db.ref('messages/'+cRoom).push(m);
 var mt={lastText:t||(img?'📷':audio?'🎤':file?'📄':poll?'📊':loc?'📍':''),lastTs:firebase.database.ServerValue.TIMESTAMP};
 if(cRoom!=='general'){var r=cRooms[cRoom];if(r&&r.members)mt.members=r.members;if(r&&r.groupName)mt.groupName=r.groupName;if(r&&r.channel)mt.channel=true}
 db.ref('chats/'+cRoom).update(mt);
 db.ref('typing/'+cRoom+'/'+U).remove();cEm();$('attMenu').classList.remove('open');localStorage.removeItem('draft_'+cRoom);
-setTimeout(function(){$('mArea').scrollTop=$('mArea').scrollHeight;$('mi').focus()},50)}
+$('mi').focus()}
 
 // Typing
 function lTp(rid){if(tpList[rid])return;tpList[rid]=true;db.ref('typing/'+rid).on('value',function(s){if(cRoom!==rid)return;var d=s.val()||{},tp=[];Object.keys(d).forEach(function(k){if(k!==U&&Date.now()-d[k]<5000)tp.push(k)});var sub=$('chs2');if(tp.length>0){sub.innerHTML=tp.join(', ')+' печатает<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';sub.classList.add('tp')}else{sub.classList.remove('tp');if(cRoom==='general'){sub.textContent=Object.keys(onU).length+' онлайн'}else{var r=cRooms[rid];var isPriv=r&&r.members&&r.members.length===2;if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(onU[oth]){var _di=onU[oth].device==='desktop'?'💻':'📱';sub.textContent='онлайн '+_di}else getLastSeen(oth,function(t){if(cRoom===rid)sub.textContent=t?'был(а) '+t:''})}else sub.textContent=''}}})}
@@ -1848,7 +1934,7 @@ var btn=e.target.closest('#cbb,#schBtn,#phb,#vidBtn');
 if(btn){
   var id=btn.id;
   if(id==='cbb')goB();
-  else if(id==='schBtn'){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])}}
+  else if(id==='schBtn'){searchMode=!searchMode;$('srBar').classList.toggle('hidden',!searchMode);if(searchMode)$('srIn').focus();else{searchQ='';var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms)}}
   else if(id==='phb'){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,false)}
   else if(id==='vidBtn'){e.stopPropagation();var r=cRooms[cRoom];if(!r||!r.members)return;var o=r.members.filter(function(m){return m!==U})[0];if(o)CallManager.start(o,true)}
   return;
@@ -1860,8 +1946,8 @@ if(e.target.closest('#cht,#chs2,.hdr-t,.hdr-s')){
   if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(oth)showUserProfile(oth)}
 }
 });
-$('srIn').addEventListener('input',function(){searchQ=$('srIn').value;_rMsLastKey='';_rMsLastLen=0;rMs(filterMs(rMsgs[cRoom]||[]))});
-$('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');_rMsLastKey='';_rMsLastLen=0;rMs(rMsgs[cRoom]||[])});
+$('srIn').addEventListener('input',function(){searchQ=$('srIn').value;var _ms=filterMs(rMsgs[cRoom]||[]);_ms._forceRender=true;rMs(_ms)});
+$('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms)});
 // REQ-42: Поиск по дате
 $('srDateBtn').addEventListener('click',function(){$('srDatePick').showPicker?$('srDatePick').showPicker():$('srDatePick').click()});
 $('srDatePick').addEventListener('change',function(){
