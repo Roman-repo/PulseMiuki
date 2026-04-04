@@ -632,10 +632,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 </div>
 
+
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='2.39.4';
+var APP_VERSION='3.0.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -699,7 +700,6 @@ var themes=['dark','light','madmax','space'];
 var themeNames={'dark':'🌙 Тёмная','light':'☀️ Светлая','madmax':'🔥 Безумный Макс','space':'🚀 Космос'};
 function applyTheme(){$('app').setAttribute('data-theme',theme==='dark'?'':theme)}
 applyTheme();
-
 
 // ============ AuthManager — isolated auth/PIN module ============
 var AuthManager=(function(){
@@ -808,7 +808,6 @@ function init(){
 
 return{init:init,logout:logout,setPin:setPin,getPin:getPin,updateUI:updateUI};
 })();
-
 // Local storage helpers
 function loadLocal(){mutedChats=JSON.parse(localStorage.getItem('pc_muted')||'{}');archivedChats=JSON.parse(localStorage.getItem('pc_archived')||'{}');pinnedChats=JSON.parse(localStorage.getItem('pc_pinned')||'{}');savedMsgs=JSON.parse(localStorage.getItem('pc_saved')||'[]');readTs=JSON.parse(localStorage.getItem('pc_readTs')||'{}');schedMsgs=JSON.parse(localStorage.getItem('pc_sched')||'[]');var sf=localStorage.getItem('pc_folders');if(sf)folders=JSON.parse(sf)}
 function saveLocal(){localStorage.setItem('pc_muted',JSON.stringify(mutedChats));localStorage.setItem('pc_archived',JSON.stringify(archivedChats));localStorage.setItem('pc_pinned',JSON.stringify(pinnedChats));localStorage.setItem('pc_saved',JSON.stringify(savedMsgs));localStorage.setItem('pc_readTs',JSON.stringify(readTs));localStorage.setItem('pc_sched',JSON.stringify(schedMsgs));localStorage.setItem('pc_folders',JSON.stringify(folders))}
@@ -1208,7 +1207,7 @@ var mc=el.querySelector('.mc');if(mc){
     var rc={};Object.values(m.reactions).forEach(function(r){if(!rc[r.emoji])rc[r.emoji]={c:0};rc[r.emoji].c++});
     var rh='<div class="mrc">';Object.keys(rc).forEach(function(e){rh+='<div class="mrc-i" data-action="react" data-key="'+k+'" data-emoji="'+e+'">'+e+'<span class="cnt">'+rc[e].c+'</span></div>'});rh+='</div>';
     var _rtmp=document.createElement('div');_rtmp.innerHTML=rh;var newRc=_rtmp.firstChild;
-    if(oldRc){mc.replaceChild(newRc,oldRc)}else{var mb=mc.querySelector('.mb');if(mb)mb.appendChild(newRc);else mc.appendChild(newRc)}
+    if(oldRc){if(oldRc.parentNode)oldRc.parentNode.replaceChild(newRc,oldRc)}else{var mb=mc.querySelector('.mb');if(mb)mb.appendChild(newRc);else mc.appendChild(newRc)}
   }else if(oldRc){oldRc.remove()}
 }
 }
@@ -1300,6 +1299,7 @@ function reset(){_lastKeys=[];_bgBound=false}
 
 return{render:render,reset:reset,bindEl:bindEl};
 })();
+
 
 // rMs wrapper — delegates to RenderManager
 var _rMsLastKey='',_rMsLastLen=0;
