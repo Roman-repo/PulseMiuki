@@ -488,6 +488,16 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .prof-edit-input:focus{border-color:var(--acc)}
 #chatHdrAv{padding:4px 8px;cursor:pointer}
 #chatHdrInfo{padding:4px 0}
+
+/* Chat wallpapers (REQ-57) */
+.wp-picker{padding:16px}
+.wp-title{font-size:14px;color:var(--tx2);font-weight:500;margin-bottom:10px}
+.wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.wp-item{width:100%;aspect-ratio:.75;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;overflow:hidden;position:relative}
+.wp-item.act{border-color:var(--acc)}
+.wp-item img{width:100%;height:100%;object-fit:cover}
+.wp-none{display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--tx3);font-size:12px}
+.wp-upload{display:flex;align-items:center;justify-content:center;background:var(--bg3);color:var(--acc);font-size:24px;cursor:pointer;border-radius:10px;border:2px dashed var(--brd)}
 </style>
 </head>
 <body>
@@ -677,7 +687,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.2.1';
+var APP_VERSION='3.3.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -962,6 +972,8 @@ if(!rrList[rid]){rrList[rid]=true;db.ref('readReceipts/'+rid).on('value',functio
 if(rMsgs[rid]){rMs(threadMode?[]:rMsgs[rid]);$('mArea').scrollTop=$('mArea').scrollHeight}
 else $('mArea').innerHTML='<div class="skel-wrap"><div class="skel-msg"><div class="skel-bubble skel-w1"></div></div><div class="skel-msg me"><div class="skel-bubble skel-w2"></div></div><div class="skel-msg"><div class="skel-bubble skel-w3"></div></div><div class="skel-msg me"><div class="skel-bubble skel-w4"></div></div></div>';
 $('mi').focus();
+// REQ-57: применить обои чата
+applyChatWp(rid);
 // REQ-38: восстановить черновик
 var _draft=localStorage.getItem('draft_'+rid);
 if(_draft){$('mi').value=_draft;autoResizeMi();uSB();localStorage.removeItem('draft_'+rid)}
@@ -2165,6 +2177,97 @@ function showEffectPicker(){
 // Listen for slash input
 $('mi').addEventListener('input',function(){var v=$('mi').value;if(v.charAt(0)==='/'){showSlashMenu(v)}else{hideSlashMenu()}});
 
+// Chat wallpapers (REQ-57)
+var _WP_GRADIENTS=[
+  {id:'g1',name:'Закат',css:'linear-gradient(135deg,#0f0c29,#302b63,#24243e)'},
+  {id:'g2',name:'Океан',css:'linear-gradient(135deg,#0a1628,#0d3b66,#1a5276)'},
+  {id:'g3',name:'Лес',css:'linear-gradient(135deg,#0a1a0a,#1b4332,#2d6a4f)'},
+  {id:'g4',name:'Огонь',css:'linear-gradient(135deg,#1a0e00,#6b2c0a,#3d1f00)'},
+  {id:'g5',name:'Сакура',css:'linear-gradient(135deg,#1a0a1a,#4a1942,#6b2463)'},
+  {id:'g6',name:'Полночь',css:'linear-gradient(135deg,#020111,#0a0a2e,#16164b)'}
+];
+var _WP_PATTERNS=[
+  {id:'p1',name:'Пузырьки',css:'radial-gradient(circle at 20% 30%,rgba(102,126,234,.08) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(118,75,162,.08) 0%,transparent 50%),var(--bg)'},
+  {id:'p2',name:'Сетка',css:'linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),var(--bg)',size:'20px 20px'},
+  {id:'p3',name:'Ромбы',css:'linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.03) 75%),linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.03) 75%),var(--bg)',size:'30px 30px',pos:'0 0,15px 15px'},
+  {id:'p4',name:'Волны',css:'radial-gradient(ellipse at 50% 0%,rgba(102,126,234,.06) 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(118,75,162,.06) 0%,transparent 60%),var(--bg)'},
+  {id:'p5',name:'Звёзды',css:'radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.15),transparent),radial-gradient(1px 1px at 40% 60%,rgba(255,255,255,.12),transparent),radial-gradient(1px 1px at 70% 30%,rgba(255,255,255,.1),transparent),radial-gradient(1px 1px at 90% 80%,rgba(255,255,255,.15),transparent),radial-gradient(1px 1px at 30% 90%,rgba(255,255,255,.12),transparent),radial-gradient(1px 1px at 60% 10%,rgba(255,255,255,.1),transparent),var(--bg)',size:'200px 200px'},
+  {id:'p6',name:'Туман',css:'radial-gradient(ellipse at 30% 50%,rgba(102,126,234,.05) 0%,transparent 70%),radial-gradient(ellipse at 70% 50%,rgba(118,75,162,.05) 0%,transparent 70%),var(--bg)'}
+];
+function getChatWp(rid){try{return JSON.parse(localStorage.getItem('wp_'+rid))}catch(e){return null}}
+function setChatWp(rid,wp){if(wp)localStorage.setItem('wp_'+rid,JSON.stringify(wp));else localStorage.removeItem('wp_'+rid)}
+function applyChatWp(rid){
+  var a=$('mArea');if(!a)return;
+  var wp=getChatWp(rid);
+  if(!wp){a.style.backgroundImage='';a.style.backgroundSize='';a.style.backgroundPosition='';a.style.backgroundRepeat='';return}
+  if(wp.type==='gradient'){
+    a.style.backgroundImage=wp.css;
+    a.style.backgroundSize='cover';
+    a.style.backgroundPosition='center';
+    a.style.backgroundRepeat='no-repeat';
+  }else if(wp.type==='pattern'){
+    a.style.backgroundImage=wp.css;
+    a.style.backgroundSize=wp.size||'cover';
+    a.style.backgroundPosition=wp.pos||'';
+    a.style.backgroundRepeat=wp.size?'repeat':'no-repeat';
+    a.style.backgroundPosition=wp.pos||'';
+  }else if(wp.type==='image'){
+    a.style.backgroundImage='url('+wp.data+')';
+    a.style.backgroundSize='cover';
+    a.style.backgroundPosition='center';
+  }
+}
+function showWpPicker(rid){
+  var cur=getChatWp(rid);var curId=cur?cur.id:'';
+  var h='<div class="wp-picker"><div class="wp-title">Без обоев</div><div class="wp-grid">';
+  h+='<div class="wp-item wp-none'+(curId===''?' act':'')+'" data-wp="none">По умолчанию</div>';
+  h+='</div>';
+  h+='<div class="wp-title">Градиенты</div><div class="wp-grid">';
+  _WP_GRADIENTS.forEach(function(g){h+='<div class="wp-item'+(curId===g.id?' act':'')+'" data-wp="'+g.id+'" style="background:'+g.css+'" title="'+g.name+'"></div>'});
+  h+='</div>';
+  h+='<div class="wp-title">Паттерны</div><div class="wp-grid">';
+  _WP_PATTERNS.forEach(function(p){var st='background:'+p.css;if(p.size)st+=';background-size:'+p.size;if(p.pos)st+=';background-position:'+p.pos;h+='<div class="wp-item'+(curId===p.id?' act':'')+'" data-wp="'+p.id+'" style="'+st+'" title="'+p.name+'"></div>'});
+  h+='</div>';
+  h+='<div class="wp-title">Своя картинка</div><div class="wp-grid">';
+  h+='<div class="wp-item wp-upload" id="wpUpload">+</div>';
+  if(cur&&cur.type==='image')h+='<div class="wp-item act" style="background:url('+cur.data+');background-size:cover;background-position:center" data-wp="custom"></div>';
+  h+='</div></div>';
+  return h;
+}
+function bindWpPicker(container,rid){
+  container.querySelectorAll('.wp-item').forEach(function(el){
+    el.addEventListener('click',function(){
+      var wpId=el.getAttribute('data-wp');
+      if(wpId==='none'){setChatWp(rid,null);applyChatWp(rid)}
+      else if(wpId==='custom'){/* уже установлено */}
+      else{
+        var g=_WP_GRADIENTS.find(function(x){return x.id===wpId});
+        if(g){setChatWp(rid,{id:g.id,type:'gradient',css:g.css});applyChatWp(rid)}
+        var p=_WP_PATTERNS.find(function(x){return x.id===wpId});
+        if(p){setChatWp(rid,{id:p.id,type:'pattern',css:p.css,size:p.size||'',pos:p.pos||''});applyChatWp(rid)}
+      }
+      container.querySelectorAll('.wp-item').forEach(function(x){x.classList.remove('act')});
+      el.classList.add('act');
+    });
+  });
+  var upBtn=container.querySelector('#wpUpload');
+  if(upBtn)upBtn.addEventListener('click',function(){
+    var fi=document.createElement('input');fi.type='file';fi.accept='image/*';
+    fi.addEventListener('change',function(){
+      var f=fi.files[0];if(!f)return;
+      var rd=new FileReader();rd.onload=function(e){
+        var img=new Image();img.onload=function(){
+          var cv=document.createElement('canvas'),mx=800,w=img.width,h=img.height;
+          if(w>mx){h=h*(mx/w);w=mx}if(h>mx){w=w*(mx/h);h=mx}
+          cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+          var d=cv.toDataURL('image/jpeg',.7);
+          setChatWp(rid,{id:'custom',type:'image',data:d});applyChatWp(rid);
+        };img.src=e.target.result;
+      };rd.readAsDataURL(f);
+    });fi.click();
+  });
+}
+
 // Sidebar
 function tSb(){$('sov').classList.toggle('hidden')}
 function renderSB(){
@@ -2225,7 +2328,7 @@ window.showUserProfile=function(name){
   if(pr.status)h+='<div class="prof-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="prof-row-body"><div class="prof-row-val">'+es(pr.status)+'</div><div class="prof-row-label">О себе</div></div></div>';
   h+='</div>';
   // Media tabs
-  h+='<div class="prof-tabs"><button type="button" class="prof-tab act" data-ptab="media">Медиа</button><button type="button" class="prof-tab" data-ptab="files">Файлы</button><button type="button" class="prof-tab" data-ptab="links">Ссылки</button><button type="button" class="prof-tab" data-ptab="audio">Музыка</button></div>';
+  h+='<div class="prof-tabs"><button type="button" class="prof-tab act" data-ptab="media">Медиа</button><button type="button" class="prof-tab" data-ptab="files">Файлы</button><button type="button" class="prof-tab" data-ptab="links">Ссылки</button><button type="button" class="prof-tab" data-ptab="audio">Музыка</button><button type="button" class="prof-tab" data-ptab="wallpaper">Обои</button></div>';
   h+='<div class="prof-media" id="profMediaContent"></div>';
   h+='</div>';
   // Render
@@ -2245,6 +2348,8 @@ window.showUserProfile=function(name){
     }else if(tab==='audio'){
       if(!audio.length){pc.innerHTML='<div class="prof-media-empty">Нет аудио</div>';return}
       var ah='<div class="prof-media-list">';audio.forEach(function(m){ah+='<div class="prof-media-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div style="flex:1"><div style="color:var(--tx);font-size:14px">Голосовое</div><div style="color:var(--tx3);font-size:12px">'+(m.audioDur||'0:00')+' · '+ft(m.ts)+'</div></div></div>'});ah+='</div>';pc.innerHTML=ah;
+    }else if(tab==='wallpaper'){
+      pc.innerHTML=showWpPicker(rid);bindWpPicker(pc,rid);
     }
   }
   renderTab('media');
