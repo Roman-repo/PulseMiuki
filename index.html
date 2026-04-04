@@ -26,11 +26,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Screens */
 .scr{height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
 /* Screen transitions */
-.scr-enter{animation:scrSlideIn .25s ease-out}
-.scr-leave{animation:scrSlideOut .2s ease-out forwards}
-@keyframes scrSlideIn{from{transform:translateX(30%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes scrSlideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(30%);opacity:0}}
-.scr-fade-in{animation:scrFadeIn .2s ease-out}
+.scr-enter{animation:scrSlideIn .35s cubic-bezier(.25,.1,.25,1)}
+.scr-leave{animation:scrSlideOut .25s cubic-bezier(.25,.1,.25,1) forwards}
+@keyframes scrSlideIn{from{transform:translateX(18%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes scrSlideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(18%);opacity:0}}
+.scr-fade-in{animation:scrFadeIn .3s cubic-bezier(.25,.1,.25,1)}
 @keyframes scrFadeIn{from{opacity:0}to{opacity:1}}
 /* Skeleton loading */
 .skel-wrap{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px}
@@ -289,6 +289,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Context menu */
 .ctx{position:fixed;background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:3px;z-index:30;min-width:170px;backdrop-filter:blur(20px);animation:ca .18s ease-out;max-height:80vh;overflow-y:auto}
+.slash-item{padding:10px 16px;cursor:pointer;display:flex;align-items:center;transition:background .15s}.slash-item:active{background:var(--bg3)}
 @keyframes ca{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .cti{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--tx);font-size:16px;cursor:pointer;border-radius:8px;font-weight:400}
 .cti svg{flex-shrink:0;color:var(--tx);width:20px;height:20px}
@@ -636,7 +637,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.0.1';
+var APP_VERSION='3.1.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -682,11 +683,21 @@ function fireConfetti(){var c=_fxBox();var cols=['#E85D75','#6C5CE7','#00B894','
 function fireHearts(){var c=_fxBox();var h=c._h;var hearts=['❤️','💕','💗','💖','💝','🩷','🩵'];for(var i=0;i<30;i++){var p=document.createElement('div');var sz=24+Math.random()*20;p.textContent=hearts[Math.floor(Math.random()*hearts.length)];p.style.cssText='position:absolute;bottom:-30px;left:'+Math.random()*100+'%;font-size:'+sz+'px';var dur=(2+Math.random()*1)+'s';var del=Math.random()*1.2+'s';p.animate([{transform:'translateY(0) scale(.6)',opacity:1},{transform:'translateY(-'+(h+60)+'px) scale(1.4)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-out'});c.appendChild(p)}setTimeout(function(){c.remove()},3500)}
 function fireBalloons(){var c=_fxBox();var h=c._h;var balls=['🎈','🎈','🎈','🎊','🎁','🎂'];for(var i=0;i<20;i++){var p=document.createElement('div');p.textContent=balls[Math.floor(Math.random()*balls.length)];p.style.cssText='position:absolute;bottom:-40px;left:'+Math.random()*100+'%;font-size:42px';var dur=(2.5+Math.random()*1)+'s';var del=Math.random()*1.5+'s';p.animate([{transform:'translateY(0) scale(.7)',opacity:1},{transform:'translateY(-'+(h+80)+'px) scale(1.2)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-out'});c.appendChild(p)}setTimeout(function(){c.remove()},4000)}
 function fireSnow(){var c=_fxBox();var h=c._h;var flakes=['❄️','❄','✻','✼','❅','❆'];for(var i=0;i<35;i++){var p=document.createElement('div');var sz=18+Math.random()*16;p.textContent=flakes[Math.floor(Math.random()*flakes.length)];p.style.cssText='position:absolute;top:-20px;left:'+Math.random()*100+'%;font-size:'+sz+'px;opacity:.9';var dur=(2.5+Math.random()*1.5)+'s';var del=Math.random()*1.5+'s';p.animate([{transform:'translateY(0) rotate(0deg)',opacity:.9},{transform:'translateY('+(h+40)+'px) rotate(360deg)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'linear'});c.appendChild(p)}setTimeout(function(){c.remove()},4500)}
+function fireCats(){var c=_fxBox();var h=c._h;var cats=['🐱','🐾','🐈','😺','😸','🐈‍⬛','🐾'];for(var i=0;i<25;i++){var p=document.createElement('div');var sz=22+Math.random()*20;p.textContent=cats[Math.floor(Math.random()*cats.length)];p.style.cssText='position:absolute;bottom:-30px;left:'+Math.random()*100+'%;font-size:'+sz+'px';var dur=(2+Math.random()*1.2)+'s';var del=Math.random()*1.2+'s';p.animate([{transform:'translateY(0) rotate(-10deg) scale(.5)',opacity:1},{transform:'translateY(-'+(h+50)+'px) rotate(15deg) scale(1.3)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-out'});c.appendChild(p)}setTimeout(function(){c.remove()},3500)}
+function fireSakura(){var c=_fxBox();var h=c._h;var petals=['🌸','🌺','💮','🏵️','🌷'];for(var i=0;i<30;i++){var p=document.createElement('div');var sz=16+Math.random()*14;p.textContent=petals[Math.floor(Math.random()*petals.length)];p.style.cssText='position:absolute;top:-20px;left:'+Math.random()*100+'%;font-size:'+sz+'px;opacity:.85';var dur=(3+Math.random()*1.5)+'s';var del=Math.random()*1.5+'s';var dx=-30+Math.random()*60;p.animate([{transform:'translateY(0) translateX(0) rotate(0deg)',opacity:.85},{transform:'translateY('+(h+40)+'px) translateX('+dx+'px) rotate(180deg)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-in-out'});c.appendChild(p)}setTimeout(function(){c.remove()},5000)}
+function fireLightning(){var c=_fxBox();var h=c._h;for(var i=0;i<6;i++){var p=document.createElement('div');p.textContent='⚡';p.style.cssText='position:absolute;top:'+Math.random()*30+'%;left:'+Math.random()*100+'%;font-size:'+(30+Math.random()*20)+'px;opacity:0';var del=Math.random()*1.5+'s';p.animate([{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'scale(1.3)'},{opacity:0,transform:'scale(.8)'}],{duration:600,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-out'});c.appendChild(p)}var flash=document.createElement('div');flash.style.cssText='position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,200,.15)';flash.animate([{opacity:0},{opacity:1},{opacity:0}],{duration:200,iterations:3,delay:200});c.appendChild(flash);setTimeout(function(){c.remove()},3000)}
+function fireNotes(){var c=_fxBox();var h=c._h;var notes=['🎵','🎶','🎼','♪','♫','🎤'];for(var i=0;i<25;i++){var p=document.createElement('div');var sz=18+Math.random()*16;p.textContent=notes[Math.floor(Math.random()*notes.length)];p.style.cssText='position:absolute;bottom:-20px;left:'+Math.random()*100+'%;font-size:'+sz+'px';var dur=(2+Math.random()*1.5)+'s';var del=Math.random()*1.2+'s';var dx=-40+Math.random()*80;p.animate([{transform:'translateY(0) translateX(0) scale(.6)',opacity:1},{transform:'translateY(-'+(h*0.7)+'px) translateX('+dx+'px) scale(1.2)',opacity:0}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-out'});c.appendChild(p)}setTimeout(function(){c.remove()},4000)}
+function fireCoins(){var c=_fxBox();var h=c._h;var coins=['💰','💵','💴','💶','💷','🪙','💎'];for(var i=0;i<30;i++){var p=document.createElement('div');var sz=20+Math.random()*16;p.textContent=coins[Math.floor(Math.random()*coins.length)];p.style.cssText='position:absolute;top:-20px;left:'+Math.random()*100+'%;font-size:'+sz+'px';var dur=(1.5+Math.random()*1)+'s';var del=Math.random()*1+'s';p.animate([{transform:'translateY(0) rotate(0deg)',opacity:1},{transform:'translateY('+(h+40)+'px) rotate(360deg)',opacity:.3}],{duration:parseFloat(dur)*1000,delay:parseFloat(del)*1000,fill:'forwards',easing:'ease-in'});c.appendChild(p)}setTimeout(function(){c.remove()},3500)}
 var _FX_RULES=[
-  {test:function(t){return t.indexOf('🎉')!==-1||t.indexOf('поздравл')!==-1||t.indexOf('поздравля')!==-1||t.indexOf('congrat')!==-1},fn:fireConfetti},
-  {test:function(t){return t.indexOf('❤️')!==-1||t.indexOf('люблю')!==-1||t.indexOf('love')!==-1||t.indexOf('целую')!==-1},fn:fireHearts},
-  {test:function(t){return t.indexOf('🎂')!==-1||t.indexOf('с днём рождения')!==-1||t.indexOf('с днем рождения')!==-1||t.indexOf('happy birthday')!==-1},fn:fireBalloons},
-  {test:function(t){return t.indexOf('🎄')!==-1||t.indexOf('с новым годом')!==-1||t.indexOf('happy new year')!==-1||t.indexOf('❄️')!==-1},fn:fireSnow}
+  {test:function(t){return t.indexOf('🎉')!==-1||t.indexOf('поздравл')!==-1||t.indexOf('поздравля')!==-1||t.indexOf('congrat')!==-1},fn:fireConfetti,name:'🎉 Конфетти',words:['🎉','поздравляю','congrats']},
+  {test:function(t){return t.indexOf('❤️')!==-1||t.indexOf('люблю')!==-1||t.indexOf('love')!==-1||t.indexOf('целую')!==-1},fn:fireHearts,name:'❤️ Сердечки',words:['❤️','люблю','love','целую']},
+  {test:function(t){return t.indexOf('🎂')!==-1||t.indexOf('с днём рождения')!==-1||t.indexOf('с днем рождения')!==-1||t.indexOf('happy birthday')!==-1},fn:fireBalloons,name:'🎈 Шарики',words:['🎂','с днём рождения','happy birthday']},
+  {test:function(t){return t.indexOf('🎄')!==-1||t.indexOf('с новым годом')!==-1||t.indexOf('happy new year')!==-1||t.indexOf('❄️')!==-1},fn:fireSnow,name:'❄️ Снежинки',words:['🎄','❄️','с новым годом','happy new year']},
+  {test:function(t){return t.indexOf('мяу')!==-1||t.indexOf('кото')!==-1},fn:fireCats,name:'🐱 Котики',words:['мяу','кото']},
+  {test:function(t){return t.indexOf('весна')!==-1||t.indexOf('красиво')!==-1||t.indexOf('beautiful')!==-1||t.indexOf('🌸')!==-1},fn:fireSakura,name:'🌸 Сакура',words:['весна','красиво','beautiful','🌸']},
+  {test:function(t){return t.indexOf('шок')!==-1||t.indexOf('ого')!==-1||t.indexOf('wow')!==-1||t.indexOf('omg')!==-1||t.indexOf('⚡')!==-1},fn:fireLightning,name:'⚡ Молнии',words:['шок','ого','wow','OMG','⚡']},
+  {test:function(t){return t.indexOf('музык')!==-1||t.indexOf('песн')!==-1||t.indexOf('music')!==-1||t.indexOf('🎵')!==-1},fn:fireNotes,name:'🎵 Ноты',words:['музыка','песня','music','🎵']},
+  {test:function(t){return t.indexOf('деньг')!==-1||t.indexOf('зарплат')!==-1||t.indexOf('money')!==-1||t.indexOf('💰')!==-1},fn:fireCoins,name:'💰 Монеты',words:['деньги','зарплата','money','💰']}
 ];
 function checkChatEffect(key,text){
   if(!key||!text||_fxSeen[key])return;
@@ -1599,6 +1610,8 @@ function cancelEdit(){
 function sM(img,audio,audioDur,file,fileName,fileSize,poll,loc,disappear){
 var inp=$('mi'),t=inp.value.trim();
 if(editMsg){var et=$('editTa').value.trim();if(et){db.ref('messages/'+cRoom+'/'+editMsg).update({text:et,edited:true})}cancelEdit();return}
+// Slash commands — не отправлять в Firebase
+if(t&&t.charAt(0)==='/'){var _cmd=t.toLowerCase();if(handleSlashCommand(_cmd)){inp.value='';uSB();autoResizeMi();hideSlashMenu();return}}
 // Pending sticker/animSticker — отправить как стикер
 if(_pendingSticker){
   var _stk=_pendingSticker;_pendingSticker=null;_pendingAnimSticker=null;
@@ -2069,6 +2082,46 @@ $('srIn0').addEventListener('input',function(){
   })});
 });
 $('srCl0').addEventListener('click',function(){$('srBar0').classList.add('hidden');$('srIn0').value='';$('globalSearchResults').classList.add('hidden');$('globalSearchResults').innerHTML='';$('cla').classList.remove('hidden');rCL()});
+
+// Slash commands
+var _SLASH_CMDS=[
+  {cmd:'/слова',desc:'Список триггерных слов',fn:function(){showWordsCard()}},
+  {cmd:'/эффект',desc:'Запустить эффект',fn:function(){showEffectPicker()}}
+];
+function showSlashMenu(filter){
+  var el=$('slashMenu');if(!el){el=document.createElement('div');el.id='slashMenu';el.style.cssText='position:absolute;bottom:100%;left:0;right:0;background:var(--bg2);border-top:1px solid var(--brd);border-radius:12px 12px 0 0;padding:6px 0;backdrop-filter:blur(20px);z-index:30;max-height:200px;overflow-y:auto';$('inputBar').style.position='relative';$('inputBar').appendChild(el)}
+  var f=filter?filter.toLowerCase():'';
+  var cmds=_SLASH_CMDS.filter(function(c){return!f||c.cmd.indexOf(f)!==-1});
+  if(cmds.length===0){hideSlashMenu();return}
+  var h='';cmds.forEach(function(c){h+='<div class="slash-item" data-cmd="'+c.cmd+'"><span style="color:var(--acc);font-weight:600">'+es(c.cmd)+'</span><span style="color:var(--tx2);font-size:12px;margin-left:8px">'+es(c.desc)+'</span></div>'});
+  el.innerHTML=h;
+  el.querySelectorAll('.slash-item').forEach(function(item){item.addEventListener('click',function(){var cmd=item.getAttribute('data-cmd');$('mi').value='';uSB();autoResizeMi();hideSlashMenu();var c=_SLASH_CMDS.find(function(x){return x.cmd===cmd});if(c)c.fn()})})
+}
+function hideSlashMenu(){var el=$('slashMenu');if(el)el.remove()}
+function handleSlashCommand(cmd){
+  for(var i=0;i<_SLASH_CMDS.length;i++){if(cmd===_SLASH_CMDS[i].cmd||cmd===_SLASH_CMDS[i].cmd+' '){_SLASH_CMDS[i].fn();return true}}
+  return false
+}
+function showWordsCard(){
+  var a=$('mArea');var h='<div class="mr me msg-arrive" style="pointer-events:none"><div class="mac"></div><div class="mc"><div class="mb mn" style="text-align:left"><div style="font-weight:600;margin-bottom:8px;color:var(--acc)">✨ Триггерные слова</div>';
+  _FX_RULES.forEach(function(r){h+='<div style="margin-bottom:6px"><span style="font-weight:500">'+r.name+'</span><div style="color:var(--tx2);font-size:12px">'+r.words.join(', ')+'</div></div>'});
+  h+='<div style="color:var(--tx3);font-size:11px;margin-top:8px">Отправьте сообщение с этими словами для запуска эффекта</div></div></div></div>';
+  var tmp=document.createElement('div');tmp.innerHTML=h;var card=tmp.firstChild;
+  a.appendChild(card);a.scrollTo({top:a.scrollHeight,behavior:'smooth'});
+  setTimeout(function(){if(card.parentNode)card.remove()},15000)
+}
+function showEffectPicker(){
+  var a=$('mArea');var h='<div class="mr me msg-arrive" style="pointer-events:none"><div class="mac"></div><div class="mc"><div class="mb mn" style="text-align:left"><div style="font-weight:600;margin-bottom:8px;color:var(--acc)">🎬 Запустить эффект</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
+  _FX_RULES.forEach(function(r,i){h+='<button type="button" class="fx-pick" data-fx="'+i+'" style="padding:6px 10px;border-radius:8px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);font-size:13px;cursor:pointer">'+r.name+'</button>'});
+  h+='</div></div></div></div>';
+  var tmp=document.createElement('div');tmp.innerHTML=h;var card=tmp.firstChild;
+  a.appendChild(card);a.scrollTo({top:a.scrollHeight,behavior:'smooth'});
+  card.style.pointerEvents='auto';
+  card.querySelectorAll('.fx-pick').forEach(function(btn){btn.addEventListener('click',function(){var idx=parseInt(btn.getAttribute('data-fx'));if(_FX_RULES[idx])_FX_RULES[idx].fn();card.remove()})});
+  setTimeout(function(){if(card.parentNode)card.remove()},15000)
+}
+// Listen for slash input
+$('mi').addEventListener('input',function(){var v=$('mi').value;if(v.charAt(0)==='/'){showSlashMenu(v)}else{hideSlashMenu()}});
 
 // Sidebar
 function tSb(){$('sov').classList.toggle('hidden')}
