@@ -450,6 +450,44 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Image viewer */
 .iv{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:50;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .iv img{max-width:95%;max-height:90%;object-fit:contain}
+
+/* Profile overlay (REQ-56) */
+.prof-ov{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column;overflow-y:auto;animation:scrSlideIn .35s cubic-bezier(.25,.1,.25,1)}
+.prof-header{display:flex;flex-direction:column;align-items:center;padding:24px 16px 16px;position:relative}
+.prof-back{position:absolute;top:16px;left:12px;background:none;border:none;cursor:pointer;padding:4px}
+.prof-more{position:absolute;top:16px;right:12px;background:none;border:none;cursor:pointer;padding:4px}
+.prof-av{width:120px;height:120px;border-radius:50%;overflow:hidden;margin-bottom:12px;position:relative}
+.prof-av img{width:100%;height:100%;object-fit:cover}
+.prof-av-edit{position:absolute;bottom:0;right:0;width:32px;height:32px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--bg)}
+.prof-name{font-size:20px;font-weight:500;color:var(--tx);margin-bottom:2px}
+.prof-status{font-size:14px;color:var(--tx2);font-weight:400}
+.prof-btns{display:flex;gap:12px;margin:20px 0;justify-content:center}
+.prof-btn{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg3);border:none;border-radius:14px;padding:14px 24px;cursor:pointer;min-width:80px}
+.prof-btn svg{stroke:var(--acc)}
+.prof-btn span{font-size:12px;color:var(--tx);font-weight:400;font-family:'Roboto',sans-serif}
+.prof-info{padding:0 16px}
+.prof-row{padding:14px 0;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:12px}
+.prof-row:last-child{border-bottom:none}
+.prof-row-icon{color:var(--tx2);flex-shrink:0}
+.prof-row-body{flex:1;min-width:0}
+.prof-row-val{font-size:15px;color:var(--tx);font-weight:400}
+.prof-row-label{font-size:12px;color:var(--tx2);font-weight:400;margin-top:1px}
+.prof-row-action{flex-shrink:0;cursor:pointer;color:var(--tx2)}
+.prof-tabs{display:flex;border-bottom:1px solid var(--brd);padding:0 16px;margin-top:8px}
+.prof-tab{flex:1;text-align:center;padding:12px 0;font-size:14px;color:var(--tx2);font-weight:400;cursor:pointer;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;background:none;border-top:none;border-left:none;border-right:none}
+.prof-tab.act{color:var(--acc);border-bottom-color:var(--acc);font-weight:500}
+.prof-media{flex:1;overflow-y:auto;padding:8px}
+.prof-media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.prof-media-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;cursor:pointer}
+.prof-media-list{display:flex;flex-direction:column;gap:2px}
+.prof-media-item{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:8px}
+.prof-media-item:active{background:var(--bg3)}
+.prof-media-empty{padding:40px 16px;text-align:center;color:var(--tx3);font-size:13px}
+.prof-edit-row{display:flex;align-items:center;gap:8px;padding:10px 0}
+.prof-edit-input{flex:1;background:var(--bg3);border:1px solid var(--brd);border-radius:8px;padding:10px 12px;color:var(--tx);font-size:15px;font-family:'Roboto',sans-serif;outline:none}
+.prof-edit-input:focus{border-color:var(--acc)}
+#chatHdrAv{padding:4px 8px;cursor:pointer}
+#chatHdrInfo{padding:4px 0}
 </style>
 </head>
 <body>
@@ -497,7 +535,6 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 <!-- Overlays (picker, profile, QR, etc) -->
 <div class="ov hidden" id="ovPicker"></div>
-<div class="ov hidden" id="ovProfile"></div>
 <div class="ov hidden" id="ovQR"></div>
 <div class="ov hidden" id="ovFolders"></div>
 <div class="ov hidden" id="ovSaved"></div>
@@ -508,7 +545,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <div class="scr hidden" id="S2" style="background:var(--bg)">
 <div class="hdr" id="chatHdr">
 <button type="button" class="bb" id="cbb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-<div id="chatHdrAv" style="flex-shrink:0"></div><div style="flex:1;min-width:0"><div class="hdr-t" id="cht" style="font-size:17px"></div><div class="hdr-s" id="chs2"></div></div>
+<div id="chatHdrAv" style="flex-shrink:0"></div><div style="flex:1;min-width:0;cursor:pointer" id="chatHdrInfo"><div class="hdr-t" id="cht" style="font-size:17px"></div><div class="hdr-s" id="chs2"></div></div>
 <button type="button" class="ib hidden" id="schBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
 <button type="button" class="ib hidden" id="phb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
 <button type="button" class="ib hidden" id="vidBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
@@ -570,6 +607,9 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 </div>
 </div>
+
+<!-- Profile overlay (app-level, visible over S1 and S2) -->
+<div class="ov hidden" id="ovProfile"></div>
 
 <!-- Image viewer -->
 <div class="iv hidden" id="ivw"><img id="ivi"></div>
@@ -637,7 +677,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.1.0';
+var APP_VERSION='3.2.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -2008,13 +2048,15 @@ if(btn){
   return;
 }
 // REQ-13: тап на имя/область хедера → профиль собеседника
-if(e.target.closest('#cht,#chs2,.hdr-t,.hdr-s')){
+if(e.target.closest('#cht,#chs2,#chatHdrAv,.hdr-t,.hdr-s')){
   var r=cRooms[cRoom];if(!r||!r.members||cRoom==='general')return;
   var isPriv=r.members.length===2;
   if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(oth)showUserProfile(oth)}
 }
 });
 $('srIn').addEventListener('input',function(){searchQ=$('srIn').value;var _ms=filterMs(rMsgs[cRoom]||[]);_ms._forceRender=true;rMs(_ms)});
+$('chatHdrAv').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members||cRoom==='general')return;var isPriv=r.members.length===2;if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(oth)showUserProfile(oth)}});
+$('chatHdrInfo').addEventListener('click',function(){var r=cRooms[cRoom];if(!r||!r.members||cRoom==='general')return;var isPriv=r.members.length===2;if(isPriv){var oth=r.members.filter(function(m){return m!==U})[0];if(oth)showUserProfile(oth)}});
 $('srCl').addEventListener('click',function(){searchMode=false;searchQ='';$('srBar').classList.add('hidden');var _ms=rMsgs[cRoom]||[];_ms._forceRender=true;rMs(_ms)});
 // REQ-42: Поиск по дате
 $('srDateBtn').addEventListener('click',function(){$('srDatePick').showPicker?$('srDatePick').showPicker():$('srDatePick').click()});
@@ -2145,27 +2187,123 @@ $('sdContent').innerHTML=h}
 
 // REQ-13: User profile from chat header
 window.showUserProfile=function(name){
-  var pr=profiles[name]||{};
-  var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovProfile\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Профиль</div></div><div class="pec">';
-  h+='<div style="display:flex;flex-direction:column;align-items:center;padding:20px">'+av(name,80);
-  h+='<div style="color:var(--tx);font-size:20px;font-weight:500;margin-top:12px">'+es(name)+'</div>';
-  if(pr.status)h+='<div style="color:var(--tx2);font-size:14px;margin-top:4px">'+es(pr.status)+'</div>';
-  h+='<div style="color:'+(onU[name]?'var(--grn)':'var(--tx3)')+';font-size:13px;margin-top:6px">'+(onU[name]?'онлайн '+(onU[name].device==='desktop'?'💻':'📱'):'оффлайн')+'</div>';
-  h+='</div></div>';
-  $('ovProfile').innerHTML=h;$('ovProfile').classList.remove('hidden')};
+  var isMe=name===U;var pr=profiles[name]||{};var rid=cRoom;
+  var r=cRooms[rid];var msgs=rMsgs[rid]||[];
+  // Collect media tabs
+  var media=[],files=[],links=[],audio=[];
+  msgs.forEach(function(m){
+    if(m.image)media.push(m);
+    if(m.file)files.push(m);
+    if(m.audio)audio.push(m);
+    if(m.text){var urls=m.text.match(/https?:\/\/[^\s<]+/g);if(urls)urls.forEach(function(u){links.push({url:u,sender:m.sender,ts:m.ts})})}
+  });
+  // Status text
+  var statusTxt='';
+  if(onU[name]){statusTxt='онлайн '+(onU[name].device==='desktop'?'💻':'📱')}
+  else{statusTxt='оффлайн'}
+  // Build HTML
+  var h='<div class="prof-ov" id="profOv"><div class="prof-header">';
+  h+='<button type="button" class="prof-back" id="profBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
+  if(isMe)h+='<button type="button" class="prof-more" id="profEdit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
+  h+='<div class="prof-av">'+(pr.avatar?'<img src="'+pr.avatar+'">':av(name,120))+'</div>';
+  h+='<div class="prof-name">'+es(name)+'</div>';
+  h+='<div class="prof-status" id="profStatus">'+es(statusTxt)+'</div>';
+  h+='</div>';
+  // Action buttons
+  h+='<div class="prof-btns">';
+  h+='<button type="button" class="prof-btn" id="profChat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Чат</span></button>';
+  if(!isMe){
+    h+='<button type="button" class="prof-btn" id="profCall"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>Звонок</span></button>';
+    h+='<button type="button" class="prof-btn" id="profVideo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Видео</span></button>';
+  }
+  h+='</div>';
+  // Info rows
+  h+='<div class="prof-info">';
+  if(pr.phone)h+='<div class="prof-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></div><div class="prof-row-body"><div class="prof-row-val">'+es(pr.phone)+'</div><div class="prof-row-label">Телефон</div></div></div>';
+  h+='<div class="prof-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="prof-row-body"><div class="prof-row-val">@'+es(name)+'</div><div class="prof-row-label">Имя пользователя</div></div><div class="prof-row-action" id="profQR"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div></div>';
+  if(pr.birthday)h+='<div class="prof-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="prof-row-body"><div class="prof-row-val">'+es(pr.birthday)+'</div><div class="prof-row-label">День рождения</div></div></div>';
+  if(pr.status)h+='<div class="prof-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="prof-row-body"><div class="prof-row-val">'+es(pr.status)+'</div><div class="prof-row-label">О себе</div></div></div>';
+  h+='</div>';
+  // Media tabs
+  h+='<div class="prof-tabs"><button type="button" class="prof-tab act" data-ptab="media">Медиа</button><button type="button" class="prof-tab" data-ptab="files">Файлы</button><button type="button" class="prof-tab" data-ptab="links">Ссылки</button><button type="button" class="prof-tab" data-ptab="audio">Музыка</button></div>';
+  h+='<div class="prof-media" id="profMediaContent"></div>';
+  h+='</div>';
+  // Render
+  $('ovProfile').innerHTML=h;$('ovProfile').classList.remove('hidden');
+  // Tab content render
+  function renderTab(tab){
+    var pc=$('profMediaContent');if(!pc)return;
+    if(tab==='media'){
+      if(!media.length){pc.innerHTML='<div class="prof-media-empty">Нет медиа</div>';return}
+      var mh='<div class="prof-media-grid">';media.forEach(function(m){mh+='<img src="'+m.image+'" onclick="vI(\''+m.image.replace(/'/g,"\\'")+'\')">'});mh+='</div>';pc.innerHTML=mh;
+    }else if(tab==='files'){
+      if(!files.length){pc.innerHTML='<div class="prof-media-empty">Нет файлов</div>';return}
+      var fh='<div class="prof-media-list">';files.forEach(function(m){fh+='<div class="prof-media-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div style="flex:1;min-width:0"><div style="color:var(--tx);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+es(m.fileName||'Файл')+'</div><div style="color:var(--tx3);font-size:12px">'+(m.fileSize||'')+'</div></div></div>'});fh+='</div>';pc.innerHTML=fh;
+    }else if(tab==='links'){
+      if(!links.length){pc.innerHTML='<div class="prof-media-empty">Нет ссылок</div>';return}
+      var lh='<div class="prof-media-list">';links.forEach(function(l){var domain;try{domain=new URL(l.url).hostname}catch(e){domain=l.url}lh+='<div class="prof-media-item" onclick="window.open(\''+l.url.replace(/'/g,"\\'")+'\')" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><div style="flex:1;min-width:0"><div style="color:var(--acc);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+es(domain)+'</div><div style="color:var(--tx3);font-size:12px">'+es(l.url.substr(0,50))+'</div></div></div>'});lh+='</div>';pc.innerHTML=lh;
+    }else if(tab==='audio'){
+      if(!audio.length){pc.innerHTML='<div class="prof-media-empty">Нет аудио</div>';return}
+      var ah='<div class="prof-media-list">';audio.forEach(function(m){ah+='<div class="prof-media-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div style="flex:1"><div style="color:var(--tx);font-size:14px">Голосовое</div><div style="color:var(--tx3);font-size:12px">'+(m.audioDur||'0:00')+' · '+ft(m.ts)+'</div></div></div>'});ah+='</div>';pc.innerHTML=ah;
+    }
+  }
+  renderTab('media');
+  // Tab switching
+  $('ovProfile').querySelectorAll('.prof-tab').forEach(function(tb){tb.addEventListener('click',function(){$('ovProfile').querySelectorAll('.prof-tab').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');renderTab(tb.getAttribute('data-ptab'))})});
+  // Buttons
+  $('profBack').addEventListener('click',function(){$('ovProfile').classList.add('hidden')});
+  $('profChat').addEventListener('click',function(){$('ovProfile').classList.add('hidden')});
+  if($('profCall'))$('profCall').addEventListener('click',function(){$('ovProfile').classList.add('hidden');startCall(name,false)});
+  if($('profVideo'))$('profVideo').addEventListener('click',function(){$('ovProfile').classList.add('hidden');startCall(name,true)});
+  if($('profQR'))$('profQR').addEventListener('click',function(){
+    var qh='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:56;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px" id="profQRov">';
+    qh+='<div style="background:#fff;padding:24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:12px">';
+    qh+=av(name,60);
+    qh+='<div style="color:#000;font-size:18px;font-weight:500">@'+es(name)+'</div>';
+    qh+='<div style="font-size:100px;line-height:1">📱</div>';
+    qh+='<div style="color:#666;font-size:12px">Мост · '+APP_VERSION+'</div>';
+    qh+='</div><button type="button" onclick="$(\'profQRov\').remove()" style="padding:10px 28px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:none;color:#fff;font-size:15px;cursor:pointer">Закрыть</button></div>';
+    document.body.insertAdjacentHTML('beforeend',qh);
+  });
+  // Edit own profile
+  if(isMe&&$('profEdit'))$('profEdit').addEventListener('click',function(){showProfileEdit()});
+  // Get last seen for offline users
+  if(!isMe&&!onU[name]){getLastSeen(name,function(t){var el=$('profStatus');if(el&&t)el.textContent='был(а) '+t})}
+};
 
-// Profile — own
-window.showProfile=function(){tSb();var pr=profiles[U]||{};
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovProfile\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Профиль</div></div><div class="pec">';
-h+='<div class="pe-av" onclick="$(\'avFi\').click()">'+(pr.avatar?'<img src="'+pr.avatar+'">':av(U,80))+'</div>';
-h+='<div class="pe-label">Статус</div><input class="pe-input" id="peS" value="'+es(pr.status||'')+'" placeholder="Что нового?">';
-h+='<div class="pe-label">PIN-код</div><input class="pe-input" id="peP" value="'+es(AuthManager.getPin())+'" placeholder="4 цифры (пусто=нет)" maxlength="4" inputmode="numeric">';
-h+='<button type="button" class="ov-btn" onclick="saveProfile()">Сохранить</button></div>';
-$('ovProfile').innerHTML=h;$('ovProfile').classList.remove('hidden')};
-window.saveProfile=function(){var st=$('peS').value.trim(),pin=$('peP').value.trim();
-db.ref('profiles/'+U+'/status').set(st);
-AuthManager.setPin(pin)
-$('ovProfile').classList.add('hidden');renderSB()};
+// Profile edit (own)
+window.showProfileEdit=function(){
+  var pr=profiles[U]||{};
+  var h='<div class="prof-ov" id="profEditOv"><div class="prof-header">';
+  h+='<button type="button" class="prof-back" id="profEditBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
+  h+='<div class="prof-av" id="profEditAv" style="cursor:pointer">'+(pr.avatar?'<img src="'+pr.avatar+'">':av(U,120))+'<div class="prof-av-edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div>';
+  h+='<div class="prof-name">'+es(U)+'</div>';
+  h+='</div>';
+  h+='<div class="prof-info">';
+  h+='<div class="prof-edit-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><input class="prof-edit-input" id="profEdStatus" value="'+es(pr.status||'')+'" placeholder="Статус"></div>';
+  h+='<div class="prof-edit-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3"/></svg></div><input class="prof-edit-input" id="profEdPhone" value="'+es(pr.phone||'')+'" placeholder="Телефон" type="tel"></div>';
+  h+='<div class="prof-edit-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><input class="prof-edit-input" id="profEdBday" value="'+es(pr.birthday||'')+'" placeholder="День рождения (напр. 18 июн.)"></div>';
+  h+='<div class="prof-edit-row"><div class="prof-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><input class="prof-edit-input" id="profEdPin" value="'+es(AuthManager.getPin())+'" placeholder="PIN-код (4 цифры)" maxlength="4" inputmode="numeric"></div>';
+  h+='<button type="button" style="width:100%;margin-top:20px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:16px;font-weight:500;cursor:pointer;font-family:Roboto,sans-serif" id="profEdSave">Сохранить</button>';
+  h+='</div></div>';
+  $('ovProfile').innerHTML=h;
+  $('profEditBack').addEventListener('click',function(){showUserProfile(U)});
+  $('profEditAv').addEventListener('click',function(){$('avFi').click()});
+  $('profEdSave').addEventListener('click',function(){
+    var st=$('profEdStatus').value.trim();
+    var ph=$('profEdPhone').value.trim();
+    var bd=$('profEdBday').value.trim();
+    var pin=$('profEdPin').value.trim();
+    var upd={status:st,phone:ph,birthday:bd};
+    db.ref('profiles/'+U).update(upd);
+    AuthManager.setPin(pin);
+    $('ovProfile').classList.add('hidden');renderSB();
+  });
+};
+
+// Alias for settings → profile
+window.showProfile=function(){tSb();showUserProfile(U)};
+window.saveProfile=function(){};
 $('avFi').addEventListener('change',function(){var f=$('avFi').files[0];if(!f)return;var rd=new FileReader();rd.onload=function(e){
   var ov=document.createElement('div');ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:55;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px';
   // Crop area
