@@ -415,6 +415,9 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .cb-label{color:rgba(255,255,255,.7);font-size:11px;font-weight:400;white-space:nowrap}
 .call-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:39}
 .call-video-local{position:absolute;bottom:140px;right:16px;width:120px;height:160px;border-radius:12px;object-fit:cover;z-index:42;border:2px solid rgba(255,255,255,.3)}
+.call-vid-full{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:39}
+.call-vid-pip{position:absolute;bottom:140px;right:16px;width:120px;height:160px;border-radius:12px;object-fit:cover;z-index:42;border:2px solid rgba(255,255,255,.3);cursor:pointer;transition:box-shadow .15s}
+.call-vid-pip:active{box-shadow:0 0 0 3px rgba(255,255,255,.4)}
 
 /* Animations — Chat Effects */
 .fx-container{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:60;display:block}
@@ -703,7 +706,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.4.3';
+var APP_VERSION='3.5.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -2529,7 +2532,7 @@ $('ovFolders').innerHTML=h;$('ovFolders').classList.remove('hidden')};
 
 // Settings
 window.showSettings=function(){tSb();
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovSettings\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Настройки</div></div>';
+var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovSettings\').classList.add(\'hidden\');tSb()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Настройки</div></div>';
 h+='<div class="ov-list" style="padding:16px">';
 h+='<div class="sd-row" onclick="showProfile();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Профиль</span></div>';
 h+='<div class="sd-row" onclick="showFolders();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Папки чатов</span></div>';
@@ -2579,13 +2582,14 @@ var CallManager=(function(){
 var ICE={iceServers:[{urls:'stun:stun.relay.metered.ca:80'},{urls:'turn:na.relay.metered.ca:80',username:'1d2b3f3f051f33e72d9655c5',credential:'soU8Zg9EfNQiLU+p'},{urls:'turn:na.relay.metered.ca:80?transport=tcp',username:'1d2b3f3f051f33e72d9655c5',credential:'soU8Zg9EfNQiLU+p'},{urls:'turn:na.relay.metered.ca:443',username:'1d2b3f3f051f33e72d9655c5',credential:'soU8Zg9EfNQiLU+p'},{urls:'turns:na.relay.metered.ca:443?transport=tcp',username:'1d2b3f3f051f33e72d9655c5',credential:'soU8Zg9EfNQiLU+p'}]};
 var pc=null,stream=null,ref=null,role=null,peer=null;
 var active=false,muted=false,speaker=true,video=false,incomingVideo=false;
-var timerInt=null,sec=0,listenerSet=false;
+var timerInt=null,sec=0,listenerSet=false,swapped=false;
 
 function log(msg){console.log('[CallManager] '+msg)}
 
 function showUI(name,isInc){
-  $('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');$('localVid').classList.add('hidden');
-  muted=false;speaker=true;video=false;
+  $('callScr').classList.remove('hidden');$('remoteVid').classList.add('hidden');
+  $('localVid').className='call-video-local hidden';
+  muted=false;speaker=true;video=false;swapped=false;
   $('callIncWrap').classList.add('hidden');$('callOutWrap').classList.add('hidden');
   $('callIncBtns').classList.add('hidden');$('callOutBtns').classList.add('hidden');$('callActBtns').classList.add('hidden');
   $('callTm').classList.add('hidden');$('callTopbar').style.display='none';
@@ -2609,6 +2613,12 @@ function showActiveUI(){
   $('callOutBtns').classList.add('hidden');$('callActBtns').classList.remove('hidden');
   $('callStOut').textContent='На связи';$('callTm').classList.remove('hidden');
   $('callV').classList.toggle('a',video);$('callS').classList.toggle('a',speaker);
+  // При ответе: remote на полный экран, local в pip
+  swapped=false;
+  if(video){
+    $('localVid').className='call-vid-pip';$('localVid').classList.remove('hidden');
+    $('localVid').style.cssText='';
+  }
   updateVideoUI();
   sec=0;$('callTm').textContent='00:00';
   timerInt=setInterval(function(){sec++;var m=Math.floor(sec/60),s=sec%60;$('callTm').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s},1000);
@@ -2623,12 +2633,28 @@ function updateVideoUI(){
   if(video){
     if(s)s.style.display='none';tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
     $('localVid').classList.remove('hidden');
+    // Исходящий до ответа — localVid на полный экран; активный — pip
+    if(!active||!pc||pc.connectionState==='new'){
+      $('localVid').className='call-vid-full';$('localVid').style.cssText='';
+    }
     if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
     if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
   }else{
     if(s)s.style.display='';tb.style.display='none';$('localVid').classList.add('hidden');
     if(sw)sw.classList.remove('hidden');if(fw)fw.classList.add('hidden');
     if(swA)swA.classList.remove('hidden');if(fwA)fwA.classList.add('hidden');
+  }
+}
+
+function swapVideos(){
+  swapped=!swapped;
+  var lv=$('localVid'),rv=$('remoteVid');
+  if(swapped){
+    lv.className='call-vid-full';lv.style.cssText='';lv.style.zIndex='39';
+    rv.className='call-vid-pip';rv.style.cssText='';rv.style.zIndex='42';
+  }else{
+    rv.className='call-video';rv.style.cssText='';rv.style.zIndex='39';
+    lv.className='call-vid-pip';lv.style.cssText='';lv.style.zIndex='42';
   }
 }
 
@@ -2645,9 +2671,12 @@ function setupOntrack(){
     }
     if(e.track.kind==='video'){
       var vs=(e.streams&&e.streams[0])?e.streams[0]:new MediaStream([e.track]);
-      $('remoteVid').srcObject=vs;$('remoteVid').classList.remove('hidden');
+      $('remoteVid').srcObject=vs;$('remoteVid').className='call-vid-full';$('remoteVid').classList.remove('hidden');
       try{$('remoteVid').play().catch(function(){})}catch(ex){}
       if($('callAvSection'))$('callAvSection').style.display='none';
+      // local → pip
+      if(video&&$('localVid').srcObject){$('localVid').className='call-vid-pip';$('localVid').style.cssText='';$('localVid').classList.remove('hidden')}
+      swapped=false;
       e.track.onmute=function(){$('remoteVid').classList.add('hidden');if($('callAvSection'))$('callAvSection').style.display=''};
       e.track.onunmute=function(){$('remoteVid').classList.remove('hidden');if($('callAvSection'))$('callAvSection').style.display='none'};
       log('video track attached');
@@ -2663,8 +2692,9 @@ function cleanup(){
   if(stream){stream.getTracks().forEach(function(t){t.stop()});stream=null}
   var ra=document.getElementById('rAudio');if(ra)ra.remove();
   if(ref){ref.child('answer').off();ref.child('callerIce').off();ref.child('calleeIce').off();ref.child('status').off()}
-  ref=null;active=false;peer=null;role=null;muted=false;video=false;incomingVideo=false;
-  $('remoteVid').srcObject=null;$('localVid').srcObject=null;
+  ref=null;active=false;peer=null;role=null;muted=false;video=false;incomingVideo=false;swapped=false;
+  $('remoteVid').srcObject=null;$('remoteVid').className='call-video hidden';
+  $('localVid').srcObject=null;$('localVid').className='call-video-local hidden';$('localVid').style.cssText='';
   if($('callAvSection'))$('callAvSection').style.display='';
   hideUI();stopRing();
 }
@@ -2749,7 +2779,7 @@ function end(){
 }
 
 function toggleMute(){muted=!muted;if(stream)stream.getAudioTracks().forEach(function(t){t.enabled=!muted});$('callM').classList.toggle('a',muted);$('callMO').classList.toggle('a',muted)}
-function toggleSpeaker(){speaker=!speaker;$('callS').classList.toggle('a',speaker);$('callSO').classList.toggle('a',speaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=speaker?1:.15}
+function toggleSpeaker(){speaker=!speaker;$('callS').classList.toggle('a',speaker);$('callSO').classList.toggle('a',speaker);$('callSpkVid').classList.toggle('a',speaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=speaker?1:.15}
 function toggleVideo(){
   if(!stream)return;var vt=stream.getVideoTracks();
   if(vt.length>0){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});video=ns;$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);if(ns){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}else{$('localVid').classList.add('hidden')}updateVideoUI()}
@@ -2765,7 +2795,7 @@ function listen(){
   if(listenerSet)return;listenerSet=true;
   db.ref('calls').orderByChild('ts').startAt(Date.now()).on('child_added',function(sn){var d=sn.val();if(d&&d.to===U&&d.status==='ringing'&&!active)handleIncoming(sn.key,d)});
 }
-return{start:start,accept:accept,end:end,cleanup:cleanup,listen:listen,toggleMute:toggleMute,toggleSpeaker:toggleSpeaker,toggleVideo:toggleVideo,flipCam:flipCam,isActive:function(){return active},getIncomingVideo:function(){return incomingVideo}};
+return{start:start,accept:accept,end:end,cleanup:cleanup,listen:listen,toggleMute:toggleMute,toggleSpeaker:toggleSpeaker,toggleVideo:toggleVideo,flipCam:flipCam,swapVideos:swapVideos,isActive:function(){return active},getIncomingVideo:function(){return incomingVideo},isSwapped:function(){return swapped}};
 })();
 window.startCall=CallManager.start;
 function endCallClean(){CallManager.cleanup()}
@@ -2784,6 +2814,26 @@ $('callV')&&$('callV').addEventListener('click',function(){CallManager.toggleVid
 $('callVO')&&$('callVO').addEventListener('click',function(){CallManager.toggleVideo()});
 $('callFlipO')&&$('callFlipO').addEventListener('click',function(){CallManager.flipCam()});
 $('callFlipA')&&$('callFlipA').addEventListener('click',function(){CallManager.flipCam()});
+// PIP: tap to swap + drag to move
+(function(){
+  var pipDragX=0,pipDragY=0,pipMoved=false,pipEl=null;
+  function getPip(){var lv=$('localVid'),rv=$('remoteVid');if(lv.classList.contains('call-vid-pip'))return lv;if(rv.classList.contains('call-vid-pip'))return rv;return null}
+  $('callScr').addEventListener('touchstart',function(e){
+    var t=e.target;if(t.id==='localVid'||t.id==='remoteVid'){pipEl=getPip();if(pipEl&&t===pipEl){pipDragX=e.touches[0].clientX-pipEl.offsetLeft;pipDragY=e.touches[0].clientY-pipEl.offsetTop;pipMoved=false}}
+  },{passive:true});
+  $('callScr').addEventListener('touchmove',function(e){
+    if(!pipEl)return;pipMoved=true;
+    var x=e.touches[0].clientX-pipDragX,y=e.touches[0].clientY-pipDragY;
+    var maxX=pipEl.parentElement.clientWidth-pipEl.clientWidth,maxY=pipEl.parentElement.clientHeight-pipEl.clientHeight;
+    pipEl.style.left=Math.max(8,Math.min(x,maxX-8))+'px';pipEl.style.top=Math.max(8,Math.min(y,maxY-8))+'px';
+    pipEl.style.right='auto';pipEl.style.bottom='auto';
+    e.preventDefault();
+  },{passive:false});
+  $('callScr').addEventListener('touchend',function(){
+    if(pipEl&&!pipMoved){CallManager.swapVideos()}
+    pipEl=null;pipMoved=false;
+  });
+})();
 // Buttons (non-header)
 $('clmb').addEventListener('click',tSb);$('sbk').addEventListener('click',tSb);$('rpc').addEventListener('click',cRp);
 
