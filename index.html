@@ -661,6 +661,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 <!-- Incoming layout (Telegram-style) -->
 <div class="hidden" id="callIncWrap" style="z-index:41;display:flex;flex-direction:column;align-items:center;width:100%;flex:1;justify-content:center;padding-bottom:120px">
+<button type="button" class="cb-sm" id="callSInc" style="position:absolute;top:14px;right:16px;width:40px;height:40px;background:rgba(255,255,255,.15);z-index:43"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
 <div class="call-inc-type" id="callIncType">Аудиовызов Мост...</div>
 <div class="call-name-inc" id="callNmInc"></div>
 <div style="margin-top:24px"><div class="call-av-ring-inc" id="callAvInc"></div></div>
@@ -706,7 +707,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.5.0';
+var APP_VERSION='3.5.1';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -2627,16 +2628,11 @@ function hideUI(){$('callScr').classList.add('hidden');$('remoteVid').classList.
 function updateVideoUI(){
   var s=$('callAvSection'),tb=$('callTopbar'),tn=$('callTopName'),ts=$('callTopStatus');
   var sw=$('callSpkWrap'),fw=$('callFlipWrap'),swA=$('callSpkWrapA'),fwA=$('callFlipWrapA');
-  // Video labels
   var voLabel=$('callVO');if(voLabel)voLabel.parentElement.querySelector('.cb-label').textContent=video?'Выкл. видео':'Вкл. видео';
   var vLabel=$('callV');if(vLabel)vLabel.parentElement.querySelector('.cb-label').textContent=video?'Выкл. видео':'Вкл. видео';
   if(video){
     if(s)s.style.display='none';tb.style.display='flex';tn.textContent=$('callNmOut').textContent;ts.textContent=$('callStOut').textContent;
     $('localVid').classList.remove('hidden');
-    // Исходящий до ответа — localVid на полный экран; активный — pip
-    if(!active||!pc||pc.connectionState==='new'){
-      $('localVid').className='call-vid-full';$('localVid').style.cssText='';
-    }
     if(sw)sw.classList.add('hidden');if(fw)fw.classList.remove('hidden');
     if(swA)swA.classList.add('hidden');if(fwA)fwA.classList.remove('hidden');
   }else{
@@ -2709,7 +2705,7 @@ function start(target,withVideo){
   var con=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
   navigator.mediaDevices.getUserMedia(con).then(function(s){
     stream=s;log('gUM OK: '+s.getTracks().map(function(t){return t.kind}).join(','));
-    if(withVideo){$('localVid').srcObject=s;$('localVid').classList.remove('hidden')}
+    if(withVideo){$('localVid').srcObject=s;$('localVid').className='call-vid-full';$('localVid').classList.remove('hidden')}
     pc=new RTCPeerConnection(ICE);
     s.getTracks().forEach(function(t){pc.addTrack(t,s)});
     setupOntrack();
@@ -2737,7 +2733,7 @@ function accept(withVideo){
   var con=withVideo?{audio:true,video:{facingMode:'user',width:320,height:240}}:{audio:true};
   navigator.mediaDevices.getUserMedia(con).then(function(s){
     stream=s;log('gUM OK: '+s.getTracks().map(function(t){return t.kind}).join(','));
-    if(withVideo){$('localVid').srcObject=s;$('localVid').classList.remove('hidden')}
+    if(withVideo){$('localVid').srcObject=s;$('localVid').className='call-vid-full';$('localVid').classList.remove('hidden')}
     updateVideoUI();
     ref.once('value',function(sn){var data=sn.val();if(!data||!data.offer)return;
       pc=new RTCPeerConnection(ICE);
@@ -2779,7 +2775,7 @@ function end(){
 }
 
 function toggleMute(){muted=!muted;if(stream)stream.getAudioTracks().forEach(function(t){t.enabled=!muted});$('callM').classList.toggle('a',muted);$('callMO').classList.toggle('a',muted)}
-function toggleSpeaker(){speaker=!speaker;$('callS').classList.toggle('a',speaker);$('callSO').classList.toggle('a',speaker);$('callSpkVid').classList.toggle('a',speaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=speaker?1:.15}
+function toggleSpeaker(){speaker=!speaker;$('callS').classList.toggle('a',speaker);$('callSO').classList.toggle('a',speaker);$('callSpkVid').classList.toggle('a',speaker);$('callSInc').classList.toggle('a',speaker);var ra=document.getElementById('rAudio');if(ra)ra.volume=speaker?1:.15}
 function toggleVideo(){
   if(!stream)return;var vt=stream.getVideoTracks();
   if(vt.length>0){var ns=!vt[0].enabled;vt.forEach(function(t){t.enabled=ns});video=ns;$('callV').classList.toggle('a',ns);$('callVO').classList.toggle('a',ns);if(ns){$('localVid').srcObject=stream;$('localVid').classList.remove('hidden')}else{$('localVid').classList.add('hidden')}updateVideoUI()}
@@ -2810,6 +2806,7 @@ $('callM')&&$('callM').addEventListener('click',function(){CallManager.toggleMut
 $('callMO')&&$('callMO').addEventListener('click',function(){CallManager.toggleMute()});
 $('callS')&&$('callS').addEventListener('click',function(){CallManager.toggleSpeaker()});
 $('callSO')&&$('callSO').addEventListener('click',function(){CallManager.toggleSpeaker()});
+$('callSInc')&&$('callSInc').addEventListener('click',function(){CallManager.toggleSpeaker()});
 $('callV')&&$('callV').addEventListener('click',function(){CallManager.toggleVideo()});
 $('callVO')&&$('callVO').addEventListener('click',function(){CallManager.toggleVideo()});
 $('callFlipO')&&$('callFlipO').addEventListener('click',function(){CallManager.flipCam()});
