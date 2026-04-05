@@ -10,6 +10,18 @@
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>eruda.init();</script>
 <style>
+/* === ОГЛАВЛЕНИЕ style.css ===
+ * :root/themes, Screens/transitions, Login, Header,
+ * Folder tabs, Chat list, Messages, Voice gradient,
+ * Input bar, Video message, Reply/Edit bar, Pinned bar,
+ * Search, Emoji panel, Context menu, Select mode,
+ * Sidebar, Overlays, Profile edit, Call screens,
+ * Chat effects, Anim stickers, Micro-animations,
+ * Effect picker, Animated reaction, QR, Image viewer,
+ * Profile overlay, Chat wallpapers
+ * Поиск: grep -n "секция" style.css
+ * === КОНЕЦ ОГЛАВЛЕНИЯ ===
+ */
 :root{--bg:#0a0a1a;--bg2:rgba(15,12,41,.78);--bg3:rgba(255,255,255,.08);--tx:#fff;--tx2:rgba(255,255,255,.5);--tx3:rgba(255,255,255,.3);--acc:#667eea;--acc2:#764ba2;--brd:rgba(255,255,255,.08);--grn:#00b894;--red:#E85D75}
 [data-theme="light"]{--bg:#f0f2f5;--bg2:rgba(255,255,255,.78);--bg3:rgba(0,0,0,.06);--tx:#1a1a2e;--tx2:rgba(0,0,0,.5);--tx3:rgba(0,0,0,.3);--brd:rgba(0,0,0,.10);--acc:#667eea;--acc2:#764ba2;--grn:#00b894;--red:#E85D75}
 [data-theme="madmax"]{--bg:#1a1008;--bg2:rgba(40,25,10,.78);--bg3:rgba(255,150,50,.1);--tx:#f0d0a0;--tx2:rgba(240,180,100,.5);--tx3:rgba(240,180,100,.3);--brd:rgba(255,120,30,.14);--acc:#e8600a;--acc2:#b8340a;--grn:#c4a035;--red:#c43030}
@@ -102,6 +114,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Messages */
 .ma{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch;position:relative;z-index:0;background-image:url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.09)' stroke-width='1.5'%3E%3Ccircle cx='20' cy='20' r='9'/%3E%3Crect x='70' y='10' width='16' height='16' rx='3'/%3E%3Cpath d='M10 75l10 17h-20z'/%3E%3Ccircle cx='95' cy='80' r='7'/%3E%3Crect x='30' y='85' width='12' height='12' rx='6'/%3E%3Cpath d='M105 30l-8 8 8 8'/%3E%3Ccircle cx='60' cy='55' r='5'/%3E%3Cpath d='M45 110l7-12h-14z'/%3E%3Crect x='85' y='105' width='14' height='10' rx='3'/%3E%3Cpath d='M55 20l5 5-5 5'/%3E%3C/g%3E%3C/svg%3E");background-size:120px 120px}
 .dd{text-align:center;margin:10px 0 6px;color:var(--tx3);font-size:13px;font-weight:500}
+.float-date{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--tx3);font-size:13px;font-weight:500;padding:4px 14px;border-radius:16px;z-index:6;pointer-events:none;opacity:0;transition:opacity .3s ease;backdrop-filter:blur(8px)}
+.float-date.show{opacity:1}
 .sys-call{color:var(--tx2);font-size:12px}
 .sys-missed{color:var(--red);font-size:12px;font-weight:500}
 .sys-unread{background:var(--acc);color:#fff;font-size:12px;font-weight:500;padding:4px 14px;border-radius:16px}
@@ -567,6 +581,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <!-- Thread header -->
 <div class="rb hidden" id="threadBar"><div class="rbc"><div class="rbn">Тред</div><div class="rbt" id="threadTxt"></div></div><button type="button" class="rbx" id="threadCl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <div class="ma" id="mArea"></div>
+<div class="float-date hidden" id="floatDate"></div>
 <button type="button" class="scroll-bottom hidden" id="scrollBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
 <div class="rb hidden" id="rpb"><div class="rb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div><div class="rbc"><div class="rbn" id="rpn"></div><div class="rbt" id="rpt"></div></div><button type="button" class="rbx" id="rpc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 <!-- Edit panel overlay -->
@@ -688,7 +703,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.4.1';
+var APP_VERSION='3.4.3';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -2042,8 +2057,14 @@ function fireStars(){var c=_fxBox();var h=c._h;var stars=['✨','⭐','🌟','�
 // REQ-50: Animated big reaction on double-tap
 function showBigReaction(mrEl,emoji){var mb=mrEl.querySelector('.mb');if(!mb)mb=mrEl;mb.style.position='relative';var big=document.createElement('div');big.className='react-big';big.textContent=emoji;mb.appendChild(big);if(emoji==='🔥')mb.classList.add('react-flash');else if(emoji==='😂')mb.classList.add('react-shake');setTimeout(function(){if(big.parentNode)big.parentNode.removeChild(big);mb.classList.remove('react-flash','react-shake')},700)}
 
-// REQ-12: Scroll-to-bottom button
-$('mArea').addEventListener('scroll',function(){var a=$('mArea'),sb=$('scrollBtn');if(a.scrollHeight-a.scrollTop-a.clientHeight>300)sb.classList.remove('hidden');else sb.classList.add('hidden')});
+// REQ-12: Scroll-to-bottom button + floating date
+var _fdTm=0;
+$('mArea').addEventListener('scroll',function(){var a=$('mArea'),sb=$('scrollBtn');if(a.scrollHeight-a.scrollTop-a.clientHeight>300)sb.classList.remove('hidden');else sb.classList.add('hidden');
+// Floating date
+var fd=$('floatDate'),dds=a.querySelectorAll('.dd:not(#unreadDiv)'),best=null,aTop=a.getBoundingClientRect().top;
+for(var i=0;i<dds.length;i++){var r=dds[i].getBoundingClientRect();if(r.top-aTop<40)best=dds[i]}
+if(best){var sp=best.querySelector('span');if(sp&&sp.textContent){fd.textContent=sp.textContent;fd.style.top=(aTop-$('S2').getBoundingClientRect().top+8)+'px';fd.classList.remove('hidden');fd.classList.add('show')}}
+clearTimeout(_fdTm);_fdTm=setTimeout(function(){fd.classList.remove('show');setTimeout(function(){if(!fd.classList.contains('show'))fd.classList.add('hidden')},300)},1200)});
 $('scrollBtn').addEventListener('click',function(){$('mArea').scrollTo({top:$('mArea').scrollHeight,behavior:'smooth'})});
 $('pnListBtn').addEventListener('click',function(){showPinnedList()});
 $('pnBody').addEventListener('click',function(){cyclePinAndScroll()});
