@@ -72,7 +72,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 /* Header */
 .hdr{padding:14px 16px;display:flex;align-items:center;gap:10px;background:var(--bg2);border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);flex-shrink:0}
 .hdr-t{color:var(--tx);font-weight:600;font-size:20px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hdr-s{color:var(--tx2);font-size:13px;font-weight:400}
+.hdr-s{color:var(--tx2);font-size:13px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-s.tp{color:var(--acc)}
 .typing-dots span{animation:tdot 1.4s infinite;opacity:.2}
 .typing-dots span:nth-child(2){animation-delay:.2s}
@@ -507,7 +507,8 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .prof-edit-row{display:flex;align-items:center;gap:8px;padding:10px 0}
 .prof-edit-input{flex:1;background:var(--bg3);border:1px solid var(--brd);border-radius:8px;padding:10px 12px;color:var(--tx);font-size:15px;font-family:'Roboto',sans-serif;outline:none}
 .prof-edit-input:focus{border-color:var(--acc)}
-#chatHdrAv{padding:4px 8px;cursor:pointer}
+#chatHdrAv{padding:2px 4px;cursor:pointer}
+#chatHdr.hdr{padding:8px 10px;gap:8px}
 #chatHdrInfo{padding:4px 0}
 
 /* Chat wallpapers (REQ-57) */
@@ -720,7 +721,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.6.8';
+var APP_VERSION='3.6.10';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -992,9 +993,9 @@ db.ref('readReceipts/'+rid+'/'+U).set(firebase.database.ServerValue.TIMESTAMP)}
 // Open chat
 function oC(rid){cRoom=rid;$('S1').classList.add('hidden');$('S2').classList.remove('hidden');$('S2').classList.remove('scr-enter');void $('S2').offsetHeight;$('S2').classList.add('scr-enter');searchMode=false;$('srBar').classList.add('hidden');searchQ='';threadMode=false;$('threadBar').classList.add('hidden');
 var r=cRooms[rid];var isPriv=rid!=='general'&&r&&r.members&&r.members.length===2;
-if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden');$('chatMenuBtn').classList.add('hidden');$('chatHdrAv').innerHTML='<div class="avatar" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>'}
+if(rid==='general'){$('cht').textContent='Общий чат';$('phb').classList.add('hidden');$('chatMenuBtn').classList.add('hidden');$('chatHdrAv').innerHTML='<div class="avatar" style="width:44px;height:44px;font-size:18px;background:linear-gradient(135deg,var(--acc),var(--acc2))">💬</div>'}
 else{var others=r&&r.members?r.members.filter(function(m){return m!==U}):[];$('cht').textContent=r&&r.groupName?r.groupName:others.join(', ');$('phb').classList.toggle('hidden',!isPriv);$('chatMenuBtn').classList.remove('hidden');
-$('chatHdrAv').innerHTML=isPriv?av(others[0],32):'<div class="avatar" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
+$('chatHdrAv').innerHTML=isPriv?av(others[0],44):'<div class="avatar" style="width:44px;height:44px;font-size:18px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div>';
 if(isPriv&&onU[others[0]]){var _devIcon=onU[others[0]].device==='desktop'?'💻':'📱';$('chs2').textContent='онлайн '+_devIcon}
 else if(isPriv)getLastSeen(others[0],function(t){if(cRoom===rid)$('chs2').textContent=t?'был(а) '+t:''})}
 if(rid==='general')$('chs2').textContent=Object.keys(onU).length+' онлайн';
