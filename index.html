@@ -326,7 +326,10 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 
 /* Sidebar */
 .so{position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;display:flex}
-.sd{width:280px;background:var(--bg2);border-right:1px solid var(--brd);padding:20px 16px;backdrop-filter:blur(20px);overflow-y:auto}
+.sd{width:280px;background:var(--bg2);border-right:1px solid var(--brd);padding:20px 16px;backdrop-filter:blur(20px);overflow-y:auto;transform:translateX(-100%);transition:transform .25s ease-out}
+.so-active .sd{transform:translateX(0)}
+.sdbk{flex:1;background:rgba(0,0,0,0);transition:background .25s ease-out}
+.so-active .sdbk{background:rgba(0,0,0,.4)}
 .sd-profile{display:flex;align-items:center;gap:12px;cursor:pointer;padding-bottom:14px}
 .sd-profile-info{flex:1;min-width:0}
 .sd-profile-name{color:var(--tx);font-weight:600;font-size:16px}
@@ -356,11 +359,11 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 .sdi-you{color:var(--tx3);font-weight:400}
 .sdi-status{color:var(--tx3);font-size:12px;margin-top:1px}
 .lbtn{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:1px solid rgba(232,93,117,.3);background:rgba(232,93,117,.1);color:var(--red);font-size:15px;font-weight:500;cursor:pointer;font-family:'Roboto',sans-serif}
-.sdbk{flex:1}
+/* sdbk styles moved to .so section above */
 
 /* Overlays */
-.ov{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column;animation:ovFadeIn .2s ease-out}
-@keyframes ovFadeIn{from{opacity:0}to{opacity:1}}
+.ov{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:25;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .25s ease-out}
+.ov.ov-active{transform:translateX(0)}
 .ov-h{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--brd)}
 .ov-t{color:var(--tx);font-weight:500;font-size:18px;flex:1}
 .ov-list{flex:1;overflow-y:auto;padding:8px 0}
@@ -585,10 +588,10 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 </div>
 <!-- Overlays (picker, profile, QR, etc) -->
 <div class="ov hidden" id="ovPicker"></div>
+<div class="ov hidden" id="ovSettings"></div>
 <div class="ov hidden" id="ovQR"></div>
 <div class="ov hidden" id="ovFolders"></div>
 <div class="ov hidden" id="ovSaved"></div>
-<div class="ov hidden" id="ovSettings"></div>
 </div>
 
 <!-- Chat -->
@@ -728,7 +731,7 @@ button,input,select{-webkit-appearance:none;touch-action:manipulation;font-famil
 <script>
 firebase.initializeApp({apiKey:"AIzaSyAYBNM9q7nrJzaLftmD7XfRChmzc9vEPUg",authDomain:"pulse-chat-6b66e.firebaseapp.com",databaseURL:"https://pulse-chat-6b66e-default-rtdb.firebaseio.com",projectId:"pulse-chat-6b66e",storageBucket:"pulse-chat-6b66e.firebasestorage.app",messagingSenderId:"1036467352069",appId:"1:1036467352069:web:34d67625e45eec3fcf626c"});
 var db=firebase.database(),C=["#E85D75","#6C5CE7","#00B894","#FDCB6E","#E17055","#0984E3","#A29BFE","#55EFC4","#FF7675","#74B9FF"];
-var APP_VERSION='3.7.0';
+var APP_VERSION='3.8.0';
 var EMOJIS={"😊":["😂","❤️","😘","😍","😊","😁","👍","😭","😅","🤣","😢","😜","😏","😎","🥰","🤩","🥳","😋","🤗","🤔","😐","😑","🙄","😤","😡","🥺","😱","😨","😰","😥","🤯","😳","🥵","🥶","😶","🫠","😮","😯","😲","🤤","😴","🥱","🤑","🤠","😈","👿","🤡","💀","👻","👽","🤖","💩","🫣","🫡","🫢","🤫","🤥","😬","🤐","🫨"],"🐱":["🐱","🐶","🐻","🦊","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧","🐦","🦅","🦉","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐢","🐍","🐙","🦑","🦀","🐠","🐬","🐳","🦈","🐊"],"🍕":["🍕","🍔","🍟","🌭","🌮","🌯","🥗","🍣","🍱","🍛","🍜","🍝","🍲","🥘","🍰","🎂","🍩","🍪","🍫","🍬","🍭","🍦","☕","🍵","🥤","🍺","🍷","🍸","🥂","🍾","🥃"],"⚽":["⚽","🏀","🏈","⚾","🎾","🏐","🏓","🎱","🏆","🥇","🎯","🎮","🎲","🎭","🎨","🎬","🎤","🎧","🎵","🎶","🎸","🥁","🎹","🎺","🎻"],"✈️":["✈️","🚗","🚕","🚌","🚎","🏎","🚑","🚒","🚓","🛵","🚲","🛴","🚀","🛸","🚁","⛵","🚢","🏠","🏢","🏰","🏭","🗼","🗽","⛪","🕌","🗿","🌋","🏔","🏖","🌅","🌄","🌇","🌃","🎡","🎢","🎪"],"💡":["💡","🔥","⭐","🌟","✨","⚡","💥","💫","🌈","☀️","🌙","☁️","❄️","🌊","💎","🔔","🎁","🎀","🎉","🎊","🏅","🎗","📱","💻","⌨️","🖥","📷","📹","💰","💳","📦","📫","📝","📎","✏️","🔑","🔒","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","💕","💞","💓","💗","💖","💝"],"🔣":["✅","❌","❓","❗","💯","🔴","🟠","🟡","🟢","🔵","🟣","⚫","⚪","🟤","🔶","🔷","▶️","⏸","⏹","⏺","⏩","⏪","🔀","🔁","🔂","➕","➖","✖️","➗","♾","‼️","⁉️","©️","®️","™️","🔝","🔙","🔛","🔜","🆕","🆗","🆒"]};
 var QR=["❤️","👍","😂","😮","😢","🔥"];
 var U=null,pRef=null,cRoom="general",onU={},cRooms={},rMsgs={},rList={},rTo=null,editMsg=null,emO=false,tTmr=null,lTyp=0,tpList={},profiles={},searchQ='',searchMode=false;
@@ -802,6 +805,24 @@ var themes=['dark','light','madmax','space'];
 var themeNames={'dark':'🌙 Тёмная','light':'☀️ Светлая','madmax':'🔥 Безумный Макс','space':'🚀 Космос'};
 function applyTheme(){$('app').setAttribute('data-theme',theme==='dark'?'':theme)}
 applyTheme();
+
+// Smooth overlay open/close (slide from left)
+function ovOpen(el){
+  if(!el)return;
+  el.classList.remove('hidden');
+  el.classList.remove('ov-active');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add('ov-active')})});
+}
+function ovClose(el,cb){
+  if(!el)return;var _done=false;
+  el.classList.remove('ov-active');
+  function done(){if(_done)return;_done=true;el.removeEventListener('transitionend',done);el.classList.add('hidden');if(cb)cb()}
+  el.addEventListener('transitionend',done);
+  setTimeout(done,300);
+}
+// Smooth sidebar open/close (slide from left)
+function sbOpen(){var el=$('sov');el.classList.remove('hidden');requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add('so-active')})})}
+function sbClose(cb){var el=$('sov');var _done=false;el.classList.remove('so-active');function done(){if(_done)return;_done=true;el.removeEventListener('transitionend',done);el.classList.add('hidden');if(cb)cb()}el.addEventListener('transitionend',done);setTimeout(done,300)}
 
 // ============ AuthManager — isolated auth/PIN module ============
 var AuthManager=(function(){
@@ -1653,14 +1674,14 @@ function forwardMsg(sender,text,key){
 var rooms=[{id:'general',name:'Общий чат'}];
 Object.keys(cRooms).forEach(function(k){if(k==='general')return;var r=cRooms[k];if(!r.members||r.members.indexOf(U)===-1)return;
 var others=r.members.filter(function(m){return m!==U});rooms.push({id:k,name:r.groupName||others.join(', ')})});
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovPicker\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Переслать в...</div></div><div class="ov-list">';
+var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovPicker\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Переслать в...</div></div><div class="ov-list">';
 rooms.forEach(function(r){h+='<div class="ov-item" data-r="'+r.id+'">'+es(r.name)+'</div>'});
-h+='</div>';$('ovPicker').innerHTML=h;$('ovPicker').classList.remove('hidden');
+h+='</div>';$('ovPicker').innerHTML=h;ovOpen($('ovPicker'));
 $('ovPicker').querySelectorAll('.ov-item').forEach(function(el){el.addEventListener('click',function(){
 var rid=el.getAttribute('data-r');
 db.ref('messages/'+rid).push({sender:U,text:text,forwarded:sender,ts:firebase.database.ServerValue.TIMESTAMP});
 db.ref('chats/'+rid).update({lastText:'↪ '+text,lastTs:firebase.database.ServerValue.TIMESTAMP});
-$('ovPicker').classList.add('hidden')})})}
+ovClose($('ovPicker'))})})}
 
 // Threads
 window.openThread=function(parentKey,text){threadMode=true;threadParent=parentKey;
@@ -2002,34 +2023,36 @@ window.getGalleryList=function(context){
   return list;
 };
 })();
+// Navigation flag: return to settings from sub-screens
+var _fromSettings=false;
 // New chat / group / channel picker
 $('nb').addEventListener('click',function(){showNewPicker()});
 function showNewPicker(){
 var ns=Object.keys(onU).filter(function(n){return n!==U});
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovPicker\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Новый чат</div></div><div class="ov-list">';
+var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovPicker\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Новый чат</div></div><div class="ov-list">';
 h+='<div class="ov-item" data-u="_group"><div class="avatar" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,#00B894,#0984E3)">👥</div><div style="color:var(--acc);font-size:14px;font-weight:600">Создать группу</div></div>';
 h+='<div class="ov-item" data-u="_channel"><div class="avatar" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,#0984E3,#00B894)">📢</div><div style="color:var(--acc);font-size:14px;font-weight:600">Создать канал</div></div>';
 ns.forEach(function(n){var p=profiles[n]||{};h+='<div class="ov-item" data-u="'+es(n)+'">'+av(n,38)+'<div style="flex:1"><div style="color:var(--tx);font-size:14px;font-weight:600">'+es(n)+'</div>'+(p.status?'<div style="color:var(--tx3);font-size:11px">'+es(p.status)+'</div>':'')+'</div></div>'});
-h+='</div>';$('ovPicker').innerHTML=h;$('ovPicker').classList.remove('hidden');
+h+='</div>';$('ovPicker').innerHTML=h;ovOpen($('ovPicker'));
 $('ovPicker').querySelectorAll('.ov-item').forEach(function(el){el.addEventListener('click',function(){
 var u=el.getAttribute('data-u');
-if(u==='_group'||u==='_channel'){$('ovPicker').classList.add('hidden');showGroupPicker(u==='_channel');return}
-$('ovPicker').classList.add('hidden');sPC(u)})})}
+if(u==='_group'||u==='_channel'){ovClose($('ovPicker'));showGroupPicker(u==='_channel');return}
+ovClose($('ovPicker'));sPC(u)})})}
 
 function showGroupPicker(isChan){
 var ns=Object.keys(onU).filter(function(n){return n!==U}),sel=[];
 function render(){
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovPicker\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">'+(isChan?'Новый канал':'Новая группа')+'</div></div><div class="ov-list">';
+var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovPicker\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">'+(isChan?'Новый канал':'Новая группа')+'</div></div><div class="ov-list">';
 ns.forEach(function(n){h+='<div class="ov-item" data-u="'+es(n)+'">'+av(n,38)+'<div style="flex:1;color:var(--tx);font-size:14px;font-weight:600">'+es(n)+'</div><div class="ov-cb'+(sel.indexOf(n)!==-1?' sel':'')+'">✓</div></div>'});
 h+='</div><button type="button" class="ov-btn">'+(isChan?'Создать канал':'Создать группу')+' ('+sel.length+')</button>';
-$('ovPicker').innerHTML=h;$('ovPicker').classList.remove('hidden');
+$('ovPicker').innerHTML=h;ovOpen($('ovPicker'));
 $('ovPicker').querySelectorAll('.ov-item').forEach(function(el){el.addEventListener('click',function(){var u=el.getAttribute('data-u');var i=sel.indexOf(u);if(i===-1)sel.push(u);else sel.splice(i,1);render()})});
 $('ovPicker').querySelector('.ov-btn').addEventListener('click',function(){
 if(sel.length<1)return;var members=[U].concat(sel);var cid=(isChan?'chan_':'group_')+Date.now();
 var name=prompt((isChan?'Название канала:':'Название группы:'))||members.join(', ');
 var data={members:members,groupName:name,lastText:'',lastTs:firebase.database.ServerValue.TIMESTAMP};
 if(isChan)data.channel=true;
-db.ref('chats/'+cid).set(data);$('ovPicker').classList.add('hidden');oC(cid)})}
+db.ref('chats/'+cid).set(data);ovClose($('ovPicker'));oC(cid)})}
 render()}
 
 // Attachments menu
@@ -2638,7 +2661,7 @@ function setChatWp(rid,wp){}
 function applyChatWp(rid){applyChatTheme(rid)}
 
 // Sidebar
-function tSb(){$('sov').classList.toggle('hidden')}
+function tSb(){var el=$('sov');if(el.classList.contains('hidden')){sbOpen()}else{sbClose()}}
 function renderSB(){
 var ns=Object.keys(onU);var pr=profiles[U]||{};
 var h='<div class="sd-profile" onclick="showSettings()">'+av(U,50)+'<div class="sd-profile-info"><div class="sd-profile-name">'+es(U||'')+'</div>';
@@ -2701,7 +2724,7 @@ window.showUserProfile=function(name){
   h+='<div class="prof-media" id="profMediaContent"></div>';
   h+='</div>';
   // Render
-  $('ovProfile').innerHTML=h;$('ovProfile').classList.remove('hidden');
+  $('ovProfile').innerHTML=h;ovOpen($('ovProfile'));
   // Tab content render
   function renderTab(tab){
     var pc=$('profMediaContent');if(!pc)return;
@@ -2725,10 +2748,10 @@ window.showUserProfile=function(name){
   // Tab switching
   $('ovProfile').querySelectorAll('.prof-tab').forEach(function(tb){tb.addEventListener('click',function(){$('ovProfile').querySelectorAll('.prof-tab').forEach(function(x){x.classList.remove('act')});tb.classList.add('act');renderTab(tb.getAttribute('data-ptab'))})});
   // Buttons
-  $('profBack').addEventListener('click',function(){$('ovProfile').classList.add('hidden')});
-  $('profChat').addEventListener('click',function(){$('ovProfile').classList.add('hidden')});
-  if($('profCall'))$('profCall').addEventListener('click',function(){$('ovProfile').classList.add('hidden');startCall(name,false)});
-  if($('profVideo'))$('profVideo').addEventListener('click',function(){$('ovProfile').classList.add('hidden');startCall(name,true)});
+  $('profBack').addEventListener('click',function(){_fromSettings=false;ovClose($('ovProfile'))});
+  $('profChat').addEventListener('click',function(){ovClose($('ovProfile'))});
+  if($('profCall'))$('profCall').addEventListener('click',function(){ovClose($('ovProfile'));startCall(name,false)});
+  if($('profVideo'))$('profVideo').addEventListener('click',function(){ovClose($('ovProfile'));startCall(name,true)});
   if($('profQR'))$('profQR').addEventListener('click',function(){
     var qh='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:56;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px" id="profQRov">';
     qh+='<div style="background:#fff;padding:24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:12px">';
@@ -2771,12 +2794,12 @@ window.showProfileEdit=function(){
     var upd={status:st,phone:ph,birthday:bd};
     db.ref('profiles/'+U).update(upd);
     AuthManager.setPin(pin);
-    $('ovProfile').classList.add('hidden');renderSB();
+    ovClose($('ovProfile'));renderSB();
   });
 };
 
 // Alias for settings → profile
-window.showProfile=function(){tSb();showUserProfile(U)};
+window.showProfile=function(){showUserProfile(U)};
 window.saveProfile=function(){};
 $('avFi').addEventListener('change',function(){var f=$('avFi').files[0];if(!f)return;var rd=new FileReader();rd.onload=function(e){
   var ov=document.createElement('div');ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:55;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px';
@@ -2821,37 +2844,37 @@ $('avFi').addEventListener('change',function(){var f=$('avFi').files[0];if(!f)re
 };rd.readAsDataURL(f);$('avFi').value=''});
 
 // Saved messages
-window.showSaved=function(){tSb();var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovSaved\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Сохранённые ('+savedMsgs.length+')</div></div><div class="ov-list">';
+window.showSaved=function(){var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovSaved\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Сохранённые ('+savedMsgs.length+')</div></div><div class="ov-list">';
 if(!savedMsgs.length)h+='<div style="padding:24px;text-align:center;color:var(--tx3)">Пусто</div>';
 savedMsgs.forEach(function(m,i){h+='<div class="ov-item"><div style="flex:1"><div style="color:var(--acc);font-size:12px;font-weight:600">'+es(m.sender)+'</div><div style="color:var(--tx);font-size:13px">'+es(m.text||'📷')+'</div></div><button type="button" class="ib" onclick="savedMsgs.splice('+i+',1);saveLocal();showSaved()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'});
-h+='</div>';$('ovSaved').innerHTML=h;$('ovSaved').classList.remove('hidden')};
+h+='</div>';$('ovSaved').innerHTML=h;ovOpen($('ovSaved'))};
 
 // QR code (simple text-based)
-window.showQR=function(){tSb();var url=location.href;
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovQR\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Мой QR-код</div></div><div class="qr-box">';
+window.showQR=function(){var url=location.href;
+var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovQR\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Мой QR-код</div></div><div class="qr-box">';
 h+=av(U,64);
 h+='<div style="color:var(--tx);font-weight:700;font-size:18px">'+es(U)+'</div>';
 h+='<div style="color:var(--tx2);font-size:12px;text-align:center;margin-top:8px">Поделитесь ссылкой на мессенджер:</div>';
 h+='<div style="background:var(--bg3);padding:10px 16px;border-radius:10px;font-size:12px;color:var(--acc);word-break:break-all;cursor:pointer" onclick="navigator.clipboard.writeText(\''+url+'\').then(function(){alert(\'Скопировано!\')})">'+es(url)+'</div>';
 h+='<div style="color:var(--tx3);font-size:11px;margin-top:4px">Нажмите, чтобы скопировать</div></div>';
-$('ovQR').innerHTML=h;$('ovQR').classList.remove('hidden')};
+$('ovQR').innerHTML=h;ovOpen($('ovQR'))};
 
 // Folders editor
-window.showFolders=function(){tSb();var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovFolders\').classList.add(\'hidden\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Папки</div></div><div class="ov-list">';
+window.showFolders=function(){var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovFolders\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Папки</div></div><div class="ov-list">';
 folders.forEach(function(f){h+='<div class="ov-item"><div style="color:var(--tx);font-size:14px;flex:1">'+es(f)+'</div></div>'});
 h+='<div style="padding:16px"><input class="pe-input" id="newFolder" placeholder="Новая папка..."><button type="button" class="ov-btn" style="margin:8px 0" onclick="var v=$(\'newFolder\').value.trim();if(v&&folders.indexOf(v)===-1){folders.push(v);saveLocal();renderFolderTabs();showFolders()}">Добавить</button></div></div>';
-$('ovFolders').innerHTML=h;$('ovFolders').classList.remove('hidden')};
+$('ovFolders').innerHTML=h;ovOpen($('ovFolders'))};
 
 // Settings
-window.showSettings=function(){tSb();
-var h='<div class="ov-h"><button type="button" class="bb" onclick="$(\'ovSettings\').classList.add(\'hidden\');tSb()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Настройки</div></div>';
+window.showSettings=function(noAnim){
+var h='<div class="ov-h"><button type="button" class="bb" onclick="ovClose($(\'ovSettings\'))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ov-t">Настройки</div></div>';
 h+='<div class="ov-list" style="padding:16px">';
-h+='<div class="sd-row" onclick="showProfile();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Профиль</span></div>';
-h+='<div class="sd-row" onclick="showFolders();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Папки чатов</span></div>';
-h+='<div class="sd-row" onclick="showQR();$(\'ovSettings\').classList.add(\'hidden\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="4" height="4" rx="1"/><line x1="22" y1="14" x2="22" y2="14.01"/><line x1="22" y1="22" x2="22" y2="22.01"/><line x1="18" y1="22" x2="18" y2="22.01"/></svg><span>QR-код</span></div>';
+h+='<div class="sd-row" onclick="_fromSettings=true;showProfile()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Профиль</span></div>';
+h+='<div class="sd-row" onclick="_fromSettings=true;showFolders()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Папки чатов</span></div>';
+h+='<div class="sd-row" onclick="_fromSettings=true;showQR()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="4" height="4" rx="1"/><line x1="22" y1="14" x2="22" y2="14.01"/><line x1="22" y1="22" x2="22" y2="22.01"/><line x1="18" y1="22" x2="18" y2="22.01"/></svg><span>QR-код</span></div>';
 h+='<div class="sd-sep">';
 h+='<div class="sd-row sd-row-col"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2"/><circle cx="17.5" cy="10.5" r="2"/><circle cx="8.5" cy="7.5" r="2"/><circle cx="6.5" cy="12" r="2"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg><span>Тема</span><div class="sd-theme-grid">';
-themes.forEach(function(t){h+='<button type="button" class="sd-theme-btn'+(theme===t?' act':'')+'" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();showSettings()">'+themeNames[t]+'</button>'});
+themes.forEach(function(t){h+='<button type="button" class="sd-theme-btn'+(theme===t?' act':'')+'" onclick="event.stopPropagation();theme=\''+t+'\';localStorage.setItem(\'pc_theme\',\''+t+'\');applyTheme();showSettings(true)">'+themeNames[t]+'</button>'});
 h+='</div></div>';
 h+='</div>';
 h+='<div class="sd-sep">';
@@ -2860,7 +2883,7 @@ h+='<div class="sd-about-name">Мост</div>';
 h+='<div class="sd-about-ver">Версия: '+APP_VERSION+'</div>';
 h+='<div class="sd-about-desc">Кроссплатформенный мессенджер</div>';
 h+='</div></div>';
-$('ovSettings').innerHTML=h;$('ovSettings').classList.remove('hidden')};
+$('ovSettings').innerHTML=h;if(noAnim){$('ovSettings').classList.remove('hidden');$('ovSettings').classList.add('ov-active')}else{ovOpen($('ovSettings'))}};
 
 
 // Recorder aliases for backward compat
